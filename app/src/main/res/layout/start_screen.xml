@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="425dp"
+            android:layout_height="117dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="100dp"
+            android:fontFamily="@font/kodchasan_bold"
+            android:gravity="center"
+            android:text="Get Inspired, Eat Adventurously"
+            android:textAlignment="center"
+            android:textAllCaps="false"
+            android:textColor="@color/green"
+            android:textSize="40dp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/icon"
+            android:layout_width="298dp"
+            android:layout_height="212dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="40dp"
+            android:src="@drawable/hotpot_icon" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="40dp"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/signInBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/sign_in"
+                android:fontFamily="@font/kodchasan_bold"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textAllCaps="false"
+                android:textSize="17dp"
+                android:layout_marginBottom="15dp"
+                android:text="Sign In" />
+
+            <Button
+                android:id="@+id/signUpBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/sign_in"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:fontFamily="@font/kodchasan_bold"
+                android:textSize="17dp"
+                android:textStyle="bold"
+                android:backgroundTint="#34A853"
+                android:text="Sign Up" />
+
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

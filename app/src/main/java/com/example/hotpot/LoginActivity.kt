@@ -2,6 +2,7 @@ package com.example.hotpot
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.google.android.material.snackbar.Snackbar
 
 class LoginActivity : AppCompatActivity() {
 
@@ -37,6 +38,13 @@ class LoginActivity : AppCompatActivity() {
             .replace(R.id.fragmentContainer, SignIn())
             //.addToBackStack(null)
             .commit()
+    }
+
+    internal fun isInputOkay(message: String) {
+        val snackbar = Snackbar.make(
+            findViewById(android.R.id.content), message, Snackbar.LENGTH_SHORT
+        )
+        snackbar.show();
     }
 
 }

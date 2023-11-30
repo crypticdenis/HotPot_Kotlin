@@ -33,7 +33,7 @@
                 android:layout_weight="1"
                 android:backgroundTint="@color/hotpot_green"
                 android:fontFamily="@font/kodchasan_bold"
-                android:text="Sign In"
+                android:text="Sign Up"
                 android:textAllCaps="false"
                 android:textStyle="bold" />
 
@@ -44,7 +44,7 @@
                 android:layout_weight="1"
                 android:backgroundTint="@color/white"
                 android:fontFamily="@font/kodchasan_bold"
-                android:text="Sign Up"
+                android:text="Sign In"
                 android:textAllCaps="false"
                 android:textColor="@color/black"
                 android:textStyle="bold" />

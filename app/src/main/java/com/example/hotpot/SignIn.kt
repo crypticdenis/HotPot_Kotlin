@@ -1,6 +1,7 @@
 package com.example.hotpot
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -64,8 +65,8 @@ class SignIn : Fragment() {
         signInBtn.setOnClickListener {
             if(correctEmail && correctPassword) {
                 // change activity to main screen
-                val toast = Toast.makeText(requireContext(), "Main Screen", Toast.LENGTH_SHORT)
-                toast.show()
+                val intent = Intent(requireContext(), MainActivity::class.java);
+                startActivity(intent);
             } else {
                 val toast = Toast.makeText(requireContext(), "Invalid input. Try again", Toast.LENGTH_SHORT)
                 toast.show()

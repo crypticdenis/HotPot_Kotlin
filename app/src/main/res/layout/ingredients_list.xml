@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/ingredients_list_heading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:fontFamily="@font/kodchasan"
+        android:gravity="center_horizontal"
+        android:textColor="@color/hotpot_dark_green"
+        android:text="My Fridge"
+        android:textSize="45dp" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/ingredients_list_heading">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/meat_option"
+            android:text="Meat, sausages and fish"
+            android:textSize="25dp"
+            android:textColor="@color/hotpot_light_green"
+            android:fontFamily="@font/abeezee"
+            android:padding="12dp"
+            android:drawableEnd="@android:drawable/arrow_down_float"
+            android:background="@android:drawable/editbox_background"/>
+
+    </ScrollView>
+
+</RelativeLayout>

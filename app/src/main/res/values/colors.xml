@@ -13,4 +13,5 @@
     <color name="colorAccent">#FF4081</color>
     <color name="hotpot_green">#116026</color>
     <color name="hotpot_light_green">#34A853</color>
+    <color name="hotpot_dark_green">#021306</color>
 </resources>

@@ -12,6 +12,8 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.navigation.fragment.findNavController
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -70,17 +72,16 @@ class SignUp : Fragment() {
         }
 
         var signUpBtn = view.findViewById<Button>(R.id.signUp_signUp_btn);
-        signUpBtn.setOnClickListener() {
-            // check if everything is filled and maybe valid
-            if(correctName && correctEmail && correctPassword) {
-                (activity as? LoginActivity)?.showSignInFragment()
+        signUpBtn.setOnClickListener {
+            if (correctName && correctEmail && correctPassword) {
+                // Assuming you have an action defined in nav_graph.xml as action_signUp_to_dietFilters
+                findNavController().navigate(R.id.action_signUp_to_dietFilters)
             } else {
-                // error message
-                //Toast.makeText(requireContext(), "Invalid input. Try again", Toast.LENGTH_SHORT).show();
-                val toast = Toast.makeText(requireContext(), "Invalid input. Try again", Toast.LENGTH_SHORT)
-                toast.show()
+                // Existing code for showing toast message
+                Toast.makeText(requireContext(), "Invalid input. Try again", Toast.LENGTH_SHORT).show()
             }
         }
+
 
         /**
          * after text is changed, checks if it's empty

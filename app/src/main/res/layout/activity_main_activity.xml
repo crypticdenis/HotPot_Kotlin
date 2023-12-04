@@ -13,6 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:background="@color/navBar_green_color"
         app:menu="@menu/navigation_bar" />
 
 
@@ -27,7 +28,9 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/hotpot_green"
+            android:background="@color/white"
+            app:titleTextColor="@color/white"
+            app:navigationIcon="@drawable/navbar_icon"
             app:layout_constraintTop_toTopOf="parent"
             app:title="HotPot" />
 

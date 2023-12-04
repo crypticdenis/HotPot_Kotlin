@@ -5,15 +5,23 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/shoppingList_btn"
-            android:title="Shopping List" />
+            android:title="Shopping List"
+            android:actionLayout="@layout/navigation_bar_layout" />
         <item
             android:id="@+id/addFriends_btn"
-            android:title="Add Friends" />
+            android:title="Search"
+            style="@style/NavigationBarStyle"/>
         <item
             android:id="@+id/savedRecipes_btn"
-            android:title="Saved Recipes" />
+            android:title="Saved Recipes"
+            style="@style/NavigationBarStyle"/>
         <item
             android:id="@+id/settings_btn"
-            android:title="Settings" />
+            android:title="Settings"
+            style="@style/NavigationBarStyle"/>
+        <item
+            android:id="@+id/logout_btn"
+            android:title="Logout"
+            style="@style/NavigationBarStyle"/>
     </group>
 </menu>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp">
@@ -20,19 +21,107 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/ingredients_list_heading">
-
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/meat_option"
-            android:text="Meat, sausages and fish"
-            android:textSize="25dp"
-            android:textColor="@color/hotpot_light_green"
-            android:fontFamily="@font/abeezee"
-            android:padding="12dp"
-            android:drawableEnd="@android:drawable/arrow_down_float"
-            android:background="@android:drawable/editbox_background"/>
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/meat_option"
+                android:text="Meat, sausages and fish"
+                android:textSize="25dp"
+                android:textColor="@color/hotpot_light_green"
+                android:fontFamily="@font/abeezee"
+                android:padding="12dp"
+                android:drawableEnd="@android:drawable/arrow_down_float"
+                android:background="@android:drawable/editbox_background"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/vegetables_option"
+                android:text="Vegetables"
+                android:textSize="25dp"
+                android:textColor="@color/hotpot_light_green"
+                android:fontFamily="@font/abeezee"
+                android:padding="12dp"
+                android:drawableEnd="@android:drawable/arrow_down_float"
+                android:background="@android:drawable/editbox_background"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/fruits_option"
+                android:text="Fruits"
+                android:textSize="25dp"
+                android:textColor="@color/hotpot_light_green"
+                android:fontFamily="@font/abeezee"
+                android:padding="12dp"
+                android:drawableEnd="@android:drawable/arrow_down_float"
+                android:background="@android:drawable/editbox_background" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/grain_option"
+                android:text="Grain, nuts, baking products"
+                android:textSize="25dp"
+                android:textColor="@color/hotpot_light_green"
+                android:fontFamily="@font/abeezee"
+                android:padding="12dp"
+                android:drawableEnd="@android:drawable/arrow_down_float"
+                android:background="@android:drawable/editbox_background" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/herbs_option"
+                android:text="Herbs and spices"
+                android:textSize="25dp"
+                android:textColor="@color/hotpot_light_green"
+                android:fontFamily="@font/abeezee"
+                android:padding="12dp"
+                android:drawableEnd="@android:drawable/arrow_down_float"
+                android:background="@android:drawable/editbox_background" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/pasta_option"
+                android:text="Pasta, rice and pulses"
+                android:textSize="25dp"
+                android:textColor="@color/hotpot_light_green"
+                android:fontFamily="@font/abeezee"
+                android:padding="12dp"
+                android:drawableEnd="@android:drawable/arrow_down_float"
+                android:background="@android:drawable/editbox_background" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/egg_milk_option"
+                android:text="Egg, milk and milk products"
+                android:textSize="25dp"
+                android:textColor="@color/hotpot_light_green"
+                android:fontFamily="@font/abeezee"
+                android:padding="12dp"
+                android:drawableEnd="@android:drawable/arrow_down_float"
+                android:background="@android:drawable/editbox_background" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/others_option"
+                android:text="Others"
+                android:textSize="25dp"
+                android:textColor="@color/hotpot_light_green"
+                android:fontFamily="@font/abeezee"
+                android:padding="12dp"
+                android:drawableEnd="@android:drawable/arrow_down_float"
+                android:background="@android:drawable/editbox_background" />
+
+        </LinearLayout>
     </ScrollView>
-
 </RelativeLayout>

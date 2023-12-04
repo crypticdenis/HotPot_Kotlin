@@ -66,21 +66,23 @@ class SignUp : Fragment() {
         editEmail.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
         editPassword.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
 
-
         signInTab.setOnClickListener {
-                    (activity as? LoginActivity)?.showSignInFragment()
+            (activity as? LoginActivity)?.showDietFiltersFragment()
         }
 
         var signUpBtn = view.findViewById<Button>(R.id.signUp_signUp_btn);
-        signUpBtn.setOnClickListener {
-            if (correctName && correctEmail && correctPassword) {
-                // Assuming you have an action defined in nav_graph.xml as action_signUp_to_dietFilters
-                findNavController().navigate(R.id.action_signUp_to_dietFilters)
+        signUpBtn.setOnClickListener() {
+            // check if everything is filled and maybe valid
+            if(correctName && correctEmail && correctPassword) {
+                (activity as? LoginActivity)?.showDietFiltersFragment()
             } else {
-                // Existing code for showing toast message
-                Toast.makeText(requireContext(), "Invalid input. Try again", Toast.LENGTH_SHORT).show()
+                // error message
+                //Toast.makeText(requireContext(), "Invalid input. Try again", Toast.LENGTH_SHORT).show();
+                val toast = Toast.makeText(requireContext(), "Invalid input. Try again", Toast.LENGTH_SHORT)
+                toast.show()
             }
         }
+
 
 
         /**

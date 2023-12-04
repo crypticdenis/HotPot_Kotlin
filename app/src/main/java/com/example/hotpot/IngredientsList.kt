@@ -35,7 +35,6 @@ class IngredientsList : AppCompatActivity() {
                         meatList.remove(i)
                     }
                 })
-
             builder.setPositiveButton("Ok") { _, _ -> }
             builder.show()
         }

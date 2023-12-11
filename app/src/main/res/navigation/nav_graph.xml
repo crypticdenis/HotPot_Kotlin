@@ -3,37 +3,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/signUp">
-
+    app:startDestination="@id/signIn">
     <fragment
         android:id="@+id/signIn"
         android:name="com.example.hotpot.SignIn"
         android:label="fragment_sign_in"
-<<<<<<< HEAD
-        tools:layout="@layout/fragment_sign_in" >
-=======
         tools:layout="@layout/fragment_login" >
         <action
             android:id="@+id/action_signIn_to_signUp"
             app:destination="@id/signUp" />
->>>>>>> e650bb0828c999928178d867a9f3e84bc75b3cec
     </fragment>
-
     <fragment
         android:id="@+id/signUp"
         android:name="com.example.hotpot.SignUp"
-        android:label="fragment_sign_up"
-        tools:layout="@layout/fragment_sign_up" >
+        android:label="fragment_sign_up" >
         <action
-            android:id="@+id/action_signUp_to_dietFilters"
-            app:destination="@id/dietFilterFragment" />
+            android:id="@+id/action_signUp_to_signIn"
+            app:destination="@id/signIn" />
     </fragment>
-
-    <fragment
-        android:id="@+id/dietFilterFragment"
-        android:name="com.example.hotpot.DietFilters"
-        android:label="diet_filter"
-        tools:layout="@layout/fragment_diet_filter" >
-    </fragment>
-
 </navigation>

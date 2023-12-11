@@ -138,7 +138,24 @@
                     android:hint="Password"
                     android:inputType="textPassword"
                     android:drawableEnd="@drawable/checkmark"
-                    android:scaleX="0.8" />
+                    android:scaleX="0.8"
+                    />
+
+                <TextView
+                    android:id="@+id/passwordCriteriaTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/signUpPassword"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginLeft="45dp"
+                    android:layout_marginRight="45dp"
+                    android:text=""
+                    android:textColor="@color/black"
+                    android:visibility="gone"
+                    android:singleLine="false"
+                    android:drawablePadding="8dp"/>
+
+
 
             </LinearLayout>
         </LinearLayout>

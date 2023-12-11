@@ -5,10 +5,14 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-
     </style>
 
-<<<<<<< HEAD
+    <style name="NavigationBarStyle">
+        <item name="android:fontFamily">@font/abel</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">25dp</item>
+    </style>
+
     <style name="FilterCheckboxStyle" parent="Widget.AppCompat.CompoundButton.CheckBox">
         <item name="android:textColor">#FFFFFF</item>
         <item name="android:textSize">16sp</item>
@@ -16,20 +20,16 @@
     </style>
 
     <style name="FiltersHeadingStyle">
-        <item name="android:layout_gravity">center_horizontal</item>
-        <item name="android:textColor">#FFFFFF</item>
-        <item name="android:textSize">24sp</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:padding">16dp</item>
-=======
-    <style name="NavigationBarStyle">
-        <item name="android:fontFamily">@font/abel</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="android:textSize">25dp</item>
->>>>>>> e650bb0828c999928178d867a9f3e84bc75b3cec
+    <item name="android:layout_gravity">center_horizontal</item>
+    <item name="android:textColor">#FFFFFF</item>
+    <item name="android:textSize">24sp</item>
+    <item name="android:textStyle">bold</item>
+    <item name="android:padding">16dp</item>
     </style>
+
+
 
 </resources>
 
     <!-- res/values/styles.xml -->
-<!-- Base application theme -->
+    <!-- Base application theme -->

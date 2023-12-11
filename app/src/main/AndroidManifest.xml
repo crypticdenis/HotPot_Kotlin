@@ -18,6 +18,7 @@
         <activity
             android:name=".LoginActivity"
             android:exported="false" />
+        <activity android:name=".LoadingActivity"/>
         <activity
             android:name=".StartActivity"
             android:exported="true"

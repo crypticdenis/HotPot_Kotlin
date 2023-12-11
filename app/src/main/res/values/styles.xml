@@ -8,6 +8,7 @@
 
     </style>
 
+<<<<<<< HEAD
     <style name="FilterCheckboxStyle" parent="Widget.AppCompat.CompoundButton.CheckBox">
         <item name="android:textColor">#FFFFFF</item>
         <item name="android:textSize">16sp</item>
@@ -20,6 +21,12 @@
         <item name="android:textSize">24sp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:padding">16dp</item>
+=======
+    <style name="NavigationBarStyle">
+        <item name="android:fontFamily">@font/abel</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">25dp</item>
+>>>>>>> e650bb0828c999928178d867a9f3e84bc75b3cec
     </style>
 
 </resources>

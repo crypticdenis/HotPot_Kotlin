@@ -12,6 +12,11 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="hotpot_green">#116026</color>
+<<<<<<< HEAD
     <color name="hotpot_light_green">#D0FFBF</color>
     <color name="hotpot_dark_green">#041107</color>
+=======
+    <color name="hotpot_light_green">#34A853</color>
+    <color name="navBar_green_color">#041107</color>
+>>>>>>> e650bb0828c999928178d867a9f3e84bc75b3cec
 </resources>

@@ -45,7 +45,7 @@
                 android:layout_weight="1"
                 android:backgroundTint="@color/hotpot_green"
                 android:fontFamily="@font/kodchasan_bold"
-                android:text="Sign In"
+                android:text="Login"
                 android:textAllCaps="false"
                 android:textStyle="bold" />
 
@@ -60,11 +60,11 @@
                 android:id="@+id/textView2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="50dp"
-                android:gravity="center"
                 android:fontFamily="@font/kodchasan_bold"
+                android:gravity="center"
+                android:text="Login"
                 android:textColor="#26783D"
-                android:text="Sign In" />
+                android:textSize="50dp" />
 
             <TextView
                 android:id="@+id/textView3"
@@ -139,7 +139,7 @@
                 android:fontFamily="@font/kodchasan_bold"
                 android:scaleX=".899"
                 android:scaleY=".82"
-                android:text="Sign In"
+                android:text="Login"
                 android:textSize="20dp"
                 android:textStyle="bold" />
 

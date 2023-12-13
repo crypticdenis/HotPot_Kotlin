@@ -1,15 +1,12 @@
 package com.example.hotpot
 
-import android.content.Context
-import android.util.Patterns
-import android.content.Intent
-import androidx.core.content.ContextCompat
-import android.text.Html
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
+import android.text.Html
 import android.text.TextWatcher
-import androidx.fragment.app.Fragment
+import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -18,7 +15,9 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
-import androidx.navigation.fragment.findNavController
+import androidx.fragment.app.Fragment
+import com.google.firebase.auth.FirebaseAuth
+
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -84,17 +83,23 @@ class SignUp : Fragment() {
             val password = editPassword.text.toString()
 
             if (isValidEmail(email) && isStrongPassword(password)) {
-                // Start LoadingActivity
-                val intent = Intent(activity, LoadingActivity::class.java)
-                startActivity(intent)
+                // Use Firebase to create a new user
+                FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            // Sign up success
+                            Toast.makeText(context, "Sign Up Successful", Toast.LENGTH_SHORT).show()
+                            // Navigate to the next screen or activity
+                        } else {
+                            // If sign up fails, display a message to the user.
+                            Toast.makeText(context, "Sign Up Failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                        }
+                    }
             } else {
-                Toast.makeText(
-                    requireContext(),
-                    "Invalid email or password, try again",
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(requireContext(), "Invalid email or password, try again", Toast.LENGTH_SHORT).show()
             }
         }
+
 
 
         /**

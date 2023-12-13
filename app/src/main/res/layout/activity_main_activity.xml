@@ -15,7 +15,8 @@
         android:layout_gravity="start"
         app:menu="@menu/navigation_bar"
         app:itemTextColor="@color/hotpot_light_green"
-        app:itemTextAppearance="@style/NavigationBarStyle" />
+        app:itemTextAppearance="@style/NavigationBarStyle"
+        android:background="@color/hotpot_dark_green"/>
 
 
 

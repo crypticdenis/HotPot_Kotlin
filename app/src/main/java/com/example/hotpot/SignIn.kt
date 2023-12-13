@@ -13,6 +13,11 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException
+
 
 class SignIn : Fragment() {
 
@@ -43,20 +48,18 @@ class SignIn : Fragment() {
             val password = editPassword.text.toString()
 
             if (isEmailValid(email) && password.isNotBlank()) {
-                // Use Firebase to sign in the user
                 FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
-                            // Sign in success
                             val intent = Intent(requireContext(), MainActivity::class.java)
                             startActivity(intent)
                         } else {
-                            // If sign in fails, display a message to the user.
-                            Toast.makeText(requireContext(), "Authentication failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                            val errorMessage = getFriendlyErrorMessage(task.exception)
+                            Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show()
                         }
                     }
             } else {
-                Toast.makeText(requireContext(), "Invalid input. Try again", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Please enter a valid email and password.", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -81,5 +84,16 @@ class SignIn : Fragment() {
 
     private fun isEmailValid(email: String): Boolean {
         return Patterns.EMAIL_ADDRESS.matcher(email).matches()
+    }
+}
+
+private fun getFriendlyErrorMessage(exception: Exception?): String {
+    return when (exception) {
+        is FirebaseAuthInvalidCredentialsException -> "Invalid credentials. Please try again."
+        is FirebaseAuthInvalidUserException -> "No account found with this email. Please sign up."
+        is FirebaseAuthUserCollisionException -> "An account already exists with this email."
+        is FirebaseAuthWeakPasswordException -> "Password is too weak. Please use a stronger password."
+        // Add more specific cases as needed
+        else -> "An error occurred. Please try again."
     }
 }

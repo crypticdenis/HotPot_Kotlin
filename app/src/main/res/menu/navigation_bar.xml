@@ -6,7 +6,9 @@
         <item
             android:id="@+id/shoppingList_btn"
             android:title="Shopping List"
-            android:actionLayout="@layout/navigation_bar_layout" />
+            android:actionLayout="@layout/navigation_bar_layout"
+            android:textColor="@color/hotpot_light_green"
+            />
         <item
             android:id="@+id/addFriends_btn"
             android:title="Search"

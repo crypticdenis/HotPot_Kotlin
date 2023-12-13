@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.content.Intent
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -83,15 +84,15 @@ class SignUp : Fragment() {
             val password = editPassword.text.toString()
 
             if (isValidEmail(email) && isStrongPassword(password)) {
-                // Use Firebase to create a new user
                 FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
-                            // Sign up success
                             Toast.makeText(context, "Sign Up Successful", Toast.LENGTH_SHORT).show()
-                            // Navigate to the next screen or activity
+
+                            // Open LoadingActivity
+                            val intent = Intent(activity, LoadingActivity::class.java)
+                            startActivity(intent)
                         } else {
-                            // If sign up fails, display a message to the user.
                             Toast.makeText(context, "Sign Up Failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                         }
                     }
@@ -299,9 +300,6 @@ class SignUp : Fragment() {
             passwordCriteriaTextView?.visibility = View.VISIBLE
         }
     }
-
-
-
 
 
     override fun onResume() {

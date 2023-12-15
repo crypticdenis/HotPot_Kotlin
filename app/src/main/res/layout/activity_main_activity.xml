@@ -111,13 +111,6 @@
                 android:text="Shoyu Ramen"
                 android:textSize="45dp" />
 
-            <TextView
-                android:id="@+id/recipe_Credits"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="by De24se"
-                android:textSize="20dp" />
 
         </LinearLayout>
 
@@ -128,11 +121,12 @@
 
             <ImageView
                 android:id="@+id/food_picture"
-                android:layout_width="match_parent"
-                android:layout_height="337dp"
+                android:layout_width="250dp"
+                android:layout_height="250dp"
+                android:layout_gravity="center"
                 android:scaleX="0.99"
                 android:scaleY="0.89"
-                android:src="@drawable/example_food" />
+                android:src="@drawable/hotpot_icon" />
 
             <TextView
                 android:id="@+id/recipe_info"
@@ -145,56 +139,56 @@
                 android:textSize="13dp" />
         </LinearLayout>
 
-        <LinearLayout
+        <RelativeLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
-            android:layout_height="157dp"
-            android:orientation="vertical">
+            android:layout_height="match_parent">
 
+            <!-- Other views here -->
 
+            <!-- Show Recipe Button -->
             <Button
-                android:id="@+id/show_recipe_btn"
+                android:id="@+id/random_meal_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
+                android:layout_above="@id/bottom_buttons_container"
                 android:background="@drawable/rectangle_short"
                 android:backgroundTint="@color/hotpot_green"
                 android:fontFamily="@font/abeezee"
-                android:scaleX=".87"
-                android:text="Show Recipe"
-                android:textSize="30dp" />
+                android:text="Random Meal"
+                android:textSize="30dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="10dp" />
 
+            <!-- Container for Random Meal and Add New Recipe buttons -->
             <LinearLayout
+                android:id="@+id/bottom_buttons_container"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
-
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:orientation="horizontal"
+                android:padding="10dp">
 
                 <Button
-                    android:id="@+id/random_meal_btn"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/show_recipe_btn"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="10dp"
                     android:layout_weight="1"
                     android:background="@drawable/rectangle_short"
                     android:backgroundTint="@color/hotpot_green"
                     android:fontFamily="@font/abeezee"
-                    android:scaleX=".85"
-                    android:text="Random Meal"
+                    android:text="show recipe"
                     android:textSize="30dp" />
 
                 <ImageButton
                     android:id="@+id/addNewRecipeBtn"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginRight="15dp"
                     android:layout_weight="1"
                     android:background="@color/white"
                     android:src="@drawable/add_new_recipe_button" />
             </LinearLayout>
-        </LinearLayout>
+        </RelativeLayout>
     </LinearLayout>
 </androidx.drawerlayout.widget.DrawerLayout>

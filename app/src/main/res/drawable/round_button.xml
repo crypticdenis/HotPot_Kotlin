@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/hotpot_green" /> <!-- Replace with your button color -->
+    <corners android:radius="200dp" /> <!-- Use a large radius to create the round shape -->
+    <!-- Optional: Add a border -->
+    <stroke android:width="2dp" android:color="@color/hotpot_green" /> <!-- Replace with your border color -->
+</shape>

@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/drawer_Layout"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:background="@color/hotpot_dark_green">
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
@@ -29,11 +30,11 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
-            app:titleTextColor="@color/white"
-            app:navigationIcon="@drawable/navbar_icon"
+            android:background="@color/hotpot_dark_green"
+            android:backgroundTint="@color/hotpot_dark_green"
             app:layout_constraintTop_toTopOf="parent"
-            app:title="HotPot" />
+            app:navigationIcon="@drawable/navbar_icon"
+            app:titleTextColor="@color/hotpot_dark_green" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -55,7 +56,7 @@
                         android:layout_width="96dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:background="@color/white"
+                        android:background="@color/hotpot_dark_green"
                         android:src="@drawable/gradient" />
 
                     <ImageButton
@@ -63,15 +64,7 @@
                         android:layout_width="96dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:background="@color/white"
-                        android:src="@drawable/gradient" />
-
-                    <ImageButton
-                        android:id="@+id/imageButton5"
-                        android:layout_width="96dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:background="@color/white"
+                        android:background="@color/hotpot_dark_green"
                         android:src="@drawable/gradient" />
 
                     <ImageButton
@@ -79,7 +72,15 @@
                         android:layout_width="96dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:background="@color/white"
+                        android:background="@color/hotpot_dark_green"
+                        android:src="@drawable/gradient" />
+
+                    <ImageButton
+                        android:id="@+id/imageButton5"
+                        android:layout_width="96dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@color/hotpot_dark_green"
                         android:src="@drawable/gradient" />
 
                     <ImageButton
@@ -87,7 +88,7 @@
                         android:layout_width="96dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:background="@color/white"
+                        android:background="@color/hotpot_dark_green"
                         android:src="@drawable/gradient" />
                 </LinearLayout>
             </HorizontalScrollView>
@@ -107,6 +108,7 @@
                 android:fontFamily="@font/abeezee"
                 android:gravity="center"
                 android:text="Shoyu Ramen"
+                android:textColor="@color/white"
                 android:textSize="45dp" />
 
 
@@ -134,37 +136,35 @@
                 android:fontFamily="@font/abeezee"
                 android:gravity="center"
                 android:text="@string/difficulty_2_5_time_30_min_rating_4_7_5"
+                android:textColor="@color/white"
                 android:textSize="13dp" />
         </LinearLayout>
 
         <RelativeLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <!-- Other views here -->
 
-            <!-- Show Recipe Button -->
-            <Button
-                android:id="@+id/random_meal_btn"
+            <LinearLayout
+                android:id="@+id/bottom_buttons2_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_above="@id/bottom_buttons_container"
-                android:background="@drawable/rectangle_short"
-                android:backgroundTint="@color/hotpot_green"
-                android:fontFamily="@font/abeezee"
-                android:text="Random Meal"
-                android:textSize="30dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginBottom="10dp" />
+                android:layout_alignParentBottom="true"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:padding="10dp">
+
+            </LinearLayout>
 
             <!-- Container for Random Meal and Add New Recipe buttons -->
+
             <LinearLayout
                 android:id="@+id/bottom_buttons_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
+                android:layout_marginBottom="70dp"
                 android:orientation="horizontal"
                 android:padding="10dp">
 
@@ -172,21 +172,31 @@
                     android:id="@+id/show_recipe_btn"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginRight="40dp"
                     android:layout_weight="1"
-                    android:background="@drawable/rectangle_short"
+                    android:background="@drawable/green_button"
                     android:backgroundTint="@color/hotpot_green"
                     android:fontFamily="@font/abeezee"
                     android:text="show recipe"
-                    android:textSize="30dp" />
+                    android:textSize="20dp" />
 
-                <ImageButton
-                    android:id="@+id/addNewRecipeBtn"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@color/white"
-                    android:src="@drawable/add_new_recipe_button" />
             </LinearLayout>
+
+            <Button
+                android:id="@+id/random_meal_btn"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_above="@+id/bottom_buttons_container"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="155dp"
+                android:layout_marginEnd="155dp"
+                android:layout_marginBottom="14dp"
+                android:background="@drawable/round_button"
+                android:fontFamily="@font/abeezee"
+                android:gravity="center"
+                android:text="Random Meal" />
         </RelativeLayout>
     </LinearLayout>
 </androidx.drawerlayout.widget.DrawerLayout>

@@ -71,6 +71,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
                 android:popupBackground="@color/hotpot_dark_green"
+                android:layout="@layout/spinner_item"
 
             />
             <View

@@ -36,7 +36,7 @@ class SignIn : Fragment() {
         val signUpTab = view.findViewById<Button>(R.id.login_signUp_tab)
         val editEmail = view.findViewById<EditText>(R.id.signInEmailAddress)
         val editPassword = view.findViewById<EditText>(R.id.signInPassword)
-        val signInBtn = view.findViewById<Button>(R.id.signIn_signIn_Btn)
+        val signInBtn = view.findViewById<Button>(R.id.signIn_bottom_Btn)
 
         signUpTab.setOnClickListener {
             // Navigate to the SignUp fragment

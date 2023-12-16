@@ -24,10 +24,10 @@ class RecipeDetailsActivity : AppCompatActivity() {
             // Now you can use the ingredients from the recipe to populate the spinner
             val adapter = ArrayAdapter(
                 this,
-                android.R.layout.simple_spinner_item,
+                android.R.layout.spinner_item,
                 it.ingredients
             )
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            adapter.setDropDownViewResource(android.R.layout.spinner_item)
             ingredientsSpinner.adapter = adapter
         }
 

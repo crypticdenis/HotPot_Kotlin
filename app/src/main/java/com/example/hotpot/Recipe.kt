@@ -1,4 +1,5 @@
 package com.example.hotpot
+import java.io.Serializable
 
 data class Recipe(
     val name: String,
@@ -6,4 +7,4 @@ data class Recipe(
     val ingredients: List<String>,
     val instructions: String,
     val details: String
-)
+): Serializable

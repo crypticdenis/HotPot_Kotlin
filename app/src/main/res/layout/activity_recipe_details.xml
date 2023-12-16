@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/hotpot_dark_green"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:paddingBottom="2dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+
+        <ImageView
+            android:id="@+id/returnToHomeButton"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:src="@drawable/return_on_diet_filter"
+            android:layout_gravity="end"
+            android:clickable="true"
+            android:focusable="true" />
+
+
+            <TextView
+                android:id="@+id/recipe_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Recipe Title"
+                android:fontFamily="@font/abeezee"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:gravity="center_horizontal"
+                android:textColor="@color/hotpot_light_green"
+                android:padding="8dp"
+                />
+
+            <View
+                android:id="@+id/green_bar3"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="8dp"
+                android:background="@color/hotpot_light_green" />
+
+            <TextView
+                android:id="@+id/dietary_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/abeezee"
+                android:padding="4dp"
+                android:text="Dietary Information:"
+                android:textColor="@color/hotpot_light_green"
+                android:textSize="20sp" />
+
+            <View
+                android:id="@+id/green_bar2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="8dp"
+                android:background="@color/hotpot_light_green" />
+
+            <Spinner
+                android:id="@+id/ingredients_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rectangle_short"
+                android:spinnerMode="dropdown"
+                android:padding="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:popupBackground="@color/hotpot_dark_green"
+
+            />
+            <View
+                android:id="@+id/green_bar1"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="8dp"
+                android:background="@color/hotpot_light_green" />
+
+            <TextView
+                android:id="@+id/recipe_steps"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Recipe Steps:"
+                android:fontFamily="@font/abeezee"
+                android:textColor="@color/hotpot_light_green"
+                android:padding="2dp"
+                android:textSize="20sp"/>
+            <View
+                android:id="@+id/green_bar0"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="8dp"
+                android:background="@color/hotpot_light_green" />
+
+            <!-- ... more views ... -->
+
+        </LinearLayout>
+</ScrollView>

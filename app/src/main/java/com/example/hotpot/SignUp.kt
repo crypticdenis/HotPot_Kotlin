@@ -2,6 +2,7 @@ package com.example.hotpot
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.Html
@@ -13,7 +14,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
-import android.content.Intent
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -72,10 +72,6 @@ class SignUp : Fragment() {
         editName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         editEmail.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         editPassword.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-
-        signInTab.setOnClickListener {
-            (activity as? LoginActivity)?.showDietFiltersFragment()
-        }
 
         var signUpBtn = view.findViewById<Button>(R.id.signUp_signUp_btn)
         signUpBtn.setOnClickListener {

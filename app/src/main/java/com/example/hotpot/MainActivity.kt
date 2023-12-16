@@ -1,6 +1,7 @@
 package com.example.hotpot
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.Spanned
@@ -9,7 +10,6 @@ import android.text.style.ForegroundColorSpan
 import android.text.style.TypefaceSpan
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -23,73 +23,64 @@ import java.io.IOException
 class MainActivity : AppCompatActivity() {
     //val horizontalLayout = findViewById<LinearLayout>(R.id.userStoriesContainer)
     private lateinit var recipes: List<Recipe>  // Declare at class level
+    private var selectedRecipe: Recipe? = null
 
-    /**
-     * navigation bar
-     * toolbar for navigation bar
-     */
+
     private lateinit var drawerLayout: DrawerLayout
+    private lateinit var toolbar: Toolbar
     private lateinit var navBar: NavigationView
     private lateinit var drawerToggle: ActionBarDrawerToggle
 
-    /**
-     * reference to the horizontalLayout that contains the userStories
-     * having an array to add new stories
-     * update the layout with array contents
-     */
-
-    /*
-    val userStories = arrayOf(
-        // add here fragment
-        // create fragments that are built like in Figma
-
-    )
-    */
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_activity)
         FirebaseApp.initializeApp(this)
+
+        // Initialize the toolbar
+        toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
+
         loadRecipesFromJson()
+
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        setupDrawerAndNavigation()
 
         val rndMealBtn = findViewById<Button>(R.id.random_meal_btn)
         rndMealBtn.setOnClickListener {
             showRandomMeal()
-
-
-            //addUserStory();
-
-            val toolbar: Toolbar = findViewById(R.id.toolbar)
-            setSupportActionBar(toolbar)
-
-            drawerLayout = findViewById(R.id.drawer_Layout)
-            navBar = findViewById(R.id.nav_view)
-            drawerToggle =
-                ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close)
-            drawerLayout.addDrawerListener(drawerToggle)
-            drawerToggle.syncState()
-            supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-
-            navBar.setNavigationItemSelectedListener(NavigationView.OnNavigationItemSelectedListener { item ->
-                if (item.itemId == R.id.shoppingList_btn)
-                    Toast.makeText(
-                        this@MainActivity, "Home Selected", Toast.LENGTH_SHORT
-                    ).show()
-                if (item.itemId == R.id.savedRecipes_btn)
-                    Toast.makeText(
-                        this@MainActivity, "Contact Selected", Toast.LENGTH_SHORT
-                    ).show()
-                if (item.itemId == R.id.addFriends_btn)
-                    Toast.makeText(
-                        this@MainActivity, "Gallery Selected", Toast.LENGTH_SHORT
-                    ).show()
-                if (item.itemId == R.id.settings_btn)
-                    Toast.makeText(
-                        this@MainActivity, "About Selected", Toast.LENGTH_SHORT
-                    ).show()
-                false
-            })
         }
+
+        // Setup click listener for the Show Recipe button
+        val showRecipeButton = findViewById<Button>(R.id.show_recipe_btn)
+        showRecipeButton.setOnClickListener {
+            selectedRecipe?.let { recipe ->
+                openRecipeDetailsActivity(recipe)
+            }
+        }
+    }
+
+    private fun setupDrawerAndNavigation() {
+        drawerLayout = findViewById(R.id.drawer_Layout)
+        navBar = findViewById(R.id.nav_view)
+        drawerToggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close)
+        drawerLayout.addDrawerListener(drawerToggle)
+        drawerToggle.syncState()
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+
+        navBar.setNavigationItemSelectedListener(NavigationView.OnNavigationItemSelectedListener { item ->
+            // Your navigation item selection handling
+            false
+        })
+
+        setupDrawerMenu()
+    }
+
+    private fun openRecipeDetailsActivity(recipe: Recipe) {
+        val intent = Intent(this, RecipeDetailsActivity::class.java)
+        intent.putExtra("RECIPE_DATA", recipe) // Assuming Recipe implements Serializable
+        startActivity(intent)
     }
 
         private fun loadRecipesFromJson() {
@@ -112,18 +103,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun showRandomMeal() {
         if (recipes.isNotEmpty()) {
-            val randomRecipe = recipes.random()
+            selectedRecipe = recipes.random()
 
-            // Find the TextViews by their IDs
-            val recipeNameTextView = findViewById<TextView>(R.id.recipe_name)
-            val recipeInfoTextView = findViewById<TextView>(R.id.recipe_info) // Add this line
-
-            // Set the text of the TextViews
-            recipeNameTextView.text = randomRecipe.name
-            recipeInfoTextView.text = randomRecipe.details // Update the recipe_info TextView
-
-            // Optional: Display a toast or perform other actions
-            // Toast.makeText(this, "Recipe: ${randomRecipe.name}", Toast.LENGTH_SHORT).show()
+            // Assuming recipe_name and recipe_info are TextView IDs in your layout
+            findViewById<TextView>(R.id.recipe_name).text = selectedRecipe?.name ?: "No Name"
+            findViewById<TextView>(R.id.recipe_info).text = selectedRecipe?.details ?: "No Details"
         }
     }
 
@@ -139,14 +123,4 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun addUserStory() {
-        /*
-        for (resourceId in userStories) {
-
-            val imageFragment = ImageFragment.newInstance(resourceId)
-            supportFragmentManager.beginTransaction()
-                .add(horizontalLayout.id, imageFragment)
-                .commit()
-             */
-        }
 }

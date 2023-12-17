@@ -1,49 +1,35 @@
 package com.example.hotpot
 
 import android.content.Intent
+import android.widget.TextView
 import android.os.Bundle
-import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.ImageView
-import android.widget.Spinner
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 
 class RecipeDetailsActivity : AppCompatActivity() {
+
+    private lateinit var selectedIngredients: BooleanArray
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_recipe_details)
 
-        val ingredientsSpinner: Spinner = findViewById(R.id.ingredients_spinner)
-
+        val recipeTitleTextView: TextView = findViewById(R.id.recipe_title)
         // Retrieve the Recipe object passed through the intent
         val recipe = intent.getSerializableExtra("RECIPE_DATA") as? Recipe
 
         recipe?.let {
-            // Now you can use the ingredients from the recipe to populate the spinner
-            val adapter = ArrayAdapter(
-                this,
-                android.R.layout.simple_spinner_item,
-                it.ingredients
-            )
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            ingredientsSpinner.adapter = adapter
+            recipeTitleTextView.text = it.name
+            // Initialize the boolean array for tracking selected items
+            selectedIngredients = BooleanArray(it.ingredients.size)
         }
 
-        // Set up a listener for the spinner
-        ingredientsSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>,
-                view: View,
-                position: Int,
-                id: Long
-            ) {
-                // An item was selected. You can handle the selection here if needed.
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>) {
-                // Interface callback for no selection
+        val ingredientsButton: Button = findViewById(R.id.ingredients_button)
+        ingredientsButton.setOnClickListener {
+            recipe?.let {
+                showIngredientsDialog(it.ingredients)
             }
         }
 
@@ -55,6 +41,28 @@ class RecipeDetailsActivity : AppCompatActivity() {
             finish() // Close the RecipeDetailsActivity
         }
     }
+
+    private fun showIngredientsDialog(ingredients: List<String>) {
+        // Convert the ingredients list to an array for the AlertDialog
+        val ingredientsArray = ingredients.toTypedArray()
+
+        AlertDialog.Builder(this)
+            .setTitle("Add to Shopping List") // Updated title text
+            .setMultiChoiceItems(ingredientsArray, selectedIngredients) { _, which, isChecked ->
+                // Update the selected items
+                selectedIngredients[which] = isChecked
+            }
+            .setPositiveButton("Save") { dialog, _ -> // Updated button text
+                dialog.dismiss()
+                // Implement your save logic here
+            }
+            .setNegativeButton("Cancel") { dialog, _ -> // Button text is already 'Cancel'
+                dialog.dismiss()
+            }
+            .create()
+            .show()
+    }
 }
+
 
 

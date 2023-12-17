@@ -174,9 +174,9 @@
 
             <Button
                 android:id="@+id/signUp_signUp_btn"
-                android:layout_width="match_parent"
+                android:layout_width="350dp"
+                android:layout_gravity="center"
                 android:layout_height="wrap_content"
-                android:background="@drawable/green_button"
                 android:backgroundTint="@color/hotpot_green"
                 android:fontFamily="@font/kodchasan_bold"
                 android:text="Sign Up"

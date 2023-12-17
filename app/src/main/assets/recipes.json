@@ -2,70 +2,135 @@
   {
     "name": "Spaghetti Carbonara",
     "description": "A classic Italian pasta dish made with eggs, cheese, pancetta, and black pepper.",
-    "ingredients": ["Spaghetti", "Eggs", "Pancetta", "Parmesan Cheese", "Black Pepper"],
+    "ingredients": [
+      "400g Spaghetti",
+      "4 large Eggs",
+      "150g diced Pancetta",
+      "100g grated Parmesan Cheese",
+      "1 tsp freshly ground Black Pepper"
+    ],
     "instructions": "Cook spaghetti. Fry pancetta. Mix eggs and cheese, and combine with pasta and pancetta.",
     "details": "difficulty: Easy | rating: 4.5 | time: 30 min"
   },
   {
     "name": "Chicken Tikka Masala",
     "description": "A popular Indian curry dish with roasted chicken chunks in a spicy sauce.",
-    "ingredients": ["Chicken", "Yogurt", "Tomato Sauce", "Spices", "Cream"],
+    "ingredients": [
+      "500g boneless Chicken",
+      "200ml Yogurt",
+      "400ml Tomato Sauce",
+      "1 tbsp each of garam masala, turmeric, cumin",
+      "100ml Cream"
+    ],
     "instructions": "Marinate and roast chicken. Cook sauce with tomatoes and spices. Combine chicken with sauce.",
     "details": "difficulty: Medium | rating: 4.7 | time: 2 hrs 40 min"
   },
   {
     "name": "Beef Stroganoff",
     "description": "A Russian dish of sautéed pieces of beef served in a sauce with smetana (sour cream).",
-    "ingredients": ["Beef", "Mushrooms", "Onion", "Sour Cream", "Mustard"],
+    "ingredients": [
+      "500g thinly sliced Beef",
+      "200g sliced Mushrooms",
+      "1 large chopped Onion",
+      "200ml Sour Cream",
+      "1 tbsp Mustard"
+    ],
     "instructions": "Saute beef and onions. Add mushrooms. Stir in sour cream and mustard. Serve over rice or noodles.",
     "details": "difficulty: Medium | rating: 4.6 | time: 1 hr"
   },
   {
     "name": "Caesar Salad",
     "description": "A green salad of romaine lettuce and croutons dressed with lemon juice, olive oil, egg, Worcestershire sauce, anchovies, garlic, Dijon mustard, Parmesan cheese, and black pepper.",
-    "ingredients": ["Romaine Lettuce", "Croutons", "Parmesan Cheese", "Caesar Dressing"],
+    "ingredients": [
+      "1 head chopped Romaine Lettuce",
+      "1 cup Croutons",
+      "50g shaved Parmesan Cheese",
+      "100ml Caesar Dressing"
+    ],
     "instructions": "Mix lettuce, croutons, and cheese. Add dressing and toss the salad.",
     "details": "difficulty: Easy | rating: 4.4 | time: 15 min"
   },
   {
     "name": "Pad Thai",
     "description": "A stir-fried rice noodle dish commonly served as a street food and at casual local eateries in Thailand.",
-    "ingredients": ["Rice Noodles", "Eggs", "Tofu", "Shrimp", "Peanuts", "Bean Sprouts", "Lime", "Pad Thai Sauce"],
+    "ingredients": [
+      "200g Rice Noodles",
+      "2 large Eggs",
+      "100g firm Tofu",
+      "200g peeled Shrimp",
+      "50g crushed Peanuts",
+      "100g Bean Sprouts",
+      "1 juiced Lime",
+      "120ml Pad Thai Sauce"
+    ],
     "instructions": "Stir-fry tofu and shrimp. Add noodles and sauce. Mix in eggs, bean sprouts, and peanuts.",
     "details": "difficulty: Medium | rating: 4.8 | time: 30 min"
   },
   {
     "name": "Fish Tacos",
     "description": "A Mexican dish consisting of grilled or fried fish, lettuce or cabbage, pico de gallo, and a creamy sauce, all placed on top of a corn or flour tortilla.",
-    "ingredients": ["Fish Fillets", "Tortillas", "Cabbage", "Avocado", "Lime", "Cilantro", "Sour Cream"],
+    "ingredients": [
+      "400g any white Fish Fillets",
+      "8 small Tortillas",
+      "200g shredded Cabbage",
+      "1 sliced Avocado",
+      "1 juiced Lime",
+      "A handful chopped Cilantro",
+      "100ml Sour Cream"
+    ],
     "instructions": "Grill or fry fish. Warm tortillas. Assemble tacos with fish, cabbage, avocado, and sauce.",
     "details": "difficulty: Easy | rating: 4.7 | time: 25 min"
   },
   {
     "name": "Margherita Pizza",
     "description": "A typical Neapolitan pizza, made with tomatoes, mozzarella cheese, fresh basil, salt, and extra-virgin olive oil.",
-    "ingredients": ["Pizza Dough", "Tomato Sauce", "Mozzarella Cheese", "Basil", "Olive Oil"],
+    "ingredients": [
+      "500g Pizza Dough",
+      "150ml Tomato Sauce",
+      "200g sliced Mozzarella Cheese",
+      "A few leaves of Basil",
+      "2 tbsp Olive Oil"
+    ],
     "instructions": "Spread sauce on dough. Top with cheese and basil. Bake in a preheated oven.",
     "details": "difficulty: Easy | rating: 4.6 | time: 1 hr 10 min"
   },
   {
     "name": "Vegetable Stir Fry",
     "description": "A quick and easy dish consisting of various vegetables stir-fried in a light sauce.",
-    "ingredients": ["Mixed Vegetables (e.g., bell peppers, broccoli, carrots)", "Soy Sauce", "Garlic", "Ginger", "Vegetable Oil"],
+    "ingredients": [
+      "500g Mixed Vegetables (e.g., bell peppers, broccoli, carrots)",
+      "60ml Soy Sauce",
+      "2 cloves minced Garlic",
+      "2 tsp grated Ginger",
+      "2 tbsp Vegetable Oil"
+    ],
     "instructions": "Stir-fry vegetables in oil with garlic and ginger. Add soy sauce and cook until tender.",
     "details": "difficulty: Easy | rating: 4.5 | time: 20 min"
   },
   {
     "name": "Butternut Squash Soup",
     "description": "A creamy soup made from butternut squash, onions, and a blend of spices, often enjoyed in the fall.",
-    "ingredients": ["Butternut Squash", "Onion", "Vegetable Stock", "Cream", "Nutmeg"],
+    "ingredients": [
+      "1 large peeled and cubed Butternut Squash",
+      "1 chopped Onion",
+      "750ml Vegetable Stock",
+      "100ml Cream",
+      "1/2 tsp Nutmeg"
+    ],
     "instructions": "Cook squash and onions in stock until soft. Blend until smooth. Add cream and nutmeg.",
     "details": "difficulty: Medium | rating: 4.7 | time: 45 min"
   },
   {
     "name": "Chocolate Brownies",
     "description": "A dense, rich, chocolate cake which is, in texture, like a cross between a cake and a cookie.",
-    "ingredients": ["Butter", "Sugar", "Eggs", "Flour", "Cocoa Powder", "Chocolate Chips"],
+    "ingredients": [
+      "200g melted Butter",
+      "300g Sugar",
+      "3 large Eggs",
+      "100g Flour",
+      "50g Cocoa Powder",
+      "100g Chocolate Chips"
+    ],
     "instructions": "Mix butter, sugar, and eggs. Add flour and cocoa powder. Fold in chocolate chips. Bake.",
     "details": "difficulty: Easy | rating: 4.8 | time: 50 min"
   }

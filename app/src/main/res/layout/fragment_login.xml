@@ -136,14 +136,15 @@
 
                 <Button
                     android:id="@+id/signIn_bottom_Btn"
-                    android:layout_width="match_parent"
+                    android:layout_width="350dp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
                     android:text="Login"
-                    android:fontFamily="@font/abeezee"
+                    android:layout_gravity="center"
+                    android:backgroundTint="@color/hotpot_green"
+                    android:fontFamily="@font/kodchasan_bold"
                     android:textSize="20dp"
                     android:padding="1dp"
-                    android:background="@drawable/green_button"
                     android:textColor="#FFF"
                     android:layout_margin="16dp" />
 

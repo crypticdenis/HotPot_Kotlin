@@ -1,15 +1,18 @@
 package com.example.hotpot
 
-import android.R
+import com.example.hotpot.R
+import android.os.Bundle
 import androidx.appcompat.widget.SearchView
 import android.widget.EditText
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 
 
 class IngredientsList : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.your_layout)
+        setContentView(R.layout.ingredients_list)
 
         // Assuming you have a SearchView with the id "searchView" in your layout
         val searchView: SearchView = findViewById(R.id.searchView)

@@ -8,7 +8,7 @@
         android:id="@+id/signIn"
         android:name="com.example.hotpot.SignIn"
         android:label="fragment_sign_in"
-        tools:layout="@layout/fragment_sign_in" >
+        tools:layout="@layout/fragment_login" >
         <action
             android:id="@+id/action_signIn_to_signUp"
             app:destination="@id/signUp" />

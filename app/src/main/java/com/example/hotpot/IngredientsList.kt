@@ -1,42 +1,32 @@
 package com.example.hotpot
 
-import android.content.DialogInterface
-import android.os.Bundle
-import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
+import android.R
+import androidx.appcompat.widget.SearchView
+import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 
+
 class IngredientsList : AppCompatActivity() {
-    private lateinit var tvMeatOption: TextView
-    private var selectedMeatOption = booleanArrayOf()
-    private val meatList = ArrayList<Int>()
-    private val meatArray = arrayOf(
-        "Chicken breast", "Beef", "Minced meat",
-        "Salmon", "Lamb", "Bacon", "Sausages"
-    )
-    override fun onCreate(savedInstanceState: Bundle?){
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.ingredients_list)
+        setContentView(R.layout.your_layout)
 
-        tvMeatOption = findViewById(R.id.meat_option)
+        // Assuming you have a SearchView with the id "searchView" in your layout
+        val searchView: SearchView = findViewById(R.id.searchView)
 
-        selectedMeatOption = BooleanArray(meatArray.size)
+        customizeSearchView(searchView)
+    }
 
-        tvMeatOption.setOnClickListener {
-            val builder = AlertDialog.Builder(this@IngredientsList)
+    private fun customizeSearchView(searchView: SearchView) {
+        // Set color for search text
+        val searchEditText: EditText = searchView.findViewById(androidx.appcompat.R.id.search_src_text)
+        searchEditText.setTextColor(ContextCompat.getColor(this, R.color.hotpot_light_green))
 
-            builder.setTitle("What you got?")
-            builder.setCancelable(false)
-            builder.setMultiChoiceItems(meatArray, selectedMeatOption,
-                DialogInterface.OnMultiChoiceClickListener { _, i, b ->
-                    if (b) {
-                        meatList.add(i)
-                    } else {
-                        meatList.remove(i)
-                    }
-                })
-            builder.setPositiveButton("Ok") { _, _ -> }
-            builder.show()
-        }
+        // Set hint text color
+        searchEditText.setHintTextColor(ContextCompat.getColor(this, R.color.hint_search_color))
+
+        // Set magnifying glass icon color
+        val searchIcon: ImageView = searchView.findViewById(androidx.appcompat.R.id.search_mag_icon)
+        searchIcon.setColorFilter(ContextCompat.getColor(this, R.color.hotpot_light_green))
     }
 }

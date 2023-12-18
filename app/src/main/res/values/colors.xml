@@ -13,9 +13,8 @@
     <color name="colorAccent">#FF4081</color>
     <color name="hotpot_green">#116026</color>
     <color name="hotpot_light_green">#34A853</color>
-
     <color name="hotpot_dark_green">#021306</color>
-
     <color name="navBar_green_color">#041107</color>
+    <color name="hint_search_color">#6B6E6C</color>
 
 </resources>

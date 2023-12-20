@@ -18,6 +18,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 
 
 
@@ -26,11 +27,6 @@ import com.google.firebase.auth.FirebaseAuth
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [SignUp.newInstance] factory method to
- * create an instance of this fragment.
- */
 class SignUp : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
@@ -67,13 +63,14 @@ class SignUp : Fragment() {
         val editName: EditText = view.findViewById(R.id.signUpName);
         val editEmail: EditText = view.findViewById(R.id.signUpEmail);
         val editPassword: EditText = view.findViewById(R.id.signUpPassword);
+        val signUpBtn = view.findViewById<Button>(R.id.signUp_signUp_btn)
+
 
         // setting checkmarks invisible
         editName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         editEmail.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         editPassword.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
 
-        var signUpBtn = view.findViewById<Button>(R.id.signUp_signUp_btn)
         signUpBtn.setOnClickListener {
             val name = editName.text.toString()
             val email = editEmail.text.toString()
@@ -83,11 +80,39 @@ class SignUp : Fragment() {
                 FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
-                            Toast.makeText(context, "Sign Up Successful", Toast.LENGTH_SHORT).show()
+                            // Get the newly created user
+                            val firebaseUser = FirebaseAuth.getInstance().currentUser
+                            val userId = firebaseUser?.uid
 
-                            // Open LoadingActivity
-                            val intent = Intent(activity, LoadingActivity::class.java)
-                            startActivity(intent)
+                            // Create a new user profile instance. Do NOT include the password here.
+                            // For profilePictureUrl, you will need to upload the picture to Firebase Storage first and get the URL
+                            val newUserProfile = UserProfile(
+                                uid = userId,
+                                name = name,
+                                email = email,
+                                profilePictureUrl = null, // You'll set this later after uploading the image
+                                tags = listOf(), // Initialize with empty list or with some default tags
+                                bio = "", // Initialize with empty string
+                                friends = listOf() // Initialize with empty list
+                            )
+
+                            // Get a reference to the database
+                            val databaseReference = FirebaseDatabase.getInstance().getReference("Users")
+
+                            // Save the user profile
+                            userId?.let {
+                                databaseReference.child(it).setValue(newUserProfile).addOnCompleteListener { profileCreationTask ->
+                                    if (profileCreationTask.isSuccessful) {
+                                        // Profile creation successful, proceed with your logic
+                                        val intent = Intent(activity, LoadingActivity::class.java)
+                                        startActivity(intent)
+                                    } else {
+                                        // Handle the error in profile creation
+                                        Toast.makeText(context, "Profile creation failed: ${profileCreationTask.exception?.message}", Toast.LENGTH_SHORT).show()
+                                    }
+                                }
+                            }
+
                         } else {
                             Toast.makeText(context, "Sign Up Failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                         }
@@ -97,11 +122,6 @@ class SignUp : Fragment() {
             }
         }
 
-
-
-        /**
-         * after text is changed, checks if it's empty
-         */
 
         editName.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {

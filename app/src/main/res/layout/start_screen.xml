@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#041107">
+    android:background="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -46,12 +46,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="15dp"
-                android:backgroundTint="@color/hotpot_dark_green"
+                android:backgroundTint="@color/white"
                 android:fontFamily="@font/kodchasan_bold"
                 android:text="Login"
                 android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:textSize="17dp"
+                android:textColor="@color/hotpot_dark_green"
+                android:textSize="20dp"
                 android:textStyle="bold"
                 android:layout_gravity="bottom"/>
 
@@ -63,7 +63,7 @@
                 android:textColor="@color/white"
                 android:backgroundTint="@color/hotpot_green"
                 android:fontFamily="@font/kodchasan_bold"
-                android:textSize="17dp"
+                android:textSize="20dp"
                 android:textStyle="bold"
                 android:text="Sign Up"
                 android:layout_gravity="bottom"/>

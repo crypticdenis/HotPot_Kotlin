@@ -13,16 +13,6 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-
-        <ImageView
-            android:id="@+id/returnToHomeButton"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:src="@drawable/return_on_diet_filter"
-            android:layout_gravity="end"
-            android:clickable="true"
-            android:focusable="true" />
-
         <TextView
             android:id="@+id/textView_filters_heading"
             style="@style/FiltersHeadingStyle"

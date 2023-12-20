@@ -6,5 +6,6 @@ data class Recipe(
     val description: String,
     val ingredients: List<String>,
     val instructions: String,
-    val details: String
+    val details: String,
+    val tags: List<String>
 ): Serializable

@@ -35,6 +35,15 @@
                 android:padding="8dp"
                 />
 
+        <TextView
+            android:id="@+id/dietary_info_head"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/abeezee"
+            android:padding="4dp"
+            android:text="Dietary Information:"
+            android:textColor="@color/hotpot_light_green"
+            android:textSize="20sp" />
             <View
                 android:id="@+id/green_bar3"
                 android:layout_width="match_parent"
@@ -49,7 +58,6 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/abeezee"
                 android:padding="4dp"
-                android:text="Dietary Information:"
                 android:textColor="@color/hotpot_light_green"
                 android:textSize="20sp" />
 
@@ -74,6 +82,15 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
             />
+        <TextView
+            android:id="@+id/recipe_steps_head"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Recipe Steps:"
+            android:fontFamily="@font/abeezee"
+            android:textColor="@color/hotpot_light_green"
+            android:padding="2dp"
+            android:textSize="20sp"/>
             <View
                 android:id="@+id/green_bar1"
                 android:layout_width="match_parent"

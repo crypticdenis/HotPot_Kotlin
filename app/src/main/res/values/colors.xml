@@ -8,5 +8,8 @@
     <color name="hotpot_dark_green">#041107</color>
     <color name="navBar_green_color">#041107</color>
     <color name="red">#FF0000</color>
+    <color name="bottom_nav_background">#FFFFFF</color> <!-- Replace with your desired background color -->
+    <color name="bottom_nav_item_active">#FF0000</color> <!-- Active item color -->
+    <color name="bottom_nav_item_inactive">#00FF00</color> <!-- Inactive item color -->
 
 </resources>

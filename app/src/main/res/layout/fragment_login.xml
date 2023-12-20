@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".SignIn"
-    android:background="#041107">
+    android:background="@color/white">
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -44,9 +44,10 @@
                 android:layout_width="53dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:backgroundTint="#041107"
+                android:backgroundTint="@color/white"
                 android:fontFamily="@font/kodchasan_bold"
                 android:text="Login"
+                android:textColor="@color/hotpot_dark_green"
                 android:textAllCaps="false"
                 android:textStyle="bold" />
 
@@ -90,7 +91,7 @@
 
                 <TextView
                     android:id="@+id/textView4"
-                    android:textColor="@color/white"
+                    android:textColor="@color/hotpot_dark_green"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="37dp"
@@ -102,13 +103,14 @@
                     android:layout_height="50dp"
                     android:background="@drawable/edit_ext"
                     android:ems="10"
+                    android:backgroundTint="@color/hotpot_dark_green"
                     android:gravity="center"
                     android:inputType="textEmailAddress"
                     android:scaleX=".8" />
 
                 <TextView
                     android:id="@+id/textView5"
-                    android:textColor="@color/white"
+                    android:textColor="@color/hotpot_dark_green"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="37dp"
@@ -123,36 +125,33 @@
                     android:ems="10"
                     android:gravity="center"
                     android:hint="Password"
+                    android:backgroundTint="@color/hotpot_dark_green"
                     android:inputType="textPassword"
                     android:scaleX=".8"
                     />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="150dp"
-                android:layout_gravity="center"
-                android:orientation="vertical">
-
-                <Button
-                    android:id="@+id/signIn_bottom_Btn"
-                    android:layout_width="350dp"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:text="Login"
-                    android:layout_gravity="center"
-                    android:backgroundTint="@color/hotpot_green"
-                    android:fontFamily="@font/kodchasan_bold"
-                    android:textSize="20dp"
-                    android:padding="1dp"
-                    android:textColor="#FFF"
-                    android:layout_margin="16dp" />
-
-
-
-            </LinearLayout>
             </LinearLayout>
         </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="150dp"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:layout_marginBottom="20dp">
 
+            <Button
+                android:id="@+id/signIn_bottom_Btn"
+                android:layout_width="350dp"
+                android:layout_gravity="center"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/hotpot_green"
+                android:fontFamily="@font/kodchasan_bold"
+                android:text="Login"
+                android:textColor="@color/white"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

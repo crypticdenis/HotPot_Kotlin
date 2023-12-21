@@ -1,42 +1,46 @@
 package com.example.hotpot
 
-import android.content.Context
 import android.animation.ObjectAnimator
+import android.content.Context
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import androidx.appcompat.app.AppCompatActivity
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import java.util.concurrent.Executors
+import java.util.concurrent.ScheduledExecutorService
+import java.util.concurrent.TimeUnit
 
 class LoadingActivity : AppCompatActivity() {
     private lateinit var loadingTextView: TextView
     private val words = "Let's get you started".split(" ")
     private var currentWordIndex = 0
-    private val handler = Handler(Looper.getMainLooper())
+    private val executorService: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_loading)
 
         loadingTextView = findViewById(R.id.loadingTextView)
-        updateText()
+        scheduleNextUpdate()
+    }
+
+    private fun scheduleNextUpdate() {
+        executorService.schedule({
+            runOnUiThread {
+                updateText()
+            }
+        }, 1500, TimeUnit.MILLISECONDS)
     }
 
     private fun updateText() {
-        if (currentWordIndex < words.size) {
+        if (currentWordIndex < words.size && !isFinishing) {
             loadingTextView.text = words[currentWordIndex]
             loadingTextView.alpha = 0f // Set text to fully transparent
             animateTextOpacity()
 
             currentWordIndex++
-            handler.postDelayed({
-                updateText()
-            }, 1500) // Delay between words
+            scheduleNextUpdate()
         } else {
-            val sharedPrefs = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
-            sharedPrefs.edit().putBoolean("loadingComplete", true).apply()
-
-            finish()// Finish the activity when done
+            completeLoading()
         }
     }
 
@@ -46,8 +50,20 @@ class LoadingActivity : AppCompatActivity() {
         opacityAnimation.start()
     }
 
+    private fun completeLoading() {
+        val sharedPrefs = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+        sharedPrefs.edit().putBoolean("loadingComplete", true).apply()
+
+        // Finish the activity when done
+        // Consider starting the next activity here if that's part of the flow
+        finish()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
-        handler.removeCallbacksAndMessages(null)
+        executorService.shutdownNow()
+        // Cancel the ongoing animation if the activity is destroyed
+        loadingTextView.animate().cancel()
     }
 }
+

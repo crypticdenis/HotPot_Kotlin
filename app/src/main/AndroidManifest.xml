@@ -21,6 +21,9 @@
             android:name=".RecipeDetailsActivity"
             android:exported="true" />
         <activity
+            android:name=".FavoritesActivity"
+            android:exported="true" />
+        <activity
             android:name=".LoginActivity"
             android:exported="true" />
         <activity android:name=".LoadingActivity"/>

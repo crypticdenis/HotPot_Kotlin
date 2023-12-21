@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
+import com.example.hotpot.model.Recipe
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -54,7 +55,8 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.navigation_favs -> {
-                    // TODO: Switch to the notifications fragment/activity
+                    val intent = Intent(this, FavoritesActivity::class.java)
+                    startActivity(intent)
                     true
                 }
                 else -> false

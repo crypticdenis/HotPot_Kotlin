@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "398168934044",
+    "firebase_url": "https://hotpot-a1a54-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "hotpot-a1a54",
     "storage_bucket": "hotpot-a1a54.appspot.com"
   },
@@ -12,7 +13,12 @@
           "package_name": "com.example.hotpot"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "398168934044-2knddfv07b1ch9vf56r8tfcscoe28d9s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCb8u6UNIZO0Bnf-EV2IWV79IbaRIxIHDI"
@@ -20,7 +26,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "398168934044-2knddfv07b1ch9vf56r8tfcscoe28d9s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

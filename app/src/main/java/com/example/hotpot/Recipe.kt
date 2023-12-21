@@ -1,4 +1,5 @@
-package com.example.hotpot
+package com.example.hotpot.model;
+
 import java.io.Serializable
 
 data class Recipe(

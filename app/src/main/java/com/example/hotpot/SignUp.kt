@@ -58,7 +58,15 @@ class SignUp : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_sign_up, container, false)
 
-        val signInTab = view.findViewById<Button>(R.id.register_signIn_tab);
+        val signInTab = view.findViewById<Button>(R.id.register_signIn_tab) // Assuming register_signIn_tab is your button ID
+
+        // Set up an OnClickListener
+        signInTab.setOnClickListener {
+            // Create an Intent to start LoginActivity
+            val intent = Intent(activity, LoginActivity::class.java)
+            intent.putExtra(LoginActivity.LOGIN_TYPE, LoginActivity.LOGIN_SIGN_IN) // Optional: If you want to specify the fragment to show
+            startActivity(intent)
+        }
 
         val editName: EditText = view.findViewById(R.id.signUpName);
         val editEmail: EditText = view.findViewById(R.id.signUpEmail);
@@ -179,12 +187,6 @@ class SignUp : Fragment() {
         })
 
 
-
-
-        /**
-         * setFocusChangeListener
-         * sets the checkmark visible
-         */
         editName.setOnFocusChangeListener { _, hasFocus ->
             if (!hasFocus) {
                 // Wenn editName nicht mehr ausgewählt ist, überprüfe den Text und zeige das Checkmark an, wenn nötig
@@ -227,11 +229,6 @@ class SignUp : Fragment() {
             }
         }
 
-        /**
-         * if touched outside of the editTexts
-         * set the editTexts not being focused anymore
-         * this triggers onFocusChange
-         */
         view.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
                 // Überprüfe, ob der Klick außerhalb der EditTexts war
@@ -329,5 +326,6 @@ class SignUp : Fragment() {
             (activity as? LoginActivity)?.showDietFiltersFragment()
         }
     }
+
 }
 

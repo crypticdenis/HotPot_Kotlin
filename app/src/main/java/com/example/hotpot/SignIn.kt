@@ -3,6 +3,7 @@ package com.example.hotpot
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -17,6 +18,10 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
 
 class SignIn : Fragment() {
@@ -46,6 +51,9 @@ class SignIn : Fragment() {
         signInBtn.setOnClickListener {
             val email = editEmail.text.toString()
             val password = editPassword.text.toString()
+
+            // Aufruf der uploadNewRecipe Funktion
+            uploadNewRecipe("Ingredients", "Spicy Miso Ramen", "Rating", "Steps")
 
             if (isEmailValid(email) && password.isNotBlank()) {
                 FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
@@ -85,6 +93,36 @@ class SignIn : Fragment() {
     private fun isEmailValid(email: String): Boolean {
         return Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
+}
+
+// Verschiebe die Funktion nach außen
+private fun uploadNewRecipe(ingredients: String, spicyMisoRamen: String, rating: String, steps: String) {
+    val databaseReference = FirebaseDatabase.getInstance().reference.child("Recipes")
+
+    databaseReference.orderByKey().limitToLast(1).addListenerForSingleValueEvent(object :
+        ValueEventListener {
+        override fun onDataChange(snapshot: DataSnapshot) {
+            var newRecipeId = 0
+
+            if (snapshot.exists()) {
+                val lastRecipe = snapshot.children.first()
+                newRecipeId = lastRecipe.key?.toInt() ?: 0
+                newRecipeId++
+            }
+
+            val newRecipeReference = databaseReference.child(newRecipeId.toString())
+            newRecipeReference.child("Ingredients").setValue(ingredients)
+            newRecipeReference.child("Spicy Miso Ramen").setValue(spicyMisoRamen)
+            newRecipeReference.child("Rating").setValue(rating)
+            newRecipeReference.child("Steps").setValue(steps)
+
+            Log.d("Firebase", "Neues Rezept hochgeladen mit ID: $newRecipeId")
+        }
+
+        override fun onCancelled(error: DatabaseError) {
+            Log.e("Firebase", "Fehler beim Hochladen des Rezepts: ${error.message}")
+        }
+    })
 }
 
 private fun getFriendlyErrorMessage(exception: Exception?): String {

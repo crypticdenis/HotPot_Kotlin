@@ -46,14 +46,12 @@ class SignIn : Fragment() {
         signUpTab.setOnClickListener {
             // Navigate to the SignUp fragment
             (activity as? LoginActivity)?.showSignUpFragment()
+            parentFragmentManager.popBackStack();
         }
 
         signInBtn.setOnClickListener {
             val email = editEmail.text.toString()
             val password = editPassword.text.toString()
-
-            // Aufruf der uploadNewRecipe Funktion
-            uploadNewRecipe("Ingredients", "Spicy Miso Ramen", "Rating", "Steps")
 
             if (isEmailValid(email) && password.isNotBlank()) {
                 FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
@@ -96,42 +94,14 @@ class SignIn : Fragment() {
 }
 
 // Verschiebe die Funktion nach außen
-private fun uploadNewRecipe(ingredients: String, spicyMisoRamen: String, rating: String, steps: String) {
-    val databaseReference = FirebaseDatabase.getInstance().reference.child("Recipes")
 
-    databaseReference.orderByKey().limitToLast(1).addListenerForSingleValueEvent(object :
-        ValueEventListener {
-        override fun onDataChange(snapshot: DataSnapshot) {
-            var newRecipeId = 0
-
-            if (snapshot.exists()) {
-                val lastRecipe = snapshot.children.first()
-                newRecipeId = lastRecipe.key?.toInt() ?: 0
-                newRecipeId++
-            }
-
-            val newRecipeReference = databaseReference.child(newRecipeId.toString())
-            newRecipeReference.child("Ingredients").setValue(ingredients)
-            newRecipeReference.child("Spicy Miso Ramen").setValue(spicyMisoRamen)
-            newRecipeReference.child("Rating").setValue(rating)
-            newRecipeReference.child("Steps").setValue(steps)
-
-            Log.d("Firebase", "Neues Rezept hochgeladen mit ID: $newRecipeId")
+    private fun getFriendlyErrorMessage(exception: Exception?): String {
+        return when (exception) {
+            is FirebaseAuthInvalidCredentialsException -> "Invalid credentials. Please try again."
+            is FirebaseAuthInvalidUserException -> "No account found with this email. Please sign up."
+            is FirebaseAuthUserCollisionException -> "An account already exists with this email."
+            is FirebaseAuthWeakPasswordException -> "Password is too weak. Please use a stronger password."
+            // Add more specific cases as needed
+            else -> "An error occurred. Please try again."
         }
-
-        override fun onCancelled(error: DatabaseError) {
-            Log.e("Firebase", "Fehler beim Hochladen des Rezepts: ${error.message}")
-        }
-    })
-}
-
-private fun getFriendlyErrorMessage(exception: Exception?): String {
-    return when (exception) {
-        is FirebaseAuthInvalidCredentialsException -> "Invalid credentials. Please try again."
-        is FirebaseAuthInvalidUserException -> "No account found with this email. Please sign up."
-        is FirebaseAuthUserCollisionException -> "An account already exists with this email."
-        is FirebaseAuthWeakPasswordException -> "Password is too weak. Please use a stronger password."
-        // Add more specific cases as needed
-        else -> "An error occurred. Please try again."
     }
-}

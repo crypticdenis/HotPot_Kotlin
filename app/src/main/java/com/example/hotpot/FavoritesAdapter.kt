@@ -1,20 +1,27 @@
-package com.example.hotpot.adapter
+package com.example.hotpot
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.hotpot.databinding.ItemFavoriteRecipeBinding
-import com.example.hotpot.model.Recipe
 
-class FavoritesAdapter(private var recipes: List<Recipe>) :
-    RecyclerView.Adapter<FavoritesAdapter.FavoritesViewHolder>() {
+interface OnRecipeClickListener {
+    fun onRecipeClick(position: Int)
+}
 
+class FavoritesAdapter(private var recipes: List<Recipe>, private val clickListener: OnRecipeClickListener // Add this parameter
+) : RecyclerView.Adapter<FavoritesAdapter.FavoritesViewHolder>() {
     class FavoritesViewHolder(val binding: ItemFavoriteRecipeBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(recipe: Recipe) {
+        fun bind(recipe: Recipe, clickListener: OnRecipeClickListener) {
             // Bind data to the views
             binding.recipeNameTextView.text = recipe.name
-            // Load image using Glide or Picasso into binding.recipeImageView
+
+            // Set click listener on the item view
+            binding.root.setOnClickListener {
+                // Pass the adapter position to the click listener
+                clickListener.onRecipeClick(adapterPosition)
+            }
         }
     }
 
@@ -25,7 +32,7 @@ class FavoritesAdapter(private var recipes: List<Recipe>) :
 
     override fun onBindViewHolder(holder: FavoritesViewHolder, position: Int) {
         val recipe = recipes[position]
-        holder.bind(recipe)
+        holder.bind(recipe, clickListener)
     }
 
     override fun getItemCount(): Int = recipes.size

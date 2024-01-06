@@ -8,6 +8,7 @@
     tools:context=".MainActivity">
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -16,9 +17,11 @@
 
         <TextView
             android:id="@+id/recipe_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="360dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center"
             android:layout_marginTop="10dp"
+            android:autoSizeTextType="uniform"
             android:fontFamily="@font/abeezee"
             android:gravity="center"
             android:text="Shoyu Ramen"
@@ -49,7 +52,8 @@
             android:id="@+id/random_meal_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-android:layout_gravity="center_horizontal"         android:backgroundTint="@color/hotpot_green"
+            android:layout_gravity="center_horizontal"
+            android:backgroundTint="@color/hotpot_green"
             android:fontFamily="@font/abeezee"
             android:text="Random Meal"
             android:textSize="20dp" />
@@ -57,11 +61,21 @@ android:layout_gravity="center_horizontal"         android:backgroundTint="@colo
         <Button
             android:id="@+id/show_recipe_btn"
             android:layout_width="wrap_content"
-            android:layout_gravity="center_horizontal"            android:layout_height="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:backgroundTint="@color/hotpot_green"
             android:fontFamily="@font/abeezee"
             android:text="Show Recipe"
             android:textSize="20dp" />
+
+        <ImageButton
+            android:id="@+id/addRecipeOverlayBtn"
+            android:layout_width="74dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="310dp"
+            android:layout_marginRight="30dp"
+            android:background="@color/white"
+            app:srcCompat="@drawable/add_new_recipe_button" />
     </LinearLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -74,4 +88,15 @@ android:layout_gravity="center_horizontal"         android:backgroundTint="@colo
         app:itemTextColor="@color/hotpot_dark_green"
         app:menu="@menu/bottom_navigation_menu"
         app:layout_anchorGravity="bottom"/>
+
+    <ImageButton
+        android:id="@+id/addToFavoritesBtn"
+        android:layout_width="52dp"
+        android:layout_height="wrap_content"
+        app:layout_anchor="@+id/linearLayout"
+        app:layout_anchorGravity="end|center"
+        android:background="@color/white"
+        android:layout_marginRight="30dp"
+        android:layout_marginBottom="470dp"
+        app:srcCompat="@drawable/add_to_list_button" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

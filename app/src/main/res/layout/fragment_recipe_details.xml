@@ -13,17 +13,16 @@
         android:padding="16dp">
 
 
-        <ImageView
-            android:id="@+id/returnToHomeButton"
+        <ImageButton
+            android:id="@+id/closeRecipeDetailsBtn"
             android:layout_width="35dp"
             android:layout_height="35dp"
-            android:src="@drawable/return_on_diet_filter"
             android:layout_gravity="end"
             android:clickable="true"
-            android:focusable="true" />
+            android:focusable="true"
+            android:background="@drawable/return_on_diet_filter" />
 
-
-            <TextView
+        <TextView
                 android:id="@+id/recipe_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -66,6 +66,7 @@ class SignUp : Fragment() {
             val intent = Intent(activity, LoginActivity::class.java)
             intent.putExtra(LoginActivity.LOGIN_TYPE, LoginActivity.LOGIN_SIGN_IN) // Optional: If you want to specify the fragment to show
             startActivity(intent)
+            parentFragmentManager.popBackStack()
         }
 
         val editName: EditText = view.findViewById(R.id.signUpName);

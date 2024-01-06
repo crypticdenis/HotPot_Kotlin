@@ -78,6 +78,8 @@ dependencies {
     implementation ("com.google.code.gson:gson:2.8.6")
     implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
     implementation("com.google.firebase:firebase-analytics")
+    implementation ("com.google.android.gms:play-services-vision:20.1.3")
+
 }
 
 apply(plugin = "com.google.gms.google-services")

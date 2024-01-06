@@ -3,7 +3,8 @@ package com.example.hotpot
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
+import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -11,29 +12,23 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.fragment.app.Fragment
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [SignIn.newInstance] factory method to
- * create an instance of this fragment.
- */
 class SignIn : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+        // Additional initialization code can go here if needed
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -41,63 +36,47 @@ class SignIn : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_login, container, false)
 
         val signUpTab = view.findViewById<Button>(R.id.login_signUp_tab)
-
         val editEmail = view.findViewById<EditText>(R.id.signInEmailAddress)
-        val editPassword = view.findViewById<EditText>(R.id.signInPassword);
-
-        var correctEmail : Boolean = false;
-        var correctPassword : Boolean = false;
+        val editPassword = view.findViewById<EditText>(R.id.signInPassword)
+        val signInBtn = view.findViewById<Button>(R.id.signIn_bottom_Btn)
 
         signUpTab.setOnClickListener {
             // Navigate to the SignUp fragment
             (activity as? LoginActivity)?.showSignUpFragment()
+            parentFragmentManager.popBackStack();
         }
-
-        val signInBtn = view.findViewById<Button>(R.id.signIn_signIn_Btn);
 
         signInBtn.setOnClickListener {
-            if(correctEmail && correctPassword) {
-                // change activity to main screen
-                val intent = Intent(requireContext(), MainActivity::class.java);
-                startActivity(intent);
+            val email = editEmail.text.toString()
+            val password = editPassword.text.toString()
+
+            if (isEmailValid(email) && password.isNotBlank()) {
+                FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            val intent = Intent(requireContext(), MainActivity::class.java)
+                            startActivity(intent)
+                        } else {
+                            val errorMessage = getFriendlyErrorMessage(task.exception)
+                            Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show()
+                        }
+                    }
             } else {
-                val toast = Toast.makeText(requireContext(), "Invalid input. Try again", Toast.LENGTH_SHORT)
-                toast.show()
+                Toast.makeText(requireContext(), "Please enter a valid email and password.", Toast.LENGTH_SHORT).show()
             }
         }
 
-        editEmail.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) {
-                // Wenn editName nicht mehr ausgewählt ist, überprüfe den Text und zeige das Checkmark an, wenn nötig
-                correctEmail = editEmail.text.isNotEmpty()
-            }
-        }
-        editPassword.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) {
-                // Wenn editName nicht mehr ausgewählt ist, überprüfe den Text und zeige das Checkmark an, wenn nötig
-                correctPassword = editPassword.text.isNotEmpty()
-            }
-        }
-
-
-        /**
-         * if touched outside of the editTexts
-         * set the editTexts not being focused anymore
-         * this triggers onFocusChange
-         */
+        // Handle touch outside of EditTexts to clear focus
         view.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
-                // Überprüfe, ob der Klick außerhalb der EditTexts war
                 if (editEmail.isFocused || editPassword.isFocused) {
                     val outRect = android.graphics.Rect()
                     editEmail.getGlobalVisibleRect(outRect)
                     editPassword.getGlobalVisibleRect(outRect)
                     if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
-                        // Der Klick war außerhalb der EditTexts, entferne den Fokus
                         editEmail.clearFocus()
                         editPassword.clearFocus()
                     }
@@ -105,6 +84,24 @@ class SignIn : Fragment() {
             }
             false
         }
-        return view;
+
+        return view
+    }
+
+    private fun isEmailValid(email: String): Boolean {
+        return Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
 }
+
+// Verschiebe die Funktion nach außen
+
+    private fun getFriendlyErrorMessage(exception: Exception?): String {
+        return when (exception) {
+            is FirebaseAuthInvalidCredentialsException -> "Invalid credentials. Please try again."
+            is FirebaseAuthInvalidUserException -> "No account found with this email. Please sign up."
+            is FirebaseAuthUserCollisionException -> "An account already exists with this email."
+            is FirebaseAuthWeakPasswordException -> "Password is too weak. Please use a stronger password."
+            // Add more specific cases as needed
+            else -> "An error occurred. Please try again."
+        }
+    }

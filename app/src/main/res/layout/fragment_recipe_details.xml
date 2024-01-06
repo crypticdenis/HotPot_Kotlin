@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/hotpot_dark_green"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:paddingBottom="2dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+
+        <ImageButton
+            android:id="@+id/closeRecipeDetailsBtn"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_gravity="end"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="@drawable/return_on_diet_filter" />
+
+        <TextView
+                android:id="@+id/recipe_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Recipe Title"
+                android:fontFamily="@font/abeezee"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:gravity="center_horizontal"
+                android:textColor="@color/hotpot_light_green"
+                android:padding="8dp"
+                />
+
+        <TextView
+            android:id="@+id/dietary_info_head"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/abeezee"
+            android:padding="4dp"
+            android:text="Dietary Information:"
+            android:textColor="@color/hotpot_light_green"
+            android:textSize="20sp" />
+            <View
+                android:id="@+id/green_bar3"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="8dp"
+                android:background="@color/hotpot_light_green" />
+
+            <TextView
+                android:id="@+id/dietary_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/abeezee"
+                android:padding="4dp"
+                android:textColor="@color/hotpot_light_green"
+                android:textSize="20sp" />
+
+            <View
+                android:id="@+id/green_bar2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="8dp"
+                android:background="@color/hotpot_light_green" />
+
+            <Button
+                android:id="@+id/ingredients_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=" Ingredients list "
+                android:backgroundTint="@color/hotpot_green"
+                android:fontFamily="@font/abeezee"
+                android:textSize="20dp"
+                android:popupBackground="@color/hotpot_green"
+                android:textColor="@color/white"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+            />
+        <TextView
+            android:id="@+id/recipe_steps_head"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Recipe Steps:"
+            android:fontFamily="@font/abeezee"
+            android:textColor="@color/hotpot_light_green"
+            android:padding="2dp"
+            android:textSize="20sp"/>
+            <View
+                android:id="@+id/green_bar1"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="8dp"
+                android:background="@color/hotpot_light_green" />
+
+            <TextView
+                android:id="@+id/recipe_steps"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Recipe Steps:"
+                android:fontFamily="@font/abeezee"
+                android:textColor="@color/hotpot_light_green"
+                android:padding="2dp"
+                android:textSize="20sp"/>
+            <View
+                android:id="@+id/green_bar0"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="8dp"
+                android:background="@color/hotpot_light_green" />
+
+            <!-- ... more views ... -->
+
+        </LinearLayout>
+</ScrollView>

@@ -40,6 +40,12 @@ class LoginActivity : AppCompatActivity() {
             .commit()
     }
 
+    internal fun showDietFiltersFragment() {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragmentContainer, DietFilters())
+            //.addToBackStack(null)
+            .commit()
+    }
     internal fun isInputOkay(message: String) {
         val snackbar = Snackbar.make(
             findViewById(android.R.id.content), message, Snackbar.LENGTH_SHORT

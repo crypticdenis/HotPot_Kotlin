@@ -4,12 +4,10 @@
     <color name="white">#FFFFFFFF</color>
     <color name="green">#267B3D</color>
     <color name="hotpot_green">#116026</color>
-    <color name="hotpot_light_green">#D0FFBF</color>
-    <color name="hotpot_dark_green">#041107</color>
+    <color name="hotpot_light_green">#34A853</color>
+    <color name="hotpot_dark_green">#021306</color>
     <color name="navBar_green_color">#041107</color>
-    <color name="red">#FF0000</color>
-    <color name="bottom_nav_background">#FFFFFF</color> <!-- Replace with your desired background color -->
-    <color name="bottom_nav_item_active">#FF0000</color> <!-- Active item color -->
-    <color name="bottom_nav_item_inactive">#00FF00</color> <!-- Inactive item color -->
+    <color name="hint_search_color">#6B6E6C</color>
+    <color name="categories_box_bg_color">#C395D8AC</color>
 
 </resources>

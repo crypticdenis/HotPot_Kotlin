@@ -6,21 +6,10 @@
     android:layout_height="match_parent"
     android:padding="16dp">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        app:layout_constraintTop_toTopOf="parent"
-        app:navigationIcon="@drawable/navbar_icon"
-        app:title="HotPot"
-        app:titleTextColor="@color/white" />
-
     <TextView
         android:id="@+id/ingredients_list_heading"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/toolbar"
         android:fontFamily="@font/abeezee"
         android:gravity="center_horizontal"
         android:textColor="@color/hotpot_dark_green"
@@ -72,7 +61,7 @@
                         android:layout_gravity="center_horizontal"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="10dp"
-                        android:src="@drawable/Meat"/>
+                        android:src="@drawable/meat"/>
                     <TextView
                         android:id="@+id/meat_text"
                         android:layout_width="match_parent"
@@ -108,7 +97,7 @@
                         android:layout_gravity="center_horizontal"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="10dp"
-                        android:src="@drawable/Vege"/>
+                        android:src="@drawable/vege"/>
 
                     <TextView
                         android:id="@+id/vege_text"
@@ -145,7 +134,7 @@
                         android:layout_gravity="center_horizontal"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="10dp"
-                        android:src="@drawable/Nuts"/>
+                        android:src="@drawable/nuts"/>
                     <TextView
                         android:id="@+id/nuts_text"
                         android:layout_width="match_parent"
@@ -181,7 +170,7 @@
                         android:layout_gravity="center_horizontal"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="10dp"
-                        android:src="@drawable/Herb"/>
+                        android:src="@drawable/herb"/>
 
                     <TextView
                         android:id="@+id/herbs_text"
@@ -218,7 +207,7 @@
                         android:layout_gravity="center_horizontal"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="10dp"
-                        android:src="@drawable/Milk"/>
+                        android:src="@drawable/milk"/>
                     <TextView
                         android:id="@+id/milk_text"
                         android:layout_width="match_parent"
@@ -254,7 +243,7 @@
                         android:layout_gravity="center_horizontal"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="10dp"
-                        android:src="@drawable/Rice"/>
+                        android:src="@drawable/rice"/>
                     <TextView
                         android:id="@+id/rice_text"
                         android:layout_width="match_parent"
@@ -290,7 +279,7 @@
                         android:layout_gravity="center_horizontal"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="10dp"
-                        android:src="@drawable/Fruits"/>
+                        android:src="@drawable/fruits"/>
                     <TextView
                         android:id="@+id/fruits_text"
                         android:layout_width="match_parent"

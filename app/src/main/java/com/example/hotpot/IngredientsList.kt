@@ -1,15 +1,32 @@
 package com.example.hotpot
 
+import FridgeFragment
+import android.content.Intent
 import com.example.hotpot.R
 import android.os.Bundle
 import androidx.appcompat.widget.SearchView
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
 class IngredientsList : AppCompatActivity() {
+    private lateinit var bottomNavigationView: BottomNavigationView
+
+    private lateinit var meatBox : CardView
+    private lateinit var vegeBox: CardView
+    private lateinit var nutsBox: CardView
+    private lateinit var herbsBox: CardView
+    private lateinit var milkBox: CardView
+    private lateinit var riceBox: CardView
+    private lateinit var fruitsBox: CardView
+    private lateinit var othersBox: CardView
+
+    private lateinit var fridgeBtn : ImageButton
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.ingredients_list)
@@ -17,7 +34,67 @@ class IngredientsList : AppCompatActivity() {
         // Assuming you have a SearchView with the id "searchView" in your layout
         val searchView: SearchView = findViewById(R.id.searchView)
 
+        meatBox = findViewById(R.id.meat_box);
+        vegeBox = findViewById(R.id.vege_box)
+        nutsBox = findViewById(R.id.nuts_box)
+        herbsBox = findViewById(R.id.herbs_box)
+        milkBox = findViewById(R.id.milk_box)
+        riceBox = findViewById(R.id.rice_box)
+        fruitsBox = findViewById(R.id.fruits_box)
+        othersBox = findViewById(R.id.others_box)
+
+        fridgeBtn = findViewById(R.id.fridgeButton)
+        fridgeBtn.setOnClickListener {
+            // TODO: open fridge fragment
+            // shows whole item list in the fridge
+        }
+
+        meatBox.setOnClickListener {
+            // Öffne FridgeFragment und übergebe die ausgewählte Kategorie
+            val fridgeFragment = FridgeFragment()
+            val args = Bundle()
+            args.putString("selectedCategory", "Meat")
+            fridgeFragment.arguments = args
+
+            // Füge das Fragment dem Fragmentmanager hinzu
+            val transaction = this.supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.fragment_container, fridgeFragment)
+            transaction.addToBackStack(null)
+            transaction.commit()
+        }
+
         customizeSearchView(searchView)
+
+        bottomNavigationView = findViewById(R.id.bottom_navigation)
+        bottomNavigationView.setOnNavigationItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.navigation_settings -> {
+                    val intent = Intent(this, SettingsActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+
+                R.id.navigation_home -> {
+                    // TODO: Switch to the dashboard fragment/activity
+                    val intent = Intent(this, MainActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                    true
+                }
+
+                R.id.navigation_list -> {
+                    true
+                }
+
+                R.id.navigation_favs -> {
+                    val intent = Intent(this, FavoritesActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+
+                else -> false
+            }
+        }
     }
 
     private fun customizeSearchView(searchView: SearchView) {

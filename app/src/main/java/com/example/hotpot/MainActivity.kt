@@ -1,22 +1,22 @@
 package com.example.hotpot
 
 import RecipeDetailsFragment
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.MenuInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
-import android.widget.PopupMenu
+import android.widget.PopupWindow
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.OnBackPressedDispatcher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.FirebaseApp
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -25,17 +25,12 @@ import com.google.firebase.database.getValue
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.io.IOException
-import android.widget.PopupWindow
-import androidx.fragment.app.DialogFragment
-import androidx.compose.material3.MaterialTheme
-import com.google.firebase.auth.FirebaseAuth
 
 
 class MainActivity : AppCompatActivity() {
     private lateinit var recipes: List<Recipe>
     private var selectedRecipe: Recipe? = null
 
-    private lateinit var toolbar: Toolbar
     private lateinit var bottomNavigationView: BottomNavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -80,6 +75,8 @@ class MainActivity : AppCompatActivity() {
 
                 R.id.navigation_list -> {
                     // TODO: Switch to the notifications fragment/activity
+                    val intent = Intent(this, IngredientsList::class.java)
+                    startActivity(intent)
                     true
                 }
 
@@ -168,41 +165,11 @@ class MainActivity : AppCompatActivity() {
      * prevents returning to login/signUp screen
      */
     override fun onBackPressed() {
+        // Hier kannst du spezielle Logik für den Back-Button hinzufügen,
+        // oder einfach nichts tun, um das Standardverhalten zu behalten.
+
+        // Beispiel: Keine Aktion durchführen
         super.onBackPressed()
-        // Tue hier nichts, um den Zurück-Button zu deaktivieren
-    }
-
-    /**
-     * add recipe button uploads recipe up to the database
-     */
-    private fun uploadNewRecipe(ingredients: String, spicyMisoRamen: String, rating: String, steps: String) {
-        val databaseReference = FirebaseDatabase.getInstance().reference.child("Recipes")
-
-        databaseReference.orderByKey().limitToLast(1).addListenerForSingleValueEvent(object :
-            ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                var newRecipeId = 0
-
-                if (snapshot.exists()) {
-                    val lastRecipe = snapshot.children.first()
-                    newRecipeId = lastRecipe.key?.toInt() ?: 0
-                    newRecipeId++
-                }
-
-                val newRecipeReference = databaseReference.child(newRecipeId.toString())
-                newRecipeReference.child("ingredients").setValue(ingredients)
-                newRecipeReference.child("details").setValue(spicyMisoRamen)
-                newRecipeReference.child("rating").setValue(rating)
-                newRecipeReference.child("steps").setValue(steps)
-
-
-                Log.d("Firebase", "Neues Rezept hochgeladen mit ID: $newRecipeId")
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Log.e("Firebase", "Fehler beim Hochladen des Rezepts: ${error.message}")
-            }
-        })
     }
 
     private fun showAddRecipePopupMenu() {
@@ -224,6 +191,10 @@ class MainActivity : AppCompatActivity() {
             Log.d("PopupMenu", "Menu Item 1 clicked")
             // Hier kannst du die Aktion für "Menu Item 1" ausführen
             popupWindow.dismiss()
+
+            // Navigate to AddRecipe
+            val intent = Intent(this, AddRecipe::class.java)
+            startActivity(intent)
         }
 
         closeAddRecipeOverlay.setOnClickListener {

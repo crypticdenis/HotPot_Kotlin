@@ -15,6 +15,10 @@ import androidx.recyclerview.widget.RecyclerView
 interface OnSettingsItemClickListener {
     fun onItemClick(item: SettingItem)
 }
+
+interface OnFragmentInteractionListener {
+    fun onCloseFragment()
+}
 class SettingsActivity : AppCompatActivity(), OnSettingsItemClickListener {
 
     private lateinit var recyclerView: RecyclerView
@@ -51,7 +55,12 @@ class SettingsActivity : AppCompatActivity(), OnSettingsItemClickListener {
             "Logout" -> startLogoutActivity()
             "Diet Filter" -> openDietFiltersFragment()
             // Handle other items if needed
+
         }
+    }
+
+    fun onCloseFragment() {
+        finish();
     }
 
     private fun openDietFiltersFragment() {
@@ -61,8 +70,8 @@ class SettingsActivity : AppCompatActivity(), OnSettingsItemClickListener {
             .addToBackStack(null)
             .commit()
 
-        recyclerView.visibility = View.GONE
         fragmentContainer.visibility = View.VISIBLE
+        recyclerView.visibility = View.GONE
     }
 
     private fun startLogoutActivity() {

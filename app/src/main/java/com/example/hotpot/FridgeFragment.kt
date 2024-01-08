@@ -8,24 +8,20 @@ import androidx.fragment.app.Fragment
 import com.example.hotpot.R
 
 class FridgeFragment : Fragment() {
-
-    // Hier solltest du die tatsächlichen Listen für jede Kategorie haben
     private val meatList = listOf("Meat1", "Meat2", "Meat3")
     private val vegeList = listOf("Vegetable1", "Vegetable2", "Vegetable3")
-    // Füge hier die Listen für die anderen Kategorien hinzu
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Hier verknüpfst du dein Fragment mit der Layout-Datei
         return inflater.inflate(R.layout.fragment_fridge, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Erhalte eine Referenz zum LinearLayout in deinem Layout
+        // Hier kannst du auf die Ansichten in deinem Fragment zugreifen
         val linearLayout: LinearLayout = view.findViewById(R.id.fridgeLinearLayoutList)
 
         // Hier wird das Argument für die ausgewählte Kategorie abgerufen

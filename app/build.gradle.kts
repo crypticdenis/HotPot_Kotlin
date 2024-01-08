@@ -79,6 +79,8 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
     implementation("com.google.firebase:firebase-analytics")
     implementation ("com.google.android.gms:play-services-vision:20.1.3")
+    implementation ("com.github.skydoves:expandablelayout:1.0.7")
+
 
 }
 

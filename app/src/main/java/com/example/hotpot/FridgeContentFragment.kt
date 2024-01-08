@@ -50,10 +50,7 @@ class FridgeContentFragment : Fragment() {
 
         // Get correct database set from param
         val databaseReference = FirebaseDatabase.getInstance().reference.child("Ingredients").child(selectedCategory.toString())
-        Log.d("DatabaseReference: ", databaseReference.toString())
-        Log.d("SelectedCategory: ", selectedCategory.toString())
-        Log.d("View: ", view.toString())
-        createObjectsInFridge(databaseReference)
+        createObjectsInShoppingList(databaseReference)
 
 
         // Assuming you have a reference to the old activity layout
@@ -89,7 +86,7 @@ class FridgeContentFragment : Fragment() {
 
     }
 
-    fun createObjectsInFridge(databaseReference: DatabaseReference) {
+    fun createObjectsInShoppingList(databaseReference: DatabaseReference) {
         databaseReference.get().addOnSuccessListener { dataSnapshot ->
             if (dataSnapshot.exists()) {
                 val categoryContentLayout = view?.findViewById<LinearLayout>(R.id.categoryContentLayout)
@@ -135,9 +132,6 @@ class FridgeContentFragment : Fragment() {
 
                     categoryContentLayout?.addView(linearLayoutHorizontal)
                 }
-
-
-
             }
         }
     }

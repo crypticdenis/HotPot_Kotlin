@@ -47,12 +47,9 @@ class IngredientsList : AppCompatActivity() {
 
         fridgeBtn = findViewById(R.id.fridgeButton)
         fridgeBtn.setOnClickListener {
-            // TODO: open fridge fragment
-            // shows whole item list in the fridge
-        }
+            val ingredientListLayout = findViewById<LinearLayout>(R.id.ingredientListLayout)
+            ingredientListLayout.visibility = View.GONE
 
-        meatBox.setOnClickListener {
-            /*
             // Öffne FridgeFragment und übergebe die ausgewählte Kategorie
             val fridgeFragment = FridgeFragment()
             val args = Bundle()
@@ -64,7 +61,9 @@ class IngredientsList : AppCompatActivity() {
             transaction.replace(R.id.fragment_container, fridgeFragment)
             transaction.addToBackStack(null)
             transaction.commit()
-            */
+        }
+
+        meatBox.setOnClickListener {
             val ingredientListLayout = findViewById<LinearLayout>(R.id.ingredientListLayout)
             ingredientListLayout.visibility = View.GONE
 

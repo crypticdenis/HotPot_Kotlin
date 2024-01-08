@@ -1,12 +1,17 @@
 package com.example.hotpot
 
+import android.app.AlertDialog
 import android.os.Bundle
+import android.text.InputType
+import android.text.Layout
 import android.util.Log
+import android.view.Gravity
 import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ScrollView
@@ -14,6 +19,7 @@ import android.widget.SearchView
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.findViewTreeViewModelStoreOwner
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 
@@ -131,8 +137,64 @@ class FridgeContentFragment : Fragment() {
                     linearLayoutHorizontal.addView(addButton)
 
                     categoryContentLayout?.addView(linearLayoutHorizontal)
+
+                    addButton.setOnClickListener {
+                        // open popup window
+                        showQuantityInputDialog(name)
+                        Log.d("test", "$name was clicked ")
+                    }
                 }
             }
+        }
+    }
+
+    private fun showQuantityInputDialog(ingredientName: String) {
+        val builder = AlertDialog.Builder(requireContext())
+
+        if(selectedCategory == "Meat") {
+            builder.setTitle("Enter Quantity (Gram)")
+        }
+
+
+        val input = EditText(requireContext())
+        input.gravity = Gravity.CENTER
+        input.inputType = InputType.TYPE_CLASS_NUMBER
+        builder.setView(input)
+
+        builder.setPositiveButton("OK") { _, _ ->
+            val quantity = input.text.toString()
+            saveQuantityToFirebase(ingredientName, quantity)
+            Log.d("Quantity", "Ingredient: $ingredientName, Quantity: $quantity Gram")
+        }
+
+        builder.setNegativeButton("Cancel") { dialog, _ ->
+            dialog.cancel()
+        }
+
+        builder.show()
+    }
+
+    private fun saveQuantityToFirebase(ingredientName: String, quantity: String) {
+        val currentUserUid = FirebaseAuth.getInstance().currentUser?.uid.toString()
+        val databaseReference = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserUid)
+
+        // Ersetze "Meat" durch die tatsächliche Kategorie
+        val categoryReference = databaseReference.child("Fridge").child(selectedCategory.toString())
+
+        // Initialisiere ingredientReference mit einem Standardwert
+        val ingredientReference : DatabaseReference;
+
+        if (selectedCategory == "Meat") {
+            ingredientReference = categoryReference.child(ingredientName).child("Gram")
+            ingredientReference.setValue(quantity)
+                .addOnSuccessListener {
+                    Log.d("Firebase", "Menge erfolgreich gespeichert")
+                }
+                .addOnFailureListener { e ->
+                    Log.e("Firebase", "Fehler beim Speichern der Menge: ${e.message}")
+                }
+        } else {
+            // handle other categories like liquid for ml
         }
     }
 

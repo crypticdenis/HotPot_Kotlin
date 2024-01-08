@@ -1,21 +1,28 @@
+import android.app.AlertDialog
 import android.os.Bundle
 import android.util.Log
-import android.view.KeyEvent
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.SearchView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import com.example.hotpot.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import java.net.Authenticator
 
 class FridgeFragment : Fragment() {
+    private lateinit var databaseReference : DatabaseReference;
+    private lateinit var authenticatorReference : FirebaseAuth
+    private lateinit var fridgeContentLayout : LinearLayout
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,13 +37,13 @@ class FridgeFragment : Fragment() {
         // Hier kannst du auf die Ansichten in deinem Fragment zugreifen
         val linearLayout: LinearLayout = view.findViewById(R.id.fridgeLinearLayoutList)
 
-        val databaseReference = FirebaseDatabase.getInstance().reference    // Get root reference
+        databaseReference = FirebaseDatabase.getInstance().reference    // Get root reference
 
         // Assuming you have FirebaseAuth instance
-        val auth = FirebaseAuth.getInstance()
+        authenticatorReference = FirebaseAuth.getInstance()
 
         // Check if a user is currently signed in
-        val currentUser = auth.currentUser
+        val currentUser = authenticatorReference.currentUser
         if (currentUser != null) {
             // The UID of the currently logged-in user
             val userUID = currentUser.uid
@@ -72,22 +79,28 @@ class FridgeFragment : Fragment() {
             view?.findViewById<SearchView>(R.id.searchView)?.visibility = View.VISIBLE
 
             for (categorySnapshot in fridgeSnapshot.children) {
+                // Log Kategorie
+                Log.d("Fridge", "Kategorie: ${categorySnapshot.key}")
+
                 // Iterate through categories (Meat, Vegetables)
                 for (itemSnapshot in categorySnapshot.children) {
+                    // Log Item
+                    Log.d("Fridge", "Item: ${itemSnapshot.key}")
+
                     // Iterate through items (Chicken, Beef, etc.)
                     val itemName = itemSnapshot.key.toString()
 
                     for (unitSnapshot in itemSnapshot.children) {
-                        // Iterate through units (Gram)
+                        // Log Einheit
+                        // key is Gram/Milliliters etc
+                        // value is the number
+                        Log.d("Fridge", "Einheit: ${unitSnapshot.key}")
+                        Log.d("Fridge", "Menge: ${unitSnapshot.value}")
+
                         val unitName = unitSnapshot.key.toString()
+                        val amountValue = unitSnapshot.value.toString()
 
-                        for (amountSnapshot in unitSnapshot.children) {
-                            // Iterate through amounts (400, etc.)
-                            val amountValue = amountSnapshot.key.toString()
-
-                            // Now you have all the information to create your UI elements
-                            createUIElement(itemName, unitName, amountValue)
-                        }
+                        createUIElement(itemName, unitName, amountValue)
                     }
                 }
             }
@@ -95,9 +108,12 @@ class FridgeFragment : Fragment() {
     }
 
 
+
     fun createUIElement(name: String, unit: String, amount: String) {
-        val fridgeContentLayout = view?.findViewById<LinearLayout>(R.id.fridgeContentLayout)
+        fridgeContentLayout = view?.findViewById<LinearLayout>(R.id.fridgeContentLayout)!!
         val linearLayoutHorizontal = LinearLayout(requireContext())
+
+
         linearLayoutHorizontal.layoutParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
@@ -150,19 +166,167 @@ class FridgeFragment : Fragment() {
         amountView.setPadding(0, 13, 0, 13)
         linearLayoutHorizontal.addView(amountView)
 
-        // Create add button (right-aligned)
-        val addButton = ImageView(requireContext())
+        // Create edit- and trash-button (right-aligned)
+        val editButton = ImageView(requireContext())
+        val trashButton = ImageView(requireContext())
+
         val buttonParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.WRAP_CONTENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
-        addButton.layoutParams = buttonParams
-        addButton.setImageResource(R.drawable.plus_button)
-        addButton.setPadding(12, 12, 12, 12)
-        linearLayoutHorizontal.addView(addButton)
+        editButton.layoutParams = buttonParams
+        editButton.setImageResource(R.drawable.pen_button)
+        editButton.setPadding(12, 12, 12, 12)
+        linearLayoutHorizontal.addView(editButton)
 
+        trashButton.layoutParams = buttonParams
+        trashButton.setImageResource(R.drawable.trash_button)
+        trashButton.setPadding(12, 12, 12, 12)
+        linearLayoutHorizontal.addView(trashButton)
+
+        editButton.setOnClickListener {
+            Log.d("Buttons", name + "editButton clicked")
+            // open up window enabling user to change the quantity and update firebase database
+            // Create an EditText to get user input
+            val editText = EditText(requireContext())
+            editText.gravity = Gravity.CENTER
+            editText.hint = "Enter new quantity"
+
+            // Create an AlertDialog
+            val alertDialogBuilder = AlertDialog.Builder(requireContext())
+            alertDialogBuilder.setTitle("Edit Quantity")
+            alertDialogBuilder.setView(editText)
+
+            alertDialogBuilder.setPositiveButton("Update") { _, _ ->
+                // User clicked Update
+                val newQuantity = editText.text.toString()
+
+                // Validate newQuantity (you might want to add additional validation)
+                if (newQuantity.isNotBlank()) {
+                    // Update the quantity in the Firebase database
+                    updateQuantityInDatabase(name, newQuantity)
+                } else {
+                    Toast.makeText(requireContext(), "Please enter a valid quantity", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            alertDialogBuilder.setNegativeButton("Cancel") { dialog, _ ->
+                // User clicked Cancel
+                dialog.dismiss()
+            }
+
+            val alertDialog = alertDialogBuilder.create()
+            alertDialog.show()
+        }
+
+        trashButton.setOnClickListener {
+            val alertDialogBuilder = AlertDialog.Builder(requireContext())
+            alertDialogBuilder.setTitle("$name löschen")
+            alertDialogBuilder.setMessage("Soll $name wirklich gelöscht werden?")
+
+            alertDialogBuilder.setPositiveButton("Löschen") { _, _ ->
+                // Benutzer hat "Löschen" ausgewählt
+                Log.d("Buttons", "$name - Löschen bestätigt")
+
+                deleteItemFromFridge(name)
+            }
+
+            alertDialogBuilder.setNegativeButton("Abbrechen") { dialog, _ ->
+                // Benutzer hat "Abbrechen" ausgewählt
+                Log.d("Buttons", "$name - Löschen abgebrochen")
+                dialog.dismiss()
+            }
+
+            val alertDialog = alertDialogBuilder.create()
+            alertDialog.show()
+        }
         fridgeContentLayout?.addView(linearLayoutHorizontal)
     }
 
+    fun deleteItemFromFridge(itemName: String) {
+        val currentUser = authenticatorReference.currentUser
+        if (currentUser != null) {
+            val userUID = currentUser.uid
+            val itemReference = databaseReference.child("Users").child(userUID).child("Fridge")
 
+            itemReference.get().addOnSuccessListener { fridgeSnapshot ->
+                for (categorySnapshot in fridgeSnapshot.children) {
+                    for (itemSnapshot in categorySnapshot.children) {
+                        // Überprüfe, ob das aktuelle Item übereinstimmt
+                        if (itemSnapshot.key == itemName) {
+                            // Lösche das Item aus der Firebase-Datenbank
+                            itemSnapshot.ref.removeValue()
+                            removeUIElement(itemName)
+
+                            Log.d("Firebase", "Item $itemName erfolgreich gelöscht")
+                            Toast.makeText(requireContext(), "$itemName erfolgreich gelöscht", Toast.LENGTH_SHORT).show()
+                            return@addOnSuccessListener
+                        }
+                    }
+                }
+                Log.d("Firebase", "Item $itemName nicht gefunden")
+            }.addOnFailureListener { e ->
+                Log.e("Firebase", "Fehler beim Löschen des Items: ${e.message}")
+            }
+        }
+    }
+
+    fun removeUIElement(itemName: String) {
+        // Find and remove the UI element from fridgeContentLayout
+        val childCount = fridgeContentLayout.childCount
+        for (i in 0 until childCount) {
+            val child = fridgeContentLayout.getChildAt(i)
+            if (child is LinearLayout) {
+                val textView = child.getChildAt(0) as? TextView
+                if (textView?.text == itemName) {
+                    // Remove the UI element
+                    fridgeContentLayout.removeView(child)
+                    return
+                }
+            }
+        }
+    }
+
+    fun updateQuantityInDatabase(itemName: String, newQuantity: String) {
+        val currentUser = authenticatorReference.currentUser
+        var quantityUnit : String;
+
+        if (currentUser != null) {
+            val userUID = currentUser.uid
+            val itemReference = databaseReference.child("Users").child(userUID).child("Fridge")
+
+            itemReference.get().addOnSuccessListener { fridgeSnapshot ->
+                for (categorySnapshot in fridgeSnapshot.children) {
+                    for (itemSnapshot in categorySnapshot.children) {
+                        // Check if the current item matches
+                        if (itemSnapshot.key == itemName) {
+                            // check category for correct Unit
+                            val quantityUnit = determineQuantityUnit(categorySnapshot.key.toString())
+                            // Update the quantity in the Firebase database
+                            itemSnapshot.child(quantityUnit).ref.setValue(newQuantity)
+                            Log.d("Firebase", "Quantity for $itemName updated to $newQuantity")
+                            Toast.makeText(requireContext(), "Quantity updated", Toast.LENGTH_SHORT).show()
+                            // set new quantity in UI
+                            fridgeContentLayout.removeAllViews();
+                            createObjectsInFridge(databaseReference, authenticatorReference.uid.toString())
+                            return@addOnSuccessListener
+                        }
+                    }
+                }
+                Log.d("Firebase", "Item $itemName not found")
+            }.addOnFailureListener { e ->
+                Log.e("Firebase", "Error updating quantity: ${e.message}")
+                Toast.makeText(requireContext(), "Error updating quantity", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    fun determineQuantityUnit(category: String): String {
+        // Add logic to determine the quantity unit based on the category
+        return when (category) {
+            "Meat" -> "Gram" // Update this to the correct unit for the "Meat" category
+            // Add more cases for other categories as needed
+            else -> "DefaultUnit" // Change this to the default unit if category is unknown
+        }
+    }
 }

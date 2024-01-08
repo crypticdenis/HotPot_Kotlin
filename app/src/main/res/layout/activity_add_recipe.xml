@@ -436,8 +436,7 @@
                         app:expandable_isExpanded="false"
                         app:expandable_showSpinner="true"
                         app:expandable_parentLayout="@layout/add_ingredients_headline_layout"
-                        app:expandable_secondLayout="@layout/add_ingredients_headline_inside_layout"
-                        android:background="@drawable/add_ingredients_button">
+                        app:expandable_secondLayout="@layout/add_ingredients_headline_inside_layout">
                     </com.skydoves.expandablelayout.ExpandableLayout>
 
                     <View

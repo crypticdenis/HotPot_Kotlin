@@ -9,6 +9,30 @@
         android:id="@+id/editTextIngredient"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter Ingredient Name" />
+        android:hint="Enter Ingredient Name"
+        android:paddingBottom="15dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/editTextIngredientNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Enter number" />
+
+        <LinearLayout
+            android:id="@+id/spinnerContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <!-- Der Spinner wird dynamisch hinzugefügt -->
+        </LinearLayout>
+
+    </LinearLayout>
+
 
 </LinearLayout>
+

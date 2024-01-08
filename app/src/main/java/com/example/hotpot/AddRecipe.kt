@@ -9,16 +9,19 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.NumberPicker
+import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.text.isDigitsOnly
 import androidx.core.widget.NestedScrollView
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -128,7 +131,6 @@ class AddRecipe : AppCompatActivity() {
             showDescriptionInputDialog()
         }
 
-        // Hier kannst du den Code für die dynamischen CheckBoxes und Dietary Filter hinzufügen
         dietaryFilterContainer = findViewById(R.id.dietaryFilterContainer)
 
         val addDietaryFilterBtn: Button = findViewById(R.id.dietaryFilter_Btn)
@@ -302,17 +304,37 @@ class AddRecipe : AppCompatActivity() {
         builder.setView(dialogView)
 
         val editTextIngredient: EditText = dialogView.findViewById(R.id.editTextIngredient)
+        val editTextIngredientNumber: EditText = dialogView.findViewById(R.id.editTextIngredientNumber)
         editTextIngredient.requestFocus()
+
+        // Hier füge das Dropdown-Menü für Zutatenkategorien hinzu
+        val categorySpinner: Spinner = createCategorySpinner()
+        val spinnerContainer: LinearLayout = dialogView.findViewById(R.id.spinnerContainer)
+        spinnerContainer.addView(categorySpinner)
 
         builder.setPositiveButton("Add") { _, _ ->
             var ingredientName = editTextIngredient.text.toString()
+            val ingredientNumberStr = editTextIngredientNumber.text.toString()
 
-            //remove special characters for possible typos
+            // Überprüfe, ob ingredientNumberStr eine gültige Zahl ist
+            val ingredientNumber = if (ingredientNumberStr.isNotEmpty() && ingredientNumberStr.isDigitsOnly()) {
+                ingredientNumberStr.toInt()
+            } else {
+                // Zeige Toast und beende die Funktion, wenn keine gültige Zahl eingegeben wurde
+                Toast.makeText(this, "Invalid input for ingredient number", Toast.LENGTH_SHORT).show()
+                return@setPositiveButton
+            }
+
+            val selectedCategory = categorySpinner.selectedItem.toString()
+
+            // Entferne Sonderzeichen und Leerzeichen am Ende des Zutatennamens
             ingredientName = checkIngredientName(ingredientName)
 
             if (ingredientName.isNotEmpty()) {
-                ingredientList.add(ingredientName)
-                Log.d("test", "add$ingredientName")
+                // Hier kannst du die Zutat zusammen mit der ausgewählten Kategorie speichern
+                val fullIngredient = "$ingredientName - $ingredientNumber $selectedCategory"
+                ingredientList.add(fullIngredient)
+                Log.d("test", "add $fullIngredient")
                 findViewById<TextView>(R.id.ingredientTextView).visibility = View.VISIBLE
 
                 updateIngredientListView()
@@ -331,6 +353,25 @@ class AddRecipe : AppCompatActivity() {
         val dialog = builder.create()
         dialog.show()
     }
+
+    private fun createCategorySpinner(): Spinner {
+        val categories = arrayOf(
+            "Gram (g)",
+            "Count",
+            "Milliliter (ml)",
+            "Teaspoon",
+            "Tablespoon",
+            "Cup",
+            "Can"
+        )
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categories)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        val categorySpinner = Spinner(this)
+        categorySpinner.adapter = adapter
+
+        return categorySpinner
+    }
+
 
     private fun updateIngredientListView() {
         // Hier kannst du die Anzeige der Zutatenliste aktualisieren
@@ -417,7 +458,7 @@ class AddRecipe : AppCompatActivity() {
 
                 // setup new recipe
                 val newRecipeReference = databaseReference.child(newRecipeId.toString())
-                newRecipeReference.child("name").setValue(recipeName)
+                newRecipeReference.child("name").setValue(checkIngredientName(recipeName))
                 newRecipeReference.child("instructions").setValue(steps)
 
                 // for each tag, create new directory
@@ -425,10 +466,15 @@ class AddRecipe : AppCompatActivity() {
                     newRecipeReference.child("tags").child(index.toString()).setValue(tag)
                 }
 
-                // save ingredients in different directories
+                /// save ingredients in different directories
                 val ingredientsReference = newRecipeReference.child("ingredients")
                 for ((index, ingredient) in ingredientList.withIndex()) {
-                    ingredientsReference.child(index.toString()).setValue(ingredient)
+                    // Splitte die Zutat in Name, Einheitsmenge und Kategorie
+                    val (ingredientName, ingredientNumberStr, category) = parseIngredient(ingredient)
+
+                    // Erstelle ein Unterverzeichnis für jede Zutat
+                    val ingredientReference = ingredientsReference.child(ingredientName)
+                    ingredientReference.child(category).setValue(ingredientNumberStr)
                 }
 
                 // save description
@@ -448,6 +494,25 @@ class AddRecipe : AppCompatActivity() {
                 Log.e("Firebase", "Fehler beim Hochladen des Rezepts: ${error.message}")
             }
         })
+    }
+
+    // Funktion zum Parsen der Zutat in Name, Einheitsmenge und Kategorie
+    private fun parseIngredient(ingredient: String): Triple<String, String, String> {
+        val parts = ingredient.split(" - ")
+
+        // first letter captial and erase special characters at the end
+        val ingredientName = checkIngredientName(parts[0])
+
+        // Der Teil mit der Einheitsmenge und Kategorie
+        val amountAndCategory = parts[1].split(" ")
+
+        // Die Einheitsmenge
+        val ingredientNumberStr = amountAndCategory[0]
+
+        // Die Kategorie
+        val category = amountAndCategory[1]
+
+        return Triple(ingredientName, ingredientNumberStr, category)
     }
 
     private fun updateDietaryFiltersView() {
@@ -478,6 +543,6 @@ class AddRecipe : AppCompatActivity() {
             checkedName = checkedName.dropLast(1)
         }
 
-        return checkedName
+        return checkedName.capitalize()  // Nutze capitalize(), um den ersten Buchstaben großzuschreiben
     }
 

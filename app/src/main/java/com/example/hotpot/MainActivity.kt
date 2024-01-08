@@ -25,6 +25,7 @@ import com.google.gson.reflect.TypeToken
 import java.io.IOException
 
 
+@Suppress("DEPRECATION")
 class MainActivity : AppCompatActivity() {
     private lateinit var recipes: List<Recipe>
     private var selectedRecipe: Recipe? = null
@@ -129,14 +130,22 @@ class MainActivity : AppCompatActivity() {
                     // Überprüfe, ob die Daten nicht null sind
                     val name = recipeSnapshot.child("name").getValue(String::class.java)
                     val description = recipeSnapshot.child("description").getValue(String::class.java)
-                    val ingredients = recipeSnapshot.child("ingredients").getValue<List<String>>()
+                    val ingredientsSnapshot = recipeSnapshot.child("ingredients")
+
+                    val ingredientsMap = mutableMapOf<String, Any>()
+                    for (ingredientSnapshot in ingredientsSnapshot.children) {
+                        val ingredientName = ingredientSnapshot.key
+                        val ingredientDetails = ingredientSnapshot.getValue<Map<String, Any>>()
+                        ingredientsMap[ingredientName!!] = ingredientDetails!!
+                    }
+
                     val instructions = recipeSnapshot.child("instructions").getValue(String::class.java)
                     val details = recipeSnapshot.child("details").getValue(String::class.java)
                     val tags = recipeSnapshot.child("tags").getValue<List<String>>()
 
                     // Füge nur nicht-null Daten zur Liste hinzu
-                    if (name != null && description != null && ingredients != null && instructions != null && details != null && tags != null) {
-                        val recipe = Recipe(name, description, ingredients, instructions, details, tags)
+                    if (name != null && description != null && instructions != null && details != null && tags != null) {
+                        val recipe = Recipe(name, description, ingredientsMap, instructions, details, tags)
                         recipes.add(recipe)
                     }
                 }
@@ -163,13 +172,6 @@ class MainActivity : AppCompatActivity() {
     /**
      * prevents returning to login/signUp screen
      */
-    override fun onBackPressed() {
-        // Hier kannst du spezielle Logik für den Back-Button hinzufügen,
-        // oder einfach nichts tun, um das Standardverhalten zu behalten.
-
-        // Beispiel: Keine Aktion durchführen
-        super.onBackPressed()
-    }
 
     private fun showAddRecipePopupMenu() {
         val anchorView = findViewById<ImageButton>(R.id.addRecipeOverlayBtn)
@@ -209,36 +211,31 @@ class MainActivity : AppCompatActivity() {
 
     private fun addToFavorites(selectedRecipe: Recipe) {
         // Überprüfe, ob ein ausgewähltes Rezept vorhanden ist
-        if (selectedRecipe != null) {
-            val userId = FirebaseAuth.getInstance().currentUser?.uid
-            userId?.let {
-                val favoritesReference = FirebaseDatabase.getInstance().reference.child("Users").child(it).child("Favorites")
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        userId?.let {
+            val favoritesReference = FirebaseDatabase.getInstance().reference.child("Users").child(it).child("Favorites")
 
-                // Erstelle eine eindeutige ID für das favorisierte Rezept
-                val favoriteRecipeId = favoritesReference.push().key
+            // Erstelle eine eindeutige ID für das favorisierte Rezept
+            val favoriteRecipeId = favoritesReference.push().key
 
-                if (favoriteRecipeId != null) {
-                    favoritesReference.child(favoriteRecipeId).setValue(selectedRecipe)
-                        .addOnSuccessListener {
-                            // Erfolgreich hinzugefügt
-                            Log.d("Firebase", "Rezept erfolgreich zu Favoriten hinzugefügt.")
-                        }
-                        .addOnFailureListener {
-                            // Fehler beim Hinzufügen
-                            Log.e("Firebase", "Fehler beim Hinzufügen des Rezepts zu Favoriten: ${it.message}")
-                        }
-                } else {
-                    // Falls favoriteRecipeId null ist
-                    Log.e("Firebase", "Fehler beim Erstellen einer eindeutigen ID für das Rezept.")
-                }
-            } ?: run {
-                // Falls userId null ist
-                Log.e("Firebase", "Fehler beim Abrufen der Benutzer-ID.")
+            if (favoriteRecipeId != null) {
+                favoritesReference.child(favoriteRecipeId).setValue(selectedRecipe)
+                    .addOnSuccessListener {
+                        // Erfolgreich hinzugefügt
+                        Log.d("Firebase", "Rezept erfolgreich zu Favoriten hinzugefügt.")
+                    }
+                    .addOnFailureListener {
+                        // Fehler beim Hinzufügen
+                        Log.e("Firebase", "Fehler beim Hinzufügen des Rezepts zu Favoriten: ${it.message}")
+                    }
+            } else {
+                // Falls favoriteRecipeId null ist
+                Log.e("Firebase", "Fehler beim Erstellen einer eindeutigen ID für das Rezept.")
             }
-
-        } else {
-            // Ausgewähltes Rezept ist null
-            Log.w("Firebase", "Ausgewähltes Rezept ist null. Nichts zu favorisieren.")
+        } ?: run {
+            // Falls userId null ist
+            Log.e("Firebase", "Fehler beim Abrufen der Benutzer-ID.")
         }
+
     }
 

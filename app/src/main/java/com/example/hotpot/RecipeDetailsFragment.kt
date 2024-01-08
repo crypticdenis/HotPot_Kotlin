@@ -54,17 +54,17 @@ class RecipeDetailsFragment : BottomSheetDialogFragment() {
         return view
     }
 
-    private fun showIngredientsDialog(ingredients: List<String>) {
-        val ingredientsArray = ingredients.toTypedArray()
+    private fun showIngredientsDialog(ingredients: Map<String, Any>) {
+        val ingredientEntries = ingredients.entries.toTypedArray()
 
         AlertDialog.Builder(requireContext())
             .setTitle("Add to Shopping List")
-            .setMultiChoiceItems(ingredientsArray, selectedIngredients) { _, which, isChecked ->
+            .setMultiChoiceItems(ingredientEntries.map { "${it.key}: ${it.value}" }.toTypedArray(), selectedIngredients) { _, which, isChecked ->
                 selectedIngredients[which] = isChecked
             }
             .setPositiveButton("Save") { dialog, _ ->
                 dialog.dismiss()
-                // Implement your save logic here
+                // TODO: save ingredient list to shopping list
             }
             .setNegativeButton("Cancel") { dialog, _ ->
                 dialog.dismiss()

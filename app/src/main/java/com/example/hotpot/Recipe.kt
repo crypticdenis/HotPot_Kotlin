@@ -7,14 +7,14 @@ import com.google.firebase.database.FirebaseDatabase;
 data class Recipe(
     val name: String,
     val description: String,
-    val ingredients: List<String>,
+    val ingredients: MutableMap<String, Any>,
     val instructions: String,
     val details: String,
     val tags: List<String>
 ): Serializable
 {
     // Leerer Konstruktor für Firebase
-    constructor() : this("", "", listOf(), "", "", listOf())
+    constructor() : this("", "", mutableMapOf(), "", "", listOf())
 }
 
 fun uploadRecipes(recipes: List<Recipe>) {

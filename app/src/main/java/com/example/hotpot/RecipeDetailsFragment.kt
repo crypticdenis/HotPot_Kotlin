@@ -26,12 +26,14 @@ class RecipeDetailsFragment : BottomSheetDialogFragment() {
         val recipeTitleTextView: TextView = view.findViewById(R.id.recipe_title)
         val recipeStepsTextView: TextView = view.findViewById(R.id.recipe_steps)
         val dietaryInfoTextView: TextView = view.findViewById(R.id.dietary_info)
+        val descriptionTextView : TextView = view.findViewById(R.id.descriptionInfo)
 
         val recipe = arguments?.getSerializable("RECIPE_DATA") as? Recipe
 
         recipe?.let {
             recipeTitleTextView.text = it.name
             recipeStepsTextView.text = it.instructions
+            descriptionTextView.text = it.description
             dietaryInfoTextView.text = it.tags.joinToString(", ")
             selectedIngredients = BooleanArray(it.ingredients.size)
         }

@@ -86,7 +86,46 @@
                     android:paddingBottom="2dp">
 
                     <TextView
-                        android:id="@+id/recipe_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Descirption"
+                        android:fontFamily="@font/abeezee"
+                        android:textSize="20dp"
+                        android:textColor="#D0FFBF"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                        android:gravity="left" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginBottom="8dp"
+                        android:background="@color/hotpot_light_green" />
+
+                    <TextView
+                        android:id="@+id/descriptionTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Enter Description of your Recipe"
+                        android:text="Enter Description"
+                        android:fontFamily="@font/abeezee"
+                        android:textSize="18dp"
+                        android:drawableLeft="@drawable/add_plus_button"
+                        android:drawablePadding="10dp"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="20dp"
+                        android:textColor="@color/white"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="6dp"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginBottom="8dp"
+                        android:background="@color/hotpot_light_green" />
+
+                    <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/abeezee"
@@ -94,10 +133,11 @@
                         android:text="Information"
                         android:textAppearance="@style/TextAppearance.AppCompat.Large"
                         android:textColor="#D0FFBF"
+                        android:paddingBottom="5dp"
+                        android:paddingTop="5dp"
                         android:textSize="20dp" />
 
                     <View
-                        android:id="@+id/green_bar3"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginTop="4dp"
@@ -303,6 +343,7 @@
                                 android:layout_gravity="center" />
 
                             <ImageView
+                                android:id="@+id/star_imageView"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:paddingLeft="5dp"
@@ -319,7 +360,7 @@
                                 android:layout_gravity="center"
                                 android:scaleX="1.5"
                                 android:scaleY="1.5"
-                                android:layout_marginLeft="15dp"
+                                android:layout_marginLeft="5dp"
                                 android:background="@drawable/add_plus_button"/>
 
                         </LinearLayout>
@@ -449,12 +490,11 @@
                             android:id="@+id/stepsEditText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@android:color/transparent"
-                            android:backgroundTint="@color/white"
                             android:fontFamily="@font/abeezee"
                             android:gravity="center"
+                            android:layout_gravity="center"
                             android:hint="Enter Steps"
-                            android:textColor="@color/hotpot_light_green"
+                            android:textColor="@color/white"
                             android:textSize="20dp"
                             android:windowSoftInputMode="stateVisible|adjustResize" />
                     </ViewSwitcher>

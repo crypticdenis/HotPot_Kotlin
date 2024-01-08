@@ -10,10 +10,8 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.PopupWindow
 import android.widget.TextView
-import androidx.activity.OnBackPressedCallback
-import androidx.activity.OnBackPressedDispatcher
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
@@ -57,6 +55,7 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<ImageButton>(R.id.addToFavoritesBtn).setOnClickListener {
             selectedRecipe?.let { it1 -> addToFavorites(it1) };
+            Toast.makeText(this@MainActivity, "Rezept zu Favoriten hinzugefügt!", Toast.LENGTH_SHORT).show();
         }
 
         bottomNavigationView = findViewById(R.id.bottom_navigation)
@@ -236,6 +235,7 @@ class MainActivity : AppCompatActivity() {
                 // Falls userId null ist
                 Log.e("Firebase", "Fehler beim Abrufen der Benutzer-ID.")
             }
+
         } else {
             // Ausgewähltes Rezept ist null
             Log.w("Firebase", "Ausgewähltes Rezept ist null. Nichts zu favorisieren.")

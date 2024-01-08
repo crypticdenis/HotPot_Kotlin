@@ -33,6 +33,43 @@
                 android:textColor="@color/hotpot_light_green"
                 android:padding="8dp"
                 />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="8dp"
+            android:background="@color/hotpot_light_green" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Description: "
+            android:textSize="20sp"
+            android:textColor="@color/hotpot_light_green"
+            android:paddingLeft="4dp"
+            android:fontFamily="@font/abeezee" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="8dp"
+            android:background="@color/hotpot_light_green" />
+
+        <TextView
+            android:id="@+id/descriptionInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/abeezee"
+            android:padding="4dp"
+            android:textColor="@color/hotpot_light_green"
+            android:textSize="20sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="8dp"
+            android:background="@color/hotpot_light_green" />
 
         <TextView
             android:id="@+id/dietary_info_head"
@@ -43,13 +80,14 @@
             android:text="Dietary Information:"
             android:textColor="@color/hotpot_light_green"
             android:textSize="20sp" />
+
             <View
-                android:id="@+id/green_bar3"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="8dp"
                 android:background="@color/hotpot_light_green" />
+
 
             <TextView
                 android:id="@+id/dietary_info"

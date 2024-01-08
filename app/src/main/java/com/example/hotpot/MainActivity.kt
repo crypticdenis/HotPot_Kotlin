@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
         FirebaseApp.initializeApp(this)
 
         // First recipe is null, that's why no recipe details open up
-        showRandomMeal();
+        //showRandomMeal();
 
         findViewById<Button>(R.id.random_meal_btn).setOnClickListener {
             showRandomMeal()

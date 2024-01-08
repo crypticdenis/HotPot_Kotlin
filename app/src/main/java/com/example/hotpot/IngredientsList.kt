@@ -4,10 +4,12 @@ import FridgeFragment
 import android.content.Intent
 import com.example.hotpot.R
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.widget.SearchView
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
@@ -45,11 +47,9 @@ class IngredientsList : AppCompatActivity() {
 
         fridgeBtn = findViewById(R.id.fridgeButton)
         fridgeBtn.setOnClickListener {
-            // TODO: open fridge fragment
-            // shows whole item list in the fridge
-        }
+            val ingredientListLayout = findViewById<LinearLayout>(R.id.ingredientListLayout)
+            ingredientListLayout.visibility = View.GONE
 
-        meatBox.setOnClickListener {
             // Öffne FridgeFragment und übergebe die ausgewählte Kategorie
             val fridgeFragment = FridgeFragment()
             val args = Bundle()
@@ -59,6 +59,28 @@ class IngredientsList : AppCompatActivity() {
             // Füge das Fragment dem Fragmentmanager hinzu
             val transaction = this.supportFragmentManager.beginTransaction()
             transaction.replace(R.id.fragment_container, fridgeFragment)
+            transaction.addToBackStack(null)
+            transaction.commit()
+        }
+
+        meatBox.setOnClickListener {
+            val ingredientListLayout = findViewById<LinearLayout>(R.id.ingredientListLayout)
+            ingredientListLayout.visibility = View.GONE
+
+            val fridgeContentFragment = FridgeContentFragment.newInstance("Meat")
+            val transaction = this.supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.fragment_container, fridgeContentFragment)
+            transaction.addToBackStack(null)
+            transaction.commit()
+        }
+
+        vegeBox.setOnClickListener {
+            val ingredientListLayout = findViewById<LinearLayout>(R.id.ingredientListLayout)
+            ingredientListLayout.visibility = View.GONE
+
+            val fridgeContentFragment = FridgeContentFragment.newInstance("Vegetables")
+            val transaction = this.supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.fragment_container, fridgeContentFragment)
             transaction.addToBackStack(null)
             transaction.commit()
         }

@@ -76,7 +76,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.navigation_list -> {
                     // TODO: Switch to the notifications fragment/activity
                     // shopping List
-                    val intent = Intent(this, IngredientsList::class.java)
+                    val intent = Intent(this, ShoppingListActivity::class.java)
                     startActivity(intent)
                     true
                 }

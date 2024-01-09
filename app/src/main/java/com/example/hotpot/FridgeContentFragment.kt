@@ -3,10 +3,7 @@ package com.example.hotpot
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.os.Bundle
-import android.text.InputType
-import android.text.Layout
 import android.util.Log
-import android.view.Gravity
 import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -16,12 +13,9 @@ import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.ScrollView
-import android.widget.SearchView
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
-import androidx.lifecycle.findViewTreeViewModelStoreOwner
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -56,7 +50,7 @@ class FridgeContentFragment : Fragment() {
 
         // Get correct database set from param
         val databaseReference = FirebaseDatabase.getInstance().reference.child("Ingredients").child(selectedCategory.toString())
-        createObjectsInShoppingList(databaseReference)
+        createObjectsInFridgeList(databaseReference)
 
 
         // Assuming you have a reference to the old activity layout
@@ -92,7 +86,7 @@ class FridgeContentFragment : Fragment() {
 
     }
 
-    private fun createObjectsInShoppingList(databaseReference: DatabaseReference) {
+    private fun createObjectsInFridgeList(databaseReference: DatabaseReference) {
         databaseReference.get().addOnSuccessListener { dataSnapshot ->
             if (dataSnapshot.exists()) {
                 val categoryContentLayout = view?.findViewById<LinearLayout>(R.id.categoryContentLayout)

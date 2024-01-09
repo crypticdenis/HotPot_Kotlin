@@ -24,7 +24,15 @@
     <string name="backgroundImageExplanaton">A fruit and legume background image to accentuate the user profile</string>
     <string name="mainName">Hot Pot</string>
     <string name="mainSplashMessage">Get Inspired, Eat Adventurously</string>
-    <string name="loginString">Login</string>
+    <string name="loginString">Log in</string>
     <string name="hotpotIconExplanation">An illustration of earth with a cut through the middle and vegetables streaming out of it</string>
     <string name="signupString">Sign Up</string>
+    <string name="loginSplashMessage">Welcome back!</string>
+    <string name="emailString">Email</string>
+    <string name="passwordString">Password</string>
+    <string name="emailHint">Enter your email address</string>
+    <string name="passwordHint">Enter your password</string>
+    <string name="signupSplashMessage">Please enter your credentials below</string>
+    <string name="nameString">Name</string>
+    <string name="nameHint">Enter your display name</string>
 </resources>

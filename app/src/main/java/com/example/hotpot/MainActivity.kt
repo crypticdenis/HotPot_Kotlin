@@ -69,13 +69,10 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 R.id.navigation_home -> {
-                    // TODO: Switch to the dashboard fragment/activity
                     true
                 }
 
                 R.id.navigation_list -> {
-                    // TODO: Switch to the notifications fragment/activity
-                    // shopping List
                     val intent = Intent(this, ShoppingListActivity::class.java)
                     startActivity(intent)
                     true

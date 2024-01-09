@@ -1,20 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_weight="1"
     android:background="@color/white"
     tools:context=".MainActivity">
 
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
-        android:layout_height="855dp"
+        android:layout_height="match_parent"
         android:orientation="vertical"
-        android:paddingTop="108dp"
+        android:paddingTop="20dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <FrameLayout
+            android:id="@+id/friendsFrameLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="75dp">
+
+        </FrameLayout>
 
         <TextView
             android:id="@+id/recipe_name"
@@ -30,9 +40,11 @@
 
         <ImageView
             android:id="@+id/food_picture"
-            android:layout_width="250dp"
-            android:layout_height="250dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
             android:scaleX="0.99"
             android:scaleY="0.89"
             android:src="@drawable/hotpot_icon" />
@@ -46,35 +58,54 @@
             android:gravity="center"
             android:text="@string/difficulty_2_5_time_30_min_rating_4_7_5"
             android:textColor="@color/black"
-            android:textSize="13dp" />
-
-        <Button
-            android:id="@+id/random_meal_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:backgroundTint="@color/hotpot_green"
-            android:fontFamily="@font/abeezee"
-            android:text="Random Meal"
-            android:textSize="20dp" />
+            android:textSize="13sp" />
 
         <Button
             android:id="@+id/show_recipe_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
             android:layout_gravity="center_horizontal"
-            android:backgroundTint="@color/hotpot_green"
+            android:layout_marginLeft="17dp"
+            android:layout_marginRight="17dp"
+            android:layout_marginBottom="10dp"
+            android:backgroundTint="@color/hotpot_light_green"
             android:fontFamily="@font/abeezee"
-            android:text="Show Recipe"
-            android:textSize="20dp" />
+            android:text="@string/show_recipe"
+            android:textSize="30sp" />
 
-        <ImageButton
-            android:id="@+id/addRecipeOverlayBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="310dp"
-            android:background="@color/white"
-            android:src="@drawable/add_new_recipe_button" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/random_meal_btn"
+                android:layout_width="match_parent"
+                android:layout_height="65dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginStart="17dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginBottom="10dp"
+                android:layout_weight="1"
+                android:backgroundTint="@color/hotpot_green"
+                android:fontFamily="@font/abeezee"
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp"
+                android:text="@string/random_meal"
+                android:textSize="30sp" />
+
+            <ImageButton
+                android:id="@+id/addRecipeOverlayBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginEnd="17dp"
+                android:layout_marginBottom="2dp"
+                android:background="@color/white"
+                android:src="@drawable/add_new_recipe_button" />
+        </LinearLayout>
 
     </LinearLayout>
 
@@ -86,8 +117,8 @@
         android:background="@color/white"
         app:itemIconTint="@color/hotpot_dark_green"
         app:itemTextColor="@color/hotpot_dark_green"
-        app:menu="@menu/bottom_navigation_menu"
-        app:layout_anchorGravity="bottom" />
+        app:layout_anchorGravity="bottom"
+        app:menu="@menu/bottom_navigation_menu" />
 
     <ImageButton
         android:id="@+id/addToFavoritesBtn"

@@ -14,4 +14,6 @@
     <string name="profile_picture">Profile Picture</string>
     <string name="fridge_text">What\'s in my Fridge?</string>
     <string name="set_allergy">Set allergy</string>
+    <string name="random_meal">Random Meal</string>
+    <string name="show_recipe">Show Recipe</string>
 </resources>

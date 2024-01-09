@@ -27,6 +27,8 @@ class IngredientsList : AppCompatActivity() {
     private lateinit var riceBox: CardView
     private lateinit var fruitsBox: CardView
     private lateinit var othersBox: CardView
+    private lateinit var beverageBox: CardView
+    private lateinit var pastaBox: CardView
 
     private lateinit var fridgeBtn : ImageButton
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,7 +44,9 @@ class IngredientsList : AppCompatActivity() {
         nutsBox = findViewById(R.id.nuts_box)
         herbsBox = findViewById(R.id.herbs_box)
         milkBox = findViewById(R.id.milk_box)
+        pastaBox = findViewById(R.id.pasta_box)
         riceBox = findViewById(R.id.rice_box)
+        beverageBox = findViewById(R.id.beverage_box)
         fruitsBox = findViewById(R.id.fruits_box)
         othersBox = findViewById(R.id.others_box)
 
@@ -84,6 +88,94 @@ class IngredientsList : AppCompatActivity() {
             ingredientListLayout.visibility = View.GONE
 
             val fridgeContentFragment = FridgeContentFragment.newInstance("Vegetables")
+            val transaction = this.supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.fragment_container, fridgeContentFragment)
+            transaction.addToBackStack(null)
+            transaction.commit()
+        }
+
+        nutsBox.setOnClickListener {
+            val ingredientListLayout = findViewById<LinearLayout>(R.id.ingredientListLayout)
+            ingredientListLayout.visibility = View.GONE
+
+            val fridgeContentFragment = FridgeContentFragment.newInstance("Nuts")
+            val transaction = this.supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.fragment_container, fridgeContentFragment)
+            transaction.addToBackStack(null)
+            transaction.commit()
+        }
+
+        herbsBox.setOnClickListener {
+            val ingredientListLayout = findViewById<LinearLayout>(R.id.ingredientListLayout)
+            ingredientListLayout.visibility = View.GONE
+
+            val fridgeContentFragment = FridgeContentFragment.newInstance("Herbs")
+            val transaction = this.supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.fragment_container, fridgeContentFragment)
+            transaction.addToBackStack(null)
+            transaction.commit()
+        }
+
+        milkBox.setOnClickListener {
+            val ingredientListLayout = findViewById<LinearLayout>(R.id.ingredientListLayout)
+            ingredientListLayout.visibility = View.GONE
+
+            val fridgeContentFragment = FridgeContentFragment.newInstance("Diary")
+            val transaction = this.supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.fragment_container, fridgeContentFragment)
+            transaction.addToBackStack(null)
+            transaction.commit()
+        }
+
+        riceBox.setOnClickListener {
+            val ingredientListLayout = findViewById<LinearLayout>(R.id.ingredientListLayout)
+            ingredientListLayout.visibility = View.GONE
+
+            val fridgeContentFragment = FridgeContentFragment.newInstance("Rice")
+            val transaction = this.supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.fragment_container, fridgeContentFragment)
+            transaction.addToBackStack(null)
+            transaction.commit()
+        }
+
+        fruitsBox.setOnClickListener {
+            val ingredientListLayout = findViewById<LinearLayout>(R.id.ingredientListLayout)
+            ingredientListLayout.visibility = View.GONE
+
+            val fridgeContentFragment = FridgeContentFragment.newInstance("Fruits")
+            val transaction = this.supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.fragment_container, fridgeContentFragment)
+            transaction.addToBackStack(null)
+            transaction.commit()
+        }
+
+        othersBox.setOnClickListener {
+            val ingredientListLayout = findViewById<LinearLayout>(R.id.ingredientListLayout)
+            ingredientListLayout.visibility = View.GONE
+
+            val fridgeContentFragment = FridgeContentFragment.newInstance("Others")
+            val transaction = this.supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.fragment_container, fridgeContentFragment)
+            transaction.addToBackStack(null)
+            transaction.commit()
+        }
+
+        pastaBox.setOnClickListener {
+            val ingredientListLayout = findViewById<LinearLayout>(R.id.ingredientListLayout)
+            ingredientListLayout.visibility = View.GONE
+
+            val fridgeContentFragment = FridgeContentFragment.newInstance("Pasta")
+            val transaction = this.supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.fragment_container, fridgeContentFragment)
+            transaction.addToBackStack(null)
+            transaction.commit()
+        }
+
+        beverageBox.setOnClickListener {
+            val ingredientListLayout = findViewById<LinearLayout>(R.id.ingredientListLayout)
+            ingredientListLayout.visibility = View.GONE
+
+            val fridgeContentFragment = FridgeContentFragment.newInstance("Beverages")
             val transaction = this.supportFragmentManager.beginTransaction()
             transaction.replace(R.id.fragment_container, fridgeContentFragment)
             transaction.addToBackStack(null)

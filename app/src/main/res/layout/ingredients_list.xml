@@ -302,7 +302,7 @@
                                 android:layout_height="100dp"
                                 android:layout_centerHorizontal="true"
                                 android:layout_gravity="center_horizontal"
-                                android:layout_marginTop="10dp"
+                                android:layout_marginTop="20dp"
                                 android:src="@drawable/rice" />
 
                             <TextView
@@ -314,7 +314,49 @@
                                 android:layout_marginBottom="10dp"
                                 android:fontFamily="@font/abeezee"
                                 android:gravity="center_horizontal"
-                                android:text="Pasta, rice and pulses"
+                                android:layout_marginTop="10dp"
+                                android:text="Rice"
+                                android:textColor="@color/hotpot_green"
+                                android:textSize="20dp" />
+                        </RelativeLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/pasta_box"
+                        android:layout_width="0dp"
+                        android:layout_height="170dp"
+                        android:layout_rowWeight="1"
+                        android:layout_columnWeight="1"
+                        android:layout_margin="5dp"
+                        app:cardBackgroundColor="@color/categories_box_bg_color"
+                        app:cardCornerRadius="30dp"
+                        app:cardElevation="2dp">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <ImageView
+                                android:id="@+id/pasta_image"
+                                android:layout_width="150dp"
+                                android:layout_height="100dp"
+                                android:layout_centerHorizontal="true"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_marginTop="30dp"
+                                android:scaleX=".8"
+                                android:scaleY=".8"
+                                android:src="@drawable/pasta" />
+
+                            <TextView
+                                android:id="@+id/pasta_text"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/pasta_image"
+                                android:layout_centerHorizontal="true"
+                                android:layout_marginBottom="10dp"
+                                android:fontFamily="@font/abeezee"
+                                android:gravity="center_horizontal"
+                                android:text="Pasta"
                                 android:textColor="@color/hotpot_green"
                                 android:textSize="20dp" />
                         </RelativeLayout>
@@ -341,7 +383,9 @@
                                 android:layout_height="100dp"
                                 android:layout_centerHorizontal="true"
                                 android:layout_gravity="center_horizontal"
-                                android:layout_marginTop="10dp"
+                                android:layout_marginTop="30dp"
+                                android:scaleY="1.4"
+                                android:scaleX="1.4"
                                 android:src="@drawable/fruits" />
 
                             <TextView
@@ -350,11 +394,50 @@
                                 android:layout_height="wrap_content"
                                 android:layout_below="@id/fruits_image"
                                 android:layout_centerHorizontal="true"
-                                android:layout_marginTop="23dp"
                                 android:layout_marginBottom="10dp"
                                 android:fontFamily="@font/abeezee"
                                 android:gravity="center_horizontal"
                                 android:text="Fruits"
+                                android:textColor="@color/hotpot_green"
+                                android:textSize="20dp" />
+                        </RelativeLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/beverage_box"
+                        android:layout_width="0dp"
+                        android:layout_height="170dp"
+                        android:layout_rowWeight="1"
+                        android:layout_columnWeight="1"
+                        android:layout_margin="5dp"
+                        app:cardBackgroundColor="@color/categories_box_bg_color"
+                        app:cardCornerRadius="30dp"
+                        app:cardElevation="2dp">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <ImageView
+                                android:id="@+id/beverage_icon"
+                                android:layout_width="170dp"
+                                android:layout_height="100dp"
+                                android:layout_centerHorizontal="true"
+                                android:layout_gravity="center_horizontal"
+                                android:scaleY=".7"
+                                android:scaleX=".7"
+                                android:layout_marginTop="30dp"
+                                android:src="@drawable/beverage_icon" />
+
+                            <TextView
+                                android:id="@+id/beverage_text"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/beverage_icon"
+                                android:layout_centerHorizontal="true"
+                                android:fontFamily="@font/abeezee"
+                                android:gravity="center_horizontal"
+                                android:text="Beverages"
                                 android:textColor="@color/hotpot_green"
                                 android:textSize="20dp" />
                         </RelativeLayout>

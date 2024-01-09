@@ -1,5 +1,6 @@
 package com.example.hotpot
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.os.Bundle
 import android.text.InputType
@@ -178,6 +179,7 @@ class FridgeContentFragment : Fragment() {
         builder.show()
     }
 
+    @SuppressLint("SuspiciousIndentation")
     private fun saveQuantityToFirebase(ingredientName: String, quantity: String, unit: String) {
         val currentUserUid = FirebaseAuth.getInstance().currentUser?.uid.toString()
         val databaseReference = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserUid)

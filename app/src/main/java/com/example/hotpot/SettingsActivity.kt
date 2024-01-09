@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.FrameLayout
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -56,9 +57,17 @@ class SettingsActivity : AppCompatActivity(), OnSettingsItemClickListener {
             "Logout" -> startLogoutActivity()
             "Diet Filter" -> openDietFiltersFragment()
             "What's in my fridge?" ->startFridgeActivity();
+            "Account" ->startProfileActivity()
             // Handle other items if needed
 
         }
+    }
+
+    private fun startProfileActivity() {
+        //toast test
+        val intent = Intent(this, AccountActivity::class.java)
+        startActivity(intent)
+
     }
 
     fun onCloseFragment() {

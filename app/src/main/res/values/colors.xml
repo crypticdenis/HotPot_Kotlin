@@ -9,5 +9,6 @@
     <color name="navBar_green_color">#041107</color>
     <color name="hint_search_color">#6B6E6C</color>
     <color name="categories_box_bg_color">#C395D8AC</color>
+    <color name="transparent">#00000000</color>
 
 </resources>

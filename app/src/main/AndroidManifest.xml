@@ -21,6 +21,9 @@
         android:theme="@style/Theme.HotPot"
         tools:targetApi="31">
         <activity
+            android:name=".AccountActivity"
+            android:exported="false" />
+        <activity
             android:name=".ShoppingListActivity"
             android:exported="false" />
         <activity

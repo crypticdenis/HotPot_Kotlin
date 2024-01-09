@@ -10,7 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:src="@drawable/background_im"
-        android:scaleType="centerCrop" />
+        android:scaleType="centerCrop"
+        android:contentDescription="@string/backgroundImageExplanaton"/>
 
     <!-- LinearLayout for Your Content -->
 
@@ -28,7 +29,8 @@
             android:layout_height="48dp"
             android:layout_weight="0"
             android:background="@drawable/arrow_back"
-            android:backgroundTint="@color/hotpot_dark_green" />
+            android:backgroundTint="@color/hotpot_dark_green"
+            android:contentDescription="@string/backbuttonExplanation"/>
 
         <Space
             android:layout_width="match_parent"
@@ -41,7 +43,8 @@
             android:layout_height="48dp"
             android:layout_weight="0"
             android:background="@drawable/settings_cog"
-            android:backgroundTint="@color/navBar_green_color" />
+            android:backgroundTint="@color/navBar_green_color"
+            android:contentDescription="@string/explainSettingsIcon"/>
     </LinearLayout>
 
     <LinearLayout

@@ -16,4 +16,15 @@
     <string name="set_allergy">Set allergy</string>
     <string name="random_meal">Random Meal</string>
     <string name="show_recipe">Show Recipe</string>
+    <string name="addNewButtonDescription">Opens an overlay on which you can select what to add (recipe, image, etc.)</string>
+    <string name="addToFavouritesButtonDescription">Add the currently displayed recipe to your favourites</string>
+    <string name="recipeImageDescription">The currently displayed image of the recipe provided by the recipe maker</string>
+    <string name="explainSettingsIcon">Cog Icon opens the Settings Window</string>
+    <string name="backbuttonExplanation">Back Button to send user back to main menu</string>
+    <string name="backgroundImageExplanaton">A fruit and legume background image to accentuate the user profile</string>
+    <string name="mainName">Hot Pot</string>
+    <string name="mainSplashMessage">Get Inspired, Eat Adventurously</string>
+    <string name="loginString">Login</string>
+    <string name="hotpotIconExplanation">An illustration of earth with a cut through the middle and vegetables streaming out of it</string>
+    <string name="signupString">Sign Up</string>
 </resources>

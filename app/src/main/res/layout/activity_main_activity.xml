@@ -36,7 +36,7 @@
             android:gravity="center"
             android:text="Shoyu Ramen"
             android:textColor="@color/hotpot_dark_green"
-            android:textSize="45dp" />
+            android:textSize="45sp" />
 
         <ImageView
             android:id="@+id/food_picture"
@@ -47,7 +47,8 @@
             android:layout_marginEnd="20dp"
             android:scaleX="0.99"
             android:scaleY="0.89"
-            android:src="@drawable/hotpot_icon" />
+            android:src="@drawable/hotpot_icon"
+            android:contentDescription="@string/recipeImageDescription"/>
 
         <TextView
             android:id="@+id/recipe_info"
@@ -104,7 +105,8 @@
                 android:layout_marginEnd="17dp"
                 android:layout_marginBottom="2dp"
                 android:background="@color/white"
-                android:src="@drawable/add_new_recipe_button" />
+                android:src="@drawable/add_new_recipe_button"
+                android:contentDescription="@string/addNewButtonDescription"/>
         </LinearLayout>
 
     </LinearLayout>
@@ -129,6 +131,7 @@
         android:background="@color/white"
         app:layout_anchor="@+id/linearLayout"
         app:layout_anchorGravity="end|center"
-        app:srcCompat="@drawable/add_to_list_button" />
+        app:srcCompat="@drawable/add_to_list_button"
+        android:contentDescription="@string/addToFavouritesButtonDescription"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

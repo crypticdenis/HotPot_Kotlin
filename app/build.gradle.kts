@@ -83,6 +83,13 @@ dependencies {
     implementation ("com.github.skydoves:expandablelayout:1.0.7")
     implementation ("com.github.bumptech.glide:glide:4.12.0")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
+    implementation ("io.coil-kt:coil:1.4.0")
+
+    implementation ("com.google.firebase:firebase-storage:latest_version")
+    implementation ("com.google.firebase:firebase-database:latest_version")
+    implementation ("com.google.firebase:firebase-auth:latest_version")
+    implementation ("com.google.firebase:firebase-analytics:latest_version")
+    implementation ("com.google.firebase:firebase-firestore:latest_version")
     implementation ("com.google.firebase:firebase-appcheck:latest_version")
 
 

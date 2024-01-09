@@ -92,7 +92,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 R.id.navigation_search -> {
-                    val intent = Intent(this, FavoritesActivity::class.java)
+                    val intent = Intent(this, SearchActivity::class.java)
                     startActivity(intent)
                     true
                 }

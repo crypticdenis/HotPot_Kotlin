@@ -14,7 +14,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.bumptech.glide.Glide
-
+//TODO: Set allergies doesn't work yet
 
 @Suppress("DEPRECATION")
 class AccountActivity : AppCompatActivity() {

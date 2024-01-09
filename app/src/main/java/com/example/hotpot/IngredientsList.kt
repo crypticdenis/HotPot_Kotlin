@@ -2,7 +2,6 @@ package com.example.hotpot
 
 import FridgeFragment
 import android.content.Intent
-import com.example.hotpot.R
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.widget.SearchView
@@ -185,16 +184,16 @@ class IngredientsList : AppCompatActivity() {
         customizeSearchView(searchView)
 
         bottomNavigationView = findViewById(R.id.bottom_navigation)
+        bottomNavigationView.selectedItemId = R.id.navigation_list
         bottomNavigationView.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.navigation_settings -> {
-                    val intent = Intent(this, SettingsActivity::class.java)
+                    val intent = Intent(this, AccountActivity::class.java)
                     startActivity(intent)
                     true
                 }
 
                 R.id.navigation_home -> {
-                    // TODO: Switch to the dashboard fragment/activity
                     val intent = Intent(this, MainActivity::class.java)
                     startActivity(intent)
                     finish()
@@ -202,11 +201,13 @@ class IngredientsList : AppCompatActivity() {
                 }
 
                 R.id.navigation_list -> {
+                    val intent = Intent(this, ShoppingListActivity::class.java)
+                    startActivity(intent)
                     true
                 }
 
-                R.id.navigation_favs -> {
-                    val intent = Intent(this, FavoritesActivity::class.java)
+                R.id.navigation_search -> {
+                    val intent = Intent(this, SearchActivity::class.java)
                     startActivity(intent)
                     true
                 }

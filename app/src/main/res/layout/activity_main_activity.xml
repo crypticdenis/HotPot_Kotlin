@@ -41,16 +41,15 @@
 
         <ImageView
             android:id="@+id/food_picture"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:maxHeight="250dp"
-            android:layout_gravity="center"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="250dp"
+            android:scaleType="centerCrop"
+            android:layout_marginTop="0dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginEnd="17dp"
+            android:layout_marginStart="17dp"
             android:contentDescription="@string/recipeImageDescription"
-            android:scaleX="0.99"
-            android:scaleY="0.89"
-            android:src="@drawable/hotpot_icon" />
+            android:src="@drawable/shoyu" />
 
         <TextView
             android:id="@+id/recipe_info"
@@ -128,9 +127,9 @@
         android:id="@+id/addToFavoritesBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="50dp"
-        android:layout_marginBottom="500dp"
-        android:background="@color/white"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="460dp"
+        android:background="@color/transparent"
         app:layout_anchor="@+id/linearLayout"
         app:layout_anchorGravity="end|center"
         app:srcCompat="@drawable/add_to_list_button"

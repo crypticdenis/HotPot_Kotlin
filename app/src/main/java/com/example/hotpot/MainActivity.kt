@@ -91,7 +91,7 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
 
-                R.id.navigation_favs -> {
+                R.id.navigation_search -> {
                     val intent = Intent(this, FavoritesActivity::class.java)
                     startActivity(intent)
                     true

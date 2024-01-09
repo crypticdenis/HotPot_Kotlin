@@ -112,7 +112,7 @@ class SettingsActivity : AppCompatActivity(), OnSettingsItemClickListener {
             recyclerView.visibility = View.VISIBLE
             fragmentContainer.visibility = View.GONE
         } else {
-            val intent = Intent(this, MainActivity::class.java)
+            val intent = Intent(this, AccountActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
             finish()  // Ensure this activity is removed from the back stack

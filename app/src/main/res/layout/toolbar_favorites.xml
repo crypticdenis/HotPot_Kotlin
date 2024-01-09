@@ -9,12 +9,12 @@
 
     <ImageButton
         android:id="@+id/toolbar_return_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginStart="16dp"
-        android:backgroundTint="@color/black"
         android:background="?attr/selectableItemBackgroundBorderless"
-        android:src="@drawable/leftarrow" /> <!-- Replace with your back arrow icon -->
+        android:backgroundTint="@color/black"
+        android:src="@drawable/arrow_back" /> <!-- Replace with your back arrow icon -->
 
     <TextView
         android:layout_width="wrap_content"

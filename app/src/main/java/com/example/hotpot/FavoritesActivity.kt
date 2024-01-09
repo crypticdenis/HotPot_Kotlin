@@ -1,11 +1,13 @@
 package com.example.hotpot
 
 import RecipeDetailsFragment
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.widget.ImageButton
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
@@ -102,6 +104,7 @@ class FavoritesActivity : AppCompatActivity() {
     private var favoriteRecipes: List<Recipe> = listOf()
     private lateinit var userId: String
     private lateinit var databaseReference: DatabaseReference
+    private lateinit var bottomNavigationView: BottomNavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -133,6 +136,38 @@ class FavoritesActivity : AppCompatActivity() {
         databaseReference = FirebaseDatabase.getInstance().reference.child("Users").child(userId).child("Favorites")
 
         loadFavoriteRecipes()
+
+        bottomNavigationView = findViewById(R.id.bottom_navigation)
+        bottomNavigationView.selectedItemId = R.id.navigation_favs
+        bottomNavigationView.setOnNavigationItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.navigation_settings -> {
+                    val intent = Intent(this, AccountActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+
+                R.id.navigation_home -> {
+                    val intent = Intent(this, MainActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+
+                R.id.navigation_list -> {
+                    val intent = Intent(this, ShoppingListActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+
+                R.id.navigation_favs -> {
+                    val intent = Intent(this, FavoritesActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+
+                else -> false
+            }
+        }
     }
 
     private fun loadFavoriteRecipes() {

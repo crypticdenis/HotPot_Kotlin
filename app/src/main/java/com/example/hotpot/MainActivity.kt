@@ -63,7 +63,7 @@ class MainActivity : AppCompatActivity() {
         bottomNavigationView.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.navigation_settings -> {
-                    val intent = Intent(this, SettingsActivity::class.java)
+                    val intent = Intent(this, AccountActivity::class.java)
                     startActivity(intent)
                     true
                 }

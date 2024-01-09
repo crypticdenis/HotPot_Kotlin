@@ -82,8 +82,8 @@ class ShoppingListActivity : AppCompatActivity() {
                     true
                 }
 
-                R.id.navigation_favs -> {
-                    val intent = Intent(this, FavoritesActivity::class.java)
+                R.id.navigation_search -> {
+                    val intent = Intent(this, SearchActivity::class.java)
                     startActivity(intent)
                     true
                 }

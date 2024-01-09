@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
@@ -25,6 +26,9 @@ class AccountActivity : AppCompatActivity() {
         val profilePicture = findViewById<ImageView>(R.id.profilePictureImageView)
         val backButton = findViewById<ImageButton>(R.id.Account_BackButton)
         val settingsBUtton = findViewById<ImageButton>(R.id.Account_SettingsButton)
+        val fridgeButton = findViewById<Button>(R.id.fridgeButton)
+        val favouritesButton = findViewById<Button>(R.id.favouritesButton)
+        val allergyButton = findViewById<Button>(R.id.allergyButton)
 
         val auth = FirebaseAuth.getInstance()
         val database = FirebaseDatabase.getInstance()
@@ -51,7 +55,20 @@ class AccountActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        fridgeButton.setOnClickListener {
+            val intent = Intent(this, IngredientsList::class.java)
+            startActivity(intent)
+        }
 
+        favouritesButton.setOnClickListener {
+            val intent = Intent(this, FavoritesActivity::class.java)
+            startActivity(intent)
+        }
+
+        allergyButton.setOnClickListener {
+            val intent = Intent(this, DietFilters::class.java)
+            startActivity(intent)
+        }
 
 
 
@@ -77,8 +94,8 @@ class AccountActivity : AppCompatActivity() {
                     true
                 }
 
-                R.id.navigation_favs -> {
-                    val intent = Intent(this, FavoritesActivity::class.java)
+                R.id.navigation_search -> {
+                    val intent = Intent(this, SearchActivity::class.java)
                     startActivity(intent)
                     true
                 }

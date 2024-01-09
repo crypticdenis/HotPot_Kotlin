@@ -138,7 +138,7 @@ class FavoritesActivity : AppCompatActivity() {
         loadFavoriteRecipes()
 
         bottomNavigationView = findViewById(R.id.bottom_navigation)
-        bottomNavigationView.selectedItemId = R.id.navigation_favs
+        bottomNavigationView.selectedItemId = R.id.navigation_settings
         bottomNavigationView.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.navigation_settings -> {
@@ -159,7 +159,7 @@ class FavoritesActivity : AppCompatActivity() {
                     true
                 }
 
-                R.id.navigation_favs -> {
+                R.id.navigation_search -> {
                     val intent = Intent(this, FavoritesActivity::class.java)
                     startActivity(intent)
                     true

@@ -1,5 +1,6 @@
 package com.example.hotpot
 
+import FriendStoriesFragment
 import RecipeDetailsFragment
 import android.content.Context
 import android.content.Intent
@@ -7,11 +8,15 @@ import android.os.Bundle
 import android.util.Log
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.PopupWindow
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
@@ -39,6 +44,14 @@ class MainActivity : AppCompatActivity() {
 
         // First recipe is null, that's why no recipe details open up
         showRandomMeal();
+
+        if (savedInstanceState == null) {
+            // Load your fragment_friend_stories into the FriendsFrameLayout
+            loadFragment(FriendStoriesFragment())
+            // set background of fragment to transparent
+            findViewById<FrameLayout>(R.id.friendsFrameLayout).setBackgroundColor(0x00000000)
+
+        }
 
         findViewById<Button>(R.id.random_meal_btn).setOnClickListener {
             showRandomMeal()
@@ -87,6 +100,20 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
+    }
+
+    private fun loadFragment(fragment: Fragment) {
+        val fragmentManager: FragmentManager = supportFragmentManager
+        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
+
+        // Replace the contents of FriendsFrameLayout with the provided fragment
+        fragmentTransaction.replace(R.id.friendsFrameLayout, fragment)
+
+        // Add the transaction to the back stack (optional)
+        fragmentTransaction.addToBackStack(null)
+
+        // Commit the transaction
+        fragmentTransaction.commit()
     }
 
     private fun openRecipeDetailsFragment(recipe: Recipe) {

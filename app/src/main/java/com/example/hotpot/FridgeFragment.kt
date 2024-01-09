@@ -93,12 +93,6 @@ class FridgeFragment : Fragment() {
                     val itemName = itemSnapshot.key.toString()
 
                     for (unitSnapshot in itemSnapshot.children) {
-                        // Log Einheit
-                        // key is Gram/Milliliters etc
-                        // value is the number
-                        Log.d("Fridge", "Einheit: ${unitSnapshot.key}")
-                        Log.d("Fridge", "Menge: ${unitSnapshot.value}")
-
                         val unitName = unitSnapshot.key.toString()
                         val amountValue = unitSnapshot.value.toString()
 
@@ -188,13 +182,23 @@ class FridgeFragment : Fragment() {
         linearLayoutHorizontal.addView(trashButton)
 
         editButton.setOnClickListener {
-            Log.d("Buttons", name + "editButton clicked")
-            // open up window enabling user to change the quantity and update firebase database
-            // Create an EditText to get user input
+            Log.d("Buttons", "$name editButton clicked")
+
+            // Create an AlertDialog
+            val alertDialogBuilder = AlertDialog.Builder(requireContext())
+            alertDialogBuilder.setTitle("Edit Quantity")
+
+            // Create a LinearLayout to hold both EditText and Spinner
+            val linearLayout = LinearLayout(requireContext())
+            linearLayout.orientation = LinearLayout.HORIZONTAL
+
+            // Create EditText
             val editText = EditText(requireContext())
             editText.gravity = Gravity.CENTER
             editText.hint = "Enter new quantity"
+            linearLayout.addView(editText)
 
+            // Create Spinner
             val unitSpinner = Spinner(requireContext())
             unitSpinner.adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, getUnitOptions())
 
@@ -202,21 +206,20 @@ class FridgeFragment : Fragment() {
             val unitPosition = getUnitOptions().indexOf(unit)
             unitSpinner.setSelection(if (unitPosition != -1) unitPosition else 0)
 
-            linearLayoutHorizontal.addView(unitSpinner)
+            linearLayout.addView(unitSpinner)
 
-            // Create an AlertDialog
-            val alertDialogBuilder = AlertDialog.Builder(requireContext())
-            alertDialogBuilder.setTitle("Edit Quantity")
-            alertDialogBuilder.setView(editText)
+            // Set the custom layout to the AlertDialog
+            alertDialogBuilder.setView(linearLayout)
 
             alertDialogBuilder.setPositiveButton("Update") { _, _ ->
                 // User clicked Update
                 val newQuantity = editText.text.toString()
+                val selectedUnit = unitSpinner.selectedItem.toString()
 
                 // Validate newQuantity (you might want to add additional validation)
                 if (newQuantity.isNotBlank()) {
                     // Update the quantity in the Firebase database
-                    updateQuantityInDatabase(name, newQuantity)
+                    updateQuantityInDatabase(name, newQuantity, selectedUnit)
                 } else {
                     Toast.makeText(requireContext(), "Please enter a valid quantity", Toast.LENGTH_SHORT).show()
                 }
@@ -255,7 +258,7 @@ class FridgeFragment : Fragment() {
         fridgeContentLayout?.addView(linearLayoutHorizontal)
     }
 
-    fun deleteItemFromFridge(itemName: String) {
+    private fun deleteItemFromFridge(itemName: String) {
         val currentUser = authenticatorReference.currentUser
         if (currentUser != null) {
             val userUID = currentUser.uid
@@ -269,9 +272,6 @@ class FridgeFragment : Fragment() {
                             // Lösche das Item aus der Firebase-Datenbank
                             itemSnapshot.ref.removeValue()
                             removeUIElement(itemName)
-
-                            Log.d("Firebase", "Item $itemName erfolgreich gelöscht")
-                            Toast.makeText(requireContext(), "$itemName erfolgreich gelöscht", Toast.LENGTH_SHORT).show()
                             return@addOnSuccessListener
                         }
                     }
@@ -283,7 +283,7 @@ class FridgeFragment : Fragment() {
         }
     }
 
-    fun removeUIElement(itemName: String) {
+    private fun removeUIElement(itemName: String) {
         // Find and remove the UI element from fridgeContentLayout
         val childCount = fridgeContentLayout.childCount
         for (i in 0 until childCount) {
@@ -299,9 +299,8 @@ class FridgeFragment : Fragment() {
         }
     }
 
-    fun updateQuantityInDatabase(itemName: String, newQuantity: String) {
+    private fun updateQuantityInDatabase(itemName: String, newQuantity: String, selectedUnit: String) {
         val currentUser = authenticatorReference.currentUser
-        var quantityUnit : String;
 
         if (currentUser != null) {
             val userUID = currentUser.uid
@@ -312,15 +311,53 @@ class FridgeFragment : Fragment() {
                     for (itemSnapshot in categorySnapshot.children) {
                         // Check if the current item matches
                         if (itemSnapshot.key == itemName) {
-                            // check category for correct Unit
-                            val quantityUnit = determineQuantityUnit(categorySnapshot.key.toString())
-                            // Update the quantity in the Firebase database
-                            itemSnapshot.child(quantityUnit).ref.setValue(newQuantity)
-                            Log.d("Firebase", "Quantity for $itemName updated to $newQuantity")
-                            Toast.makeText(requireContext(), "Quantity updated", Toast.LENGTH_SHORT).show()
-                            // set new quantity in UI
-                            fridgeContentLayout.removeAllViews();
-                            createObjectsInFridge(databaseReference, authenticatorReference.uid.toString())
+                            // Remove all existing quantities for the item
+                            itemSnapshot.ref.removeValue().addOnCompleteListener { removeTask ->
+                                if (removeTask.isSuccessful) {
+                                    // Add the updated quantity with the selected unit
+                                    itemSnapshot.child(selectedUnit).ref.setValue(newQuantity)
+                                        .addOnCompleteListener { addTask ->
+                                            if (addTask.isSuccessful) {
+                                                Log.d(
+                                                    "Firebase",
+                                                    "Quantity for $itemName updated to $newQuantity $selectedUnit"
+                                                )
+                                                Toast.makeText(
+                                                    requireContext(),
+                                                    "Quantity updated",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+
+                                                // Update the UI with the new quantity and unit
+                                                fridgeContentLayout.removeAllViews()
+                                                createObjectsInFridge(
+                                                    databaseReference,
+                                                    authenticatorReference.uid.toString()
+                                                )
+                                            } else {
+                                                Log.e(
+                                                    "Firebase",
+                                                    "Error adding updated quantity: ${addTask.exception?.message}"
+                                                )
+                                                Toast.makeText(
+                                                    requireContext(),
+                                                    "Error updating quantity",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                            }
+                                        }
+                                } else {
+                                    Log.e(
+                                        "Firebase",
+                                        "Error removing existing quantities: ${removeTask.exception?.message}"
+                                    )
+                                    Toast.makeText(
+                                        requireContext(),
+                                        "Error updating quantity",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            }
                             return@addOnSuccessListener
                         }
                     }
@@ -333,17 +370,9 @@ class FridgeFragment : Fragment() {
         }
     }
 
-    fun determineQuantityUnit(category: String): String {
-        // Add logic to determine the quantity unit based on the category
-        return when (category) {
-            "Meat" -> "Gram" // Update this to the correct unit for the "Meat" category
-            // Add more cases for other categories as needed
-            else -> "DefaultUnit" // Change this to the default unit if category is unknown
-        }
-    }
+
 
     fun getUnitOptions(): List<String> {
         return listOf("Gram", "Milliliter", "Piece", "Count", "Teaspoon", "Tablespoon", "Cup", "Ounce", "Pound", "Liter", "Fluid Ounce", "Quart", "Gallon")
     }
-
 }

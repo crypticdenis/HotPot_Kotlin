@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
         FirebaseApp.initializeApp(this)
 
         // First recipe is null, that's why no recipe details open up
-        //showRandomMeal();
+        showRandomMeal();
 
         findViewById<Button>(R.id.random_meal_btn).setOnClickListener {
             showRandomMeal()
@@ -75,6 +75,7 @@ class MainActivity : AppCompatActivity() {
 
                 R.id.navigation_list -> {
                     // TODO: Switch to the notifications fragment/activity
+                    // shopping List
                     val intent = Intent(this, IngredientsList::class.java)
                     startActivity(intent)
                     true

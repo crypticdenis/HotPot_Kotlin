@@ -45,6 +45,7 @@ class SettingsActivity : AppCompatActivity(), OnSettingsItemClickListener {
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = SettingsAdapter(listOf(
             SettingItem(R.drawable.me, "Account"),
+            SettingItem(R.drawable.fridge_button_icon, "What's in my fridge?"),
             SettingItem(R.drawable.hotpot_icon, "Diet Filter"),
             SettingItem(R.drawable.shutdown, "Logout")
         ), this)
@@ -54,6 +55,7 @@ class SettingsActivity : AppCompatActivity(), OnSettingsItemClickListener {
         when (item.title) {
             "Logout" -> startLogoutActivity()
             "Diet Filter" -> openDietFiltersFragment()
+            "What's in my fridge?" ->startFridgeActivity();
             // Handle other items if needed
 
         }
@@ -61,6 +63,11 @@ class SettingsActivity : AppCompatActivity(), OnSettingsItemClickListener {
 
     fun onCloseFragment() {
         finish();
+    }
+
+    private fun startFridgeActivity() {
+        val intent = Intent(this, IngredientsList::class.java)
+        startActivity(intent)
     }
 
     private fun openDietFiltersFragment() {

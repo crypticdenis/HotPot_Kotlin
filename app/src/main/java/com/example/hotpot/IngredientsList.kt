@@ -35,6 +35,7 @@ class IngredientsList : AppCompatActivity() {
 
         // Assuming you have a SearchView with the id "searchView" in your layout
         val searchView: SearchView = findViewById(R.id.searchView)
+        val homeButton : ImageButton = findViewById(R.id.ingredientsList_HomeButton)
 
         meatBox = findViewById(R.id.meat_box);
         vegeBox = findViewById(R.id.vege_box)
@@ -44,6 +45,10 @@ class IngredientsList : AppCompatActivity() {
         riceBox = findViewById(R.id.rice_box)
         fruitsBox = findViewById(R.id.fruits_box)
         othersBox = findViewById(R.id.others_box)
+
+        homeButton.setOnClickListener {
+            finish();
+        }
 
         fridgeBtn = findViewById(R.id.fridgeButton)
         fridgeBtn.setOnClickListener {

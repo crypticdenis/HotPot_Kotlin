@@ -11,11 +11,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.SearchView
+import android.widget.Spinner
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.findViewTreeViewModelStoreOwner
@@ -38,9 +40,6 @@ class FridgeContentFragment : Fragment() {
         arguments?.let {
             selectedCategory = it.getString(ARG_SELECTED_CATEGORY)
         }
-
-
-
     }
 
     override fun onCreateView(
@@ -92,7 +91,7 @@ class FridgeContentFragment : Fragment() {
 
     }
 
-    fun createObjectsInShoppingList(databaseReference: DatabaseReference) {
+    private fun createObjectsInShoppingList(databaseReference: DatabaseReference) {
         databaseReference.get().addOnSuccessListener { dataSnapshot ->
             if (dataSnapshot.exists()) {
                 val categoryContentLayout = view?.findViewById<LinearLayout>(R.id.categoryContentLayout)
@@ -150,21 +149,26 @@ class FridgeContentFragment : Fragment() {
 
     private fun showQuantityInputDialog(ingredientName: String) {
         val builder = AlertDialog.Builder(requireContext())
+        val view = View.inflate(requireContext(), R.layout.dialog_quantity_input, null)
+        builder.setView(view)
 
-        if(selectedCategory == "Meat") {
-            builder.setTitle("Enter Quantity (Gram)")
-        }
+        val quantityInput = view.findViewById<EditText>(R.id.quantityInput)
+        val unitSpinner = view.findViewById<Spinner>(R.id.unitSpinner)
 
+        // Definiere die Auswahlmöglichkeiten für das Spinner-Menü
+        val unitOptions = arrayOf("Gram", "Milliliter",
+            "Piece", "Teaspoon", "Tablespoon", "Cup", "Ounce", "Pound",
+            "Liter", "Fluid Ounce", "Quart", "Gallon", "Count")
 
-        val input = EditText(requireContext())
-        input.gravity = Gravity.CENTER
-        input.inputType = InputType.TYPE_CLASS_NUMBER
-        builder.setView(input)
+        // Verwende ein ArrayAdapter, um die Auswahlmöglichkeiten in das Spinner-Menü zu laden
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, unitOptions)
+        unitSpinner.adapter = adapter
 
         builder.setPositiveButton("OK") { _, _ ->
-            val quantity = input.text.toString()
-            saveQuantityToFirebase(ingredientName, quantity)
-            Log.d("Quantity", "Ingredient: $ingredientName, Quantity: $quantity Gram")
+            val quantity = quantityInput.text.toString()
+            val selectedUnit = unitSpinner.selectedItem.toString()
+            saveQuantityToFirebase(ingredientName, quantity, selectedUnit)
+            Log.d("Quantity", "Ingredient: $ingredientName, Quantity: $quantity $selectedUnit")
         }
 
         builder.setNegativeButton("Cancel") { dialog, _ ->
@@ -174,7 +178,7 @@ class FridgeContentFragment : Fragment() {
         builder.show()
     }
 
-    private fun saveQuantityToFirebase(ingredientName: String, quantity: String) {
+    private fun saveQuantityToFirebase(ingredientName: String, quantity: String, unit: String) {
         val currentUserUid = FirebaseAuth.getInstance().currentUser?.uid.toString()
         val databaseReference = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserUid)
 
@@ -182,10 +186,7 @@ class FridgeContentFragment : Fragment() {
         val categoryReference = databaseReference.child("Fridge").child(selectedCategory.toString())
 
         // Initialisiere ingredientReference mit einem Standardwert
-        val ingredientReference : DatabaseReference;
-
-        if (selectedCategory == "Meat") {
-            ingredientReference = categoryReference.child(ingredientName).child("Gram")
+        val ingredientReference : DatabaseReference = categoryReference.child(ingredientName).child(unit.toString())
             ingredientReference.setValue(quantity)
                 .addOnSuccessListener {
                     Log.d("Firebase", "Menge erfolgreich gespeichert")
@@ -193,11 +194,7 @@ class FridgeContentFragment : Fragment() {
                 .addOnFailureListener { e ->
                     Log.e("Firebase", "Fehler beim Speichern der Menge: ${e.message}")
                 }
-        } else {
-            // handle other categories like liquid for ml
         }
-    }
-
 
     companion object {
         /**

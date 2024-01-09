@@ -5,10 +5,12 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.SearchView
+import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
@@ -148,6 +150,7 @@ class FridgeFragment : Fragment() {
             "Gram" -> amountView.text = "${amountView.text}g"
             "Milliliter" -> amountView.text = "${amountView.text}ml"
             "Piece" -> amountView.text = "${amountView.text}x"
+            "Count" -> amountView.text = "${amountView.text}x"
             "Teaspoon" -> amountView.text = "${amountView.text}Tsp"
             "Tablespoon" -> amountView.text = "${amountView.text}tbsp"
             "Cup" -> amountView.text = "${amountView.text}c"
@@ -191,6 +194,15 @@ class FridgeFragment : Fragment() {
             val editText = EditText(requireContext())
             editText.gravity = Gravity.CENTER
             editText.hint = "Enter new quantity"
+
+            val unitSpinner = Spinner(requireContext())
+            unitSpinner.adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, getUnitOptions())
+
+            // Set the default selection to the current unit
+            val unitPosition = getUnitOptions().indexOf(unit)
+            unitSpinner.setSelection(if (unitPosition != -1) unitPosition else 0)
+
+            linearLayoutHorizontal.addView(unitSpinner)
 
             // Create an AlertDialog
             val alertDialogBuilder = AlertDialog.Builder(requireContext())
@@ -329,4 +341,9 @@ class FridgeFragment : Fragment() {
             else -> "DefaultUnit" // Change this to the default unit if category is unknown
         }
     }
+
+    fun getUnitOptions(): List<String> {
+        return listOf("Gram", "Milliliter", "Piece", "Count", "Teaspoon", "Tablespoon", "Cup", "Ounce", "Pound", "Liter", "Fluid Ounce", "Quart", "Gallon")
+    }
+
 }

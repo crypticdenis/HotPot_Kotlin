@@ -29,28 +29,27 @@
 
             <Button
                 android:id="@+id/register_signUp_tab"
-                android:layout_width="70dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:backgroundTint="@color/white"
-                android:textColor="@color/hotpot_dark_green"
-                android:fontFamily="@font/kodchasan_bold"
-                android:text="Sign Up"
-                android:textAllCaps="false"
-                android:textStyle="bold" />
-
-            <Button
-                android:id="@+id/register_signIn_tab"
-                android:layout_width="87dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:backgroundTint="@color/hotpot_green"
                 android:fontFamily="@font/kodchasan_bold"
-                android:text="Login"
+                android:text="Sign Up"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
-                android:textStyle="bold"
-                />
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/register_signIn_tab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:backgroundTint="@color/white"
+                android:fontFamily="@font/kodchasan_bold"
+                android:text="Login"
+                android:textAllCaps="false"
+                android:textColor="@color/hotpot_dark_green"
+                android:textStyle="bold" />
 
         </LinearLayout>
 

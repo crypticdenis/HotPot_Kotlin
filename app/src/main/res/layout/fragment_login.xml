@@ -4,8 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SignIn"
-    android:background="@color/white">
+    android:background="#00FFFFFF"
+    android:backgroundTint="#00FFFFFF"
+    tools:context=".SignIn">
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -29,14 +30,14 @@
 
             <Button
                 android:id="@+id/login_signUp_tab"
-                android:layout_width="87dp"
+                android:layout_width="53dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:backgroundTint="@color/hotpot_green"
+                android:backgroundTint="@color/cardview_shadow_end_color"
                 android:fontFamily="@font/kodchasan_bold"
                 android:text="Sign Up"
                 android:textAllCaps="false"
-                android:textColor="@color/white"
+                android:textColor="@color/hotpot_dark_green"
                 android:textStyle="bold" />
 
             <Button
@@ -44,11 +45,11 @@
                 android:layout_width="53dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:backgroundTint="@color/white"
+                android:backgroundTint="@color/hotpot_green"
                 android:fontFamily="@font/kodchasan_bold"
                 android:text="Login"
-                android:textColor="@color/hotpot_dark_green"
                 android:textAllCaps="false"
+                android:textColor="@color/white"
                 android:textStyle="bold" />
 
         </LinearLayout>
@@ -56,8 +57,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            >
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/textView2"
@@ -73,78 +73,76 @@
                 android:id="@+id/textView3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textColor="#26783D"
                 android:fontFamily="@font/kodchasan_bold"
-                android:textStyle="bold"
+                android:gravity="center"
                 android:scaleX="1.1"
                 android:scaleY="1.2"
-                android:text="'Get Inspired, Eat Adventurously!'" />
+                android:text="'Get Inspired, Eat Adventurously!'"
+                android:textColor="#26783D"
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="70dp"
                 android:layout_gravity="center"
-                android:orientation="vertical"
-                >
+                android:layout_marginTop="70dp"
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/textView4"
-                    android:textColor="@color/hotpot_dark_green"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="37dp"
-                    android:text="Email" />
+                    android:text="Email"
+                    android:textColor="@color/hotpot_dark_green" />
 
                 <EditText
                     android:id="@+id/signInEmailAddress"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:background="@drawable/edit_ext"
-                    android:ems="10"
                     android:backgroundTint="@color/hotpot_dark_green"
+                    android:ems="10"
                     android:gravity="center"
                     android:inputType="textEmailAddress"
                     android:scaleX=".8" />
 
                 <TextView
                     android:id="@+id/textView5"
-                    android:textColor="@color/hotpot_dark_green"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="37dp"
                     android:text="Password"
-                    />
+                    android:textColor="@color/hotpot_dark_green" />
 
                 <EditText
                     android:id="@+id/signInPassword"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:background="@drawable/edit_ext"
+                    android:backgroundTint="@color/hotpot_dark_green"
                     android:ems="10"
                     android:gravity="center"
                     android:hint="Password"
-                    android:backgroundTint="@color/hotpot_dark_green"
                     android:inputType="textPassword"
-                    android:scaleX=".8"
-                    />
+                    android:scaleX=".8" />
 
             </LinearLayout>
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="150dp"
             android:layout_gravity="center"
-            android:orientation="vertical"
-            android:layout_marginBottom="20dp">
+            android:layout_marginTop="150dp"
+            android:layout_marginBottom="20dp"
+            android:orientation="vertical">
 
             <Button
                 android:id="@+id/signIn_bottom_Btn"
                 android:layout_width="350dp"
-                android:layout_gravity="center"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:backgroundTint="@color/hotpot_green"
                 android:fontFamily="@font/kodchasan_bold"
                 android:text="Login"

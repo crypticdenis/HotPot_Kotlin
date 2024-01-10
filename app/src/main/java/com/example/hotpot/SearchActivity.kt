@@ -4,6 +4,8 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.widget.Button
+import android.widget.FrameLayout
+import android.widget.LinearLayout
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -17,17 +19,13 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 
-//TODO: Show picture of user next to them in search results/show recipe picture in search results (not yet implemented in DB)
-// nur recipe Page done - bug fixing user profile
+//TODO: Show picture of user next to them in search results
 //TODO: make search results clickable to go to user profile/recipe page
-
-//TODO: don't show search results until user has typed something - done
 
 //TODO: create user profiles
 
-//TODO: fix issue where not putting a filter and then searching causes the app to crash (-> use both filters by default?)
-// done
-class SearchActivity : AppCompatActivity() {
+
+class SearchActivity : AppCompatActivity(), AdapterCallback {
 
     private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var searchAdapter: SearchAdapter
@@ -36,6 +34,12 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var filterUserButton: Button
     private lateinit var filterRecipeButton: Button
     private var currentFilter: String = ""
+
+    override fun deactivateUIElements() {
+        // Deactivate or hide UI elements in your activity
+        findViewById<BottomNavigationView>(R.id.bottom_navigation).isEnabled = false
+        findViewById<LinearLayout>(R.id.searchFrameLayout).isEnabled = false
+    }
 
     @Suppress("DEPRECATION")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,7 +54,8 @@ class SearchActivity : AppCompatActivity() {
         val databaseReference = FirebaseDatabase.getInstance().reference
 
         // Initialize SearchAdapter with an empty list and reference to Firebase Storage
-        searchAdapter = SearchAdapter(emptyList(), storageReference, databaseReference)
+        searchAdapter = SearchAdapter(emptyList(), storageReference, databaseReference, this)
+
         recyclerView.adapter = searchAdapter
 
 

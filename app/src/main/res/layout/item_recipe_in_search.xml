@@ -11,23 +11,24 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal" >
 
+        <ImageView
+            android:id="@+id/recipeIconImageView"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center_horizontal"
+            android:scaleType="centerCrop"
+            android:src="@drawable/people_icon" />
+
         <TextView
             android:id="@+id/recipeNameTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginLeft="5dp"
             android:textSize="18sp"
             android:textStyle="bold" />
 
 
-        <ImageView
-            android:id="@+id/recipeIconImageView"
-            android:layout_marginLeft="50dp"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:scaleType="centerCrop"
-            android:layout_gravity="center_horizontal"
-            android:src="@drawable/people_icon" />
     </LinearLayout>
 
     <!--TODO: Add other recipe-related views as needed -->

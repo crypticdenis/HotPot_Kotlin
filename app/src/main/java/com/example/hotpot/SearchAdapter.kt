@@ -1,25 +1,43 @@
 package com.example.hotpot
 
+import RecipeDetailsFragment
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.SearchView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.StorageReference
 
-class SearchAdapter(private var dataset: List<Any>, private val storageReference: StorageReference, private val databaseReference: DatabaseReference) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+// Add an interface for the callback
+interface AdapterCallback {
+    fun deactivateUIElements()
+}
+
+class SearchAdapter(
+    private var dataset: List<Any>,
+    private val storageReference: StorageReference,
+    private val databaseReference: DatabaseReference,
+    private val activity: AppCompatActivity
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), AdapterCallback {
+
+
 
     private val USER_TYPE = 1
     private val RECIPE_TYPE = 2
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
@@ -72,7 +90,7 @@ class SearchAdapter(private var dataset: List<Any>, private val storageReference
         notifyDataSetChanged()
     }
 
-    class UserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class UserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val userNameTextView: TextView = itemView.findViewById(R.id.userNameTextView)
         private val userIconImageView: ImageView = itemView.findViewById(R.id.userIconImageView)
 
@@ -104,6 +122,7 @@ class SearchAdapter(private var dataset: List<Any>, private val storageReference
                         }
                         userIconImageView.setOnClickListener {
                             Toast.makeText(itemView.context, "You clicked on ${userNameTextView.text} with ID: $userUID", Toast.LENGTH_SHORT).show()
+                            // Handle the click event here or navigate to the user profile
                         }
                     }
                 }
@@ -115,28 +134,72 @@ class SearchAdapter(private var dataset: List<Any>, private val storageReference
         }
     }
 
-    class RecipeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class RecipeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val recipeNameTextView: TextView = itemView.findViewById(R.id.recipeNameTextView)
         private val recipeIconImageView: ImageView = itemView.findViewById(R.id.recipeIconImageView)
+        private val database: FirebaseDatabase = FirebaseDatabase.getInstance()
 
         fun bind(recipe: RecipeInSearch, storageReference: StorageReference) {
             recipeNameTextView.text = recipe.recipeName
 
-            val formattedRecipeName = recipe.recipeName.replace(" ", "")
-
-            storageReference.child("recipes/").child(formattedRecipeName).downloadUrl.addOnSuccessListener { uri ->
-                // Load the image using Glide
-                Glide.with(itemView.context).load(uri).into(recipeIconImageView)
-            }.addOnFailureListener { exception ->
-                // Handle any errors that may occur while fetching the image URL
-                // Log.e("RecipeViewHolder", "Error fetching recipe image URL", exception)
-            }
-            // For example:
+            // Load the image using Glide
             Glide.with(itemView.context).load(storageReference.child(recipe.recipeImage)).into(recipeIconImageView)
 
             recipeIconImageView.setOnClickListener {
-                Toast.makeText(itemView.context, "You clicked on $recipeNameTextView", Toast.LENGTH_SHORT).show()
+                // Deactivate UI elements before handling the click action
+                deactivateUIElements()
+
+                // Handle the click event here or navigate to the recipe details
+                val bundle = Bundle()
+                var recipeObject = Recipe()
+
+                val database = databaseReference.child("Recipes")
+
+                val recipeName = recipeNameTextView.text.toString()
+
+                val recipeQuery = database.orderByChild("name").equalTo(recipeName)
+
+                recipeQuery.addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        for (items in dataSnapshot.children) {
+                            recipeObject.name = items.child("name").value.toString()
+                            recipeObject.imageUrl = items.child("imageUrl").value.toString()
+                            recipeObject.description = items.child("description").value.toString()
+                            recipeObject.ingredients = items.child("ingredients").value as MutableMap<String, Any>
+                            recipeObject.instructions = items.child("instructions").value.toString()
+                            recipeObject.details = items.child("details").value.toString()
+
+                            // Assuming tags are stored as a JSON array in Firebase
+                            val tagsList = mutableListOf<String>()
+                            for (tagSnapshot in items.child("tags").children) {
+                                val tag = tagSnapshot.value.toString()
+                                tagsList.add(tag)
+                            }
+                            recipeObject.tags = tagsList
+
+                            bundle.putSerializable("RECIPE_DATA", recipeObject)
+                            val recipeDetailsFragment = RecipeDetailsFragment()
+                            recipeDetailsFragment.arguments = bundle
+
+                            // Access the activity through the context and deactivate UI elements
+                            val activity = itemView.context as AppCompatActivity
+                            deactivateUIElements()
+                            activity.supportFragmentManager.beginTransaction().replace(R.id.fragment_container, recipeDetailsFragment).commit()
+                        }
+                    }
+
+                    override fun onCancelled(databaseError: DatabaseError) {
+                        // Handle errors if needed
+                    }
+                })
             }
         }
+
+
     }
+
+    override fun deactivateUIElements() {
+        (activity as? AdapterCallback)?.deactivateUIElements()
+    }
+
 }

@@ -5,13 +5,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 data class Recipe(
-    val name: String,
-    val imageUrl: String,
-    val description: String,
-    val ingredients: MutableMap<String, Any>,
-    val instructions: String,
-    val details: String,
-    val tags: List<String>
+    var name: String,
+    var imageUrl: String,
+    var description: String,
+    var ingredients: MutableMap<String, Any>,
+    var instructions: String,
+    var details: String,
+    var tags: List<String>
 ): Serializable
 {
     // Leerer Konstruktor für Firebase

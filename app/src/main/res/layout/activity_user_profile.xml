@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Add your UI elements here, such as TextViews, ImageViews, etc. -->
 
     <LinearLayout
         android:id="@+id/profileSection"

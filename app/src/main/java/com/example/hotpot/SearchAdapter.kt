@@ -1,27 +1,22 @@
 package com.example.hotpot
 
 import RecipeDetailsFragment
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.SearchView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 
 // Add an interface for the callback
@@ -96,38 +91,42 @@ class SearchAdapter(
     inner class UserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val userNameTextView: TextView = itemView.findViewById(R.id.userNameTextView)
         private val userIconImageView: ImageView = itemView.findViewById(R.id.userIconImageView)
+        private val userItemLayout: LinearLayout = itemView.findViewById(R.id.userItemLayout)
 
         fun bind(user: User, storageReference: StorageReference, databaseReference: DatabaseReference) {
             userNameTextView.text = user.userName
             // get all users in a list
             val usersReference = databaseReference.child("Users")
+
             usersReference.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     // Iterate through the list of users
                     for (userSnapshot in dataSnapshot.children) {
-                        val userNameFromDatabase = userSnapshot.child("name").getValue(String::class.java)
-                        val uidSnapshot = userSnapshot.child("uid")
-                        val userUID = uidSnapshot.value.toString()
+                        val uidSnapshot = userSnapshot.key.toString()
+                        val userNameFromDatabase = userSnapshot.child("name").value.toString()
 
-                        Log.d("Firebase", "UserName: $userNameFromDatabase UserUID: $userUID");
+
+                        Log.d("Firebase", "UserName: $userNameFromDatabase UserUID: $uidSnapshot");
 
                         // Check if the current user's name matches the desired user's name
                         if (userNameFromDatabase == user.userName) {
                             // Use the uidSnapshot to construct the storage reference for the profile picture
-                            storageReference.child("profilePictures").child(userUID).downloadUrl.addOnSuccessListener { uri ->
-                                // Load the image using Glide
+                            storageReference.child("profilePictures").child(uidSnapshot).downloadUrl.addOnSuccessListener { uri ->
+                                Log.d("Firebase", "Image loaded successfully")
                                 Glide.with(itemView.context).load(uri).into(userIconImageView)
                             }.addOnFailureListener { exception ->
-                                // Handle any errors that may occur while fetching the image URL
-                                // Log.e("UserViewHolder", "Error fetching user profile image URL", exception)
+                                Log.e("Firebase", "Error fetching user profile image URL", exception)
+                            }
+                            userItemLayout.setOnClickListener {
+                                Log.d("Firebase", "UserUID: $uidSnapshot")
+                                val intent = Intent(userIconImageView.context, UserProfileActivity::class.java)
+                                intent.putExtra("userId", uidSnapshot)
+                                itemView.context.startActivity(intent)
                             }
                             // Break out of the loop since the user is found
                             break
                         }
-                        userIconImageView.setOnClickListener {
-                            Log.d("FireBase","You clicked on ${userNameTextView.text} with ID: $userUID")
-                            // Handle the click event here or navigate to the user profile
-                        }
+
                     }
                 }
 

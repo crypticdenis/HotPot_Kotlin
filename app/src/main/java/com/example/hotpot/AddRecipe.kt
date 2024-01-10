@@ -2,7 +2,11 @@ package com.example.hotpot
 
 import android.annotation.SuppressLint
 import android.app.TimePickerDialog
+import android.content.Intent
+import android.media.Image
+import android.net.Uri
 import android.os.Bundle
+import android.provider.ContactsContract.Data
 import android.text.InputType
 import android.util.Log
 import android.view.LayoutInflater
@@ -25,9 +29,13 @@ import androidx.core.text.isDigitsOnly
 import androidx.core.widget.NestedScrollView
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import com.skydoves.expandablelayout.ExpandableLayout
+import java.net.URL
 
 class AddRecipe : AppCompatActivity() {
     private lateinit var addRecipeStepsBtn: Button
@@ -36,6 +44,8 @@ class AddRecipe : AppCompatActivity() {
     private lateinit var dietaryFilterContainer: LinearLayout
     private lateinit var addIngredientButton : Button
     private val ingredientList = mutableListOf<String>()
+    private lateinit var imageUri : Uri
+    private val PICK_IMAGE_REQUEST = 1
 
     private lateinit var cookingTimeButton : ImageButton
     private lateinit var cookingTimeTextView: TextView
@@ -47,6 +57,8 @@ class AddRecipe : AppCompatActivity() {
     private lateinit var ratingCountTextView: TextView
 
     private lateinit var descriptionTextView: TextView
+
+    private lateinit var storageRef : StorageReference
 
     val dietaryFilterOptions = arrayOf("vegan", "gluten", "halal", "keto",
         "kosher", "lactose", "paleo", "peanut", "pescatarian", "shellfish", "soy", "vegetarian")
@@ -69,10 +81,14 @@ class AddRecipe : AppCompatActivity() {
         ratingCountTextView = findViewById(R.id.ratingCount)
 
         descriptionTextView = findViewById(R.id.descriptionTextView)
+        val recipeImageView: ImageView = findViewById(R.id.recipeImageView)
 
         val recipeNameEditText: EditText = findViewById(R.id.AddRecipe_recipeName)
         val recipeStepEditText: EditText = findViewById(R.id.stepsEditText)
 
+        //Firebase storage reference
+        val storage = FirebaseStorage.getInstance()
+        storageRef = storage.reference.child("recipes")
 
         //difficulties
         val difficultyOptions = arrayOf("Easy", "Medium", "Hard")
@@ -104,6 +120,11 @@ class AddRecipe : AppCompatActivity() {
         saveRecipeBtn.setOnClickListener {
             uploadNewRecipe();
             finish()
+        }
+
+        // add image of recipe
+        recipeImageView.setOnClickListener {
+            chooseImage()
         }
 
         // add ingredient
@@ -247,6 +268,42 @@ class AddRecipe : AppCompatActivity() {
         }
         builder.show()
     }
+
+    private fun chooseImage() {
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.type = "image/*"
+        startActivityForResult(intent, PICK_IMAGE_REQUEST)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.data != null) {
+            imageUri = data.data!!  // Das Uri-Objekt wird mit dem ausgewählten Bild aktualisiert
+
+            // Update the ImageView with the selected image
+            val recipeImageView: ImageView = findViewById(R.id.recipeImageView)
+            recipeImageView.setImageURI(imageUri)
+        }
+    }
+
+    private fun uploadImageToStorage(imageUri: Uri, imageName: String) {
+        val ImageName = sanitizeRecipeNameForStorage(imageName)
+        val fireBaseStorage = FirebaseStorage.getInstance().reference
+        storageRef = fireBaseStorage.child("recipes").child(ImageName)
+
+        val uploadTask = storageRef.putFile(imageUri)
+
+        uploadTask.addOnSuccessListener { taskSnapshot ->
+            // Image uploaded successfully
+            val downloadUrl = taskSnapshot.metadata?.reference?.downloadUrl
+            // Save the download URL to your recipe data or perform other actions
+        }.addOnFailureListener { exception ->
+            // Handle unsuccessful uploads
+            Log.e("Firebase", "Error uploading image: ${exception.message}")
+        }
+    }
+
 
     private fun showRatingDialog(title: String, options1: Array<String>, options2: Array<String>, targetTextView: TextView) {
         val builder = AlertDialog.Builder(this)
@@ -461,6 +518,14 @@ class AddRecipe : AppCompatActivity() {
                 newRecipeReference.child("name").setValue(checkIngredientName(recipeName))
                 newRecipeReference.child("instructions").setValue(steps)
 
+                // com.example.hotpot.com.example.hotpot.ui.theme.com.example.hotpot.Upload the image to Firebase Storage
+                val imageName = "${checkIngredientName(recipeName)}"
+                uploadImageToStorage(imageUri, imageName)  // Hier wird die imageUri an die Funktion übergeben
+
+                // save ImageURL in a node named imageURL with a link to the picture as its value
+                val imageUrl = "recipes/$imageName"
+                newRecipeReference.child("imageUrl").setValue(imageUrl)
+
                 // for each tag, create new directory
                 for ((index, tag) in selectedFilters.withIndex()) {
                     newRecipeReference.child("tags").child(index.toString()).setValue(tag)
@@ -482,7 +547,6 @@ class AddRecipe : AppCompatActivity() {
                 val description = descriptionEditText.text.toString()
                 newRecipeReference.child("description").setValue(description)
 
-
                 // difficulty, rating, cooking time
                 newRecipeReference.child("details").setValue("difficulty: $difficulty | rating: $rating | time: $time")
 
@@ -495,6 +559,11 @@ class AddRecipe : AppCompatActivity() {
             }
         })
     }
+
+    private fun sanitizeRecipeNameForStorage(recipeName: String): String {
+        return recipeName.replace(" ", "")
+    }
+
 
     // Funktion zum Parsen der Zutat in Name, Einheitsmenge und Kategorie
     private fun parseIngredient(ingredient: String): Triple<String, String, String> {

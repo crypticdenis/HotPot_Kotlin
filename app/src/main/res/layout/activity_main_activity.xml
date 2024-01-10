@@ -33,23 +33,26 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:autoSizeTextType="uniform"
+            android:autoSizeMinTextSize="12sp"
+            android:autoSizeMaxTextSize="45sp"
             android:fontFamily="@font/abeezee"
             android:gravity="center"
             android:text="Shoyu Ramen"
+            android:singleLine="true"
             android:textColor="@color/hotpot_dark_green"
-            android:textSize="45sp" />
+            android:paddingBottom="15dp"
+            android:textSize="30sp" />
 
         <ImageView
             android:id="@+id/food_picture"
-            android:layout_width="wrap_content"
+            android:layout_width="375dp"
             android:layout_height="250dp"
             android:scaleType="centerCrop"
             android:layout_marginTop="0dp"
             android:layout_marginBottom="10dp"
-            android:layout_marginEnd="17dp"
-            android:layout_marginStart="17dp"
-            android:contentDescription="@string/recipeImageDescription"
-            android:src="@drawable/shoyu" />
+            android:layout_marginLeft="17dp"
+            android:layout_marginRight="17dp"
+            android:contentDescription="@string/recipeImageDescription" />
 
         <TextView
             android:id="@+id/recipe_info"
@@ -61,6 +64,14 @@
             android:text="@string/difficulty_2_5_time_30_min_rating_4_7_5"
             android:textColor="@color/black"
             android:textSize="13sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
 
         <Button
             android:id="@+id/show_recipe_btn"
@@ -108,6 +119,7 @@
                 android:background="@color/white"
                 android:src="@drawable/add_new_recipe_button"
                 android:contentDescription="@string/addNewButtonDescription"/>
+            </LinearLayout>
         </LinearLayout>
 
     </LinearLayout>

@@ -3,18 +3,23 @@ package com.example.hotpot
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
-import com.example.hotpot.R
-import com.example.hotpot.RecipeInSearch
-import com.example.hotpot.User
+import com.bumptech.glide.Glide
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.storage.StorageReference
 
-class SearchAdapter(private var dataset: List<Any>) :
+class SearchAdapter(private var dataset: List<Any>, private val storageReference: StorageReference, private val databaseReference: DatabaseReference) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    // Define view types for different data items
     private val USER_TYPE = 1
     private val RECIPE_TYPE = 2
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
@@ -36,11 +41,11 @@ class SearchAdapter(private var dataset: List<Any>) :
         when (holder) {
             is UserViewHolder -> {
                 val user = dataset[position] as User
-                holder.bind(user)
+                holder.bind(user, storageReference, databaseReference)
             }
             is RecipeViewHolder -> {
                 val recipe = dataset[position] as RecipeInSearch
-                holder.bind(recipe)
+                holder.bind(recipe, storageReference)
             }
         }
     }
@@ -57,29 +62,81 @@ class SearchAdapter(private var dataset: List<Any>) :
         }
     }
 
-    // Update the dataset with new data and notify the adapter
     fun updateData(newDataset: List<Any>) {
         dataset = newDataset
         notifyDataSetChanged()
     }
 
-    // ViewHolder for User items
+    fun clearData() {
+        dataset = emptyList()
+        notifyDataSetChanged()
+    }
+
     class UserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val userNameTextView: TextView = itemView.findViewById(R.id.userNameTextView)
+        private val userIconImageView: ImageView = itemView.findViewById(R.id.userIconImageView)
 
-        fun bind(user: User) {
+        fun bind(user: User, storageReference: StorageReference, databaseReference: DatabaseReference) {
             userNameTextView.text = user.userName
-            // Add any other binding logic for User items
+
+            // get all users in a list
+            val usersReference = databaseReference.child("Users")
+            usersReference.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    // Iterate through the list of users
+                    for (userSnapshot in dataSnapshot.children) {
+                        val userNameFromDatabase = userSnapshot.child("Name").getValue(String::class.java)
+                        val uidSnapshot = userSnapshot.child("uid")
+                        val userUID = uidSnapshot.value.toString()
+
+                        // Check if the current user's name matches the desired user's name
+                        if (userNameFromDatabase == user.userName) {
+                            // Use the uidSnapshot to construct the storage reference for the profile picture
+                            storageReference.child("profilePictures").child(userUID).downloadUrl.addOnSuccessListener { uri ->
+                                // Load the image using Glide
+                                Glide.with(itemView.context).load(uri).into(userIconImageView)
+                            }.addOnFailureListener { exception ->
+                                // Handle any errors that may occur while fetching the image URL
+                                // Log.e("UserViewHolder", "Error fetching user profile image URL", exception)
+                            }
+                            // Break out of the loop since the user is found
+                            break
+                        }
+                        userIconImageView.setOnClickListener {
+                            Toast.makeText(itemView.context, "You clicked on ${userNameTextView.text} with ID: $userUID", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                    // Handle errors if needed
+                }
+            })
         }
     }
 
-    // ViewHolder for RecipeInSearch items
     class RecipeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val recipeNameTextView: TextView = itemView.findViewById(R.id.recipeNameTextView)
+        private val recipeIconImageView: ImageView = itemView.findViewById(R.id.recipeIconImageView)
 
-        fun bind(recipe: RecipeInSearch) {
+        fun bind(recipe: RecipeInSearch, storageReference: StorageReference) {
             recipeNameTextView.text = recipe.recipeName
-            // Add any other binding logic for RecipeInSearch items
+
+            val formattedRecipeName = recipe.recipeName.replace(" ", "")
+
+            storageReference.child("recipes/").child(formattedRecipeName).downloadUrl.addOnSuccessListener { uri ->
+                // Load the image using Glide
+                Glide.with(itemView.context).load(uri).into(recipeIconImageView)
+            }.addOnFailureListener { exception ->
+                // Handle any errors that may occur while fetching the image URL
+                // Log.e("RecipeViewHolder", "Error fetching recipe image URL", exception)
+            }
+            // For example:
+            Glide.with(itemView.context).load(storageReference.child(recipe.recipeImage)).into(recipeIconImageView)
+
+            recipeIconImageView.setOnClickListener {
+                Toast.makeText(itemView.context, "You clicked on $recipeNameTextView", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 }

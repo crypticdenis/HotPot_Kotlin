@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.PopupWindow
 import android.widget.TextView
 import android.widget.Toast
@@ -25,9 +26,12 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.getValue
+import com.google.firebase.storage.FirebaseStorage
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.io.IOException
+import com.bumptech.glide.Glide
+import com.squareup.picasso.Picasso
 
 // TODO: Change colours to proper green hotpot colours
 @Suppress("DEPRECATION")
@@ -146,16 +150,27 @@ class MainActivity : AppCompatActivity() {
 
     private fun showRandomMeal() {
         val databaseReference = FirebaseDatabase.getInstance().reference.child("Recipes")
+        val storageReference = FirebaseStorage.getInstance().reference;
 
         databaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val recipes: MutableList<Recipe> = mutableListOf()
 
                 for (recipeSnapshot in dataSnapshot.children) {
-                    // Überprüfe, ob die Daten nicht null sind
                     val name = recipeSnapshot.child("name").getValue(String::class.java)
                     val description = recipeSnapshot.child("description").getValue(String::class.java)
                     val ingredientsSnapshot = recipeSnapshot.child("ingredients")
+
+                    val recipePictureURL = "recipes/$name"
+
+                    val foodPictureImageView: ImageView = findViewById(R.id.food_picture)
+
+
+                    //loadImageFromFirebaseStorage(recipePictureURL, foodPictureImageView)
+                        // Behandle den Fall, wenn keine Bild-URL vorhanden ist
+                        // Du kannst hier ein Standardbild oder eine leere Zeichenfolge verwenden
+                        // oder die gewünschte Logik implementieren
+                        //Log.e("Firebase", "Keine Bild-URL gefunden für Rezept: $name")
 
                     val ingredientsMap = mutableMapOf<String, Any>()
                     for (ingredientSnapshot in ingredientsSnapshot.children) {
@@ -170,7 +185,7 @@ class MainActivity : AppCompatActivity() {
 
                     // Füge nur nicht-null Daten zur Liste hinzu
                     if (name != null && description != null && instructions != null && details != null && tags != null) {
-                        val recipe = Recipe(name, description, ingredientsMap, instructions, details, tags)
+                        val recipe = Recipe(name, recipePictureURL, description, ingredientsMap, instructions, details, tags)
                         recipes.add(recipe)
                     }
                 }
@@ -180,6 +195,10 @@ class MainActivity : AppCompatActivity() {
 
                     findViewById<TextView>(R.id.recipe_name).text = selectedRecipe?.name ?: "No Name"
                     findViewById<TextView>(R.id.recipe_info).text = selectedRecipe?.details ?: "No Details"
+
+                    // Setze das Bild im ImageView
+                    val foodPictureImageView: ImageView = findViewById(R.id.food_picture)
+                    loadImageFromFirebaseStorage(selectedRecipe?.name.toString(), foodPictureImageView)
                 }
             }
 
@@ -189,6 +208,49 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+    // Funktion zum Laden des Bildes von der Storage und Anzeigen im ImageView
+    private fun loadImageFromFirebaseStorage(imageFileName: String?, imageView: ImageView) {
+        if (imageFileName == null || imageFileName.isBlank()) {
+            // Wenn der Bildname null oder leer ist, setze ein Leerzeichen oder anderes Standardbild
+            // Hier kannst du die Logik implementieren, die du bevorzugst
+            Log.e("FirebaseStorage", "Leerer Bildname. Standardbild wird verwendet.")
+            // Setze hier ein Standardbild oder ein Leerzeichen
+            // Zum Beispiel: imageView.setImageResource(R.drawable.default_image)
+            return
+        }
+        val storageReference = FirebaseStorage.getInstance().reference
+        val sanitizedImageFileName = sanitizeRecipeNameForStorage(imageFileName)
+        val recipePictureReference = storageReference.child("recipes").child(sanitizedImageFileName)
+
+        Log.d("FirebaseStorage", "Versuche Bild zu laden: $sanitizedImageFileName")
+
+        // Holen Sie sich die Download-URL für das Bild
+        recipePictureReference.downloadUrl.addOnSuccessListener { uri ->
+            val imageUrl = uri.toString()
+
+            // Verwende Glide, um das Bild von der URL in das ImageView zu laden
+            Glide.with(this@MainActivity)
+                .load(imageUrl).override(375,250)
+                .into(imageView)
+
+            Log.d("FirebaseStorage", "Bild erfolgreich geladen: $imageUrl")
+        }.addOnFailureListener { exception ->
+            // Handle den Fehler beim Abrufen der Download-URL
+            Log.e("FirebaseStorage", "Fehler beim Laden des Bildes: ${exception.message}")
+
+            // Hier kannst du zusätzliche Aktionen hinzufügen, wenn das Bild nicht gefunden wird
+            // Zum Beispiel ein Standardbild anzeigen oder dem Benutzer eine Meldung geben
+        }
+    }
+
+
+    private fun sanitizeRecipeNameForStorage(recipeName: String): String {
+        return recipeName.replace(" ", "")
+    }
+
+
+
+
     override fun onResume() {
     super.onResume()
     bottomNavigationView.selectedItemId = R.id.navigation_home // Replace 'navigation_home' with the actual ID of the home item
@@ -197,7 +259,6 @@ class MainActivity : AppCompatActivity() {
     /**
      * prevents returning to login/signUp screen
      */
-
     private fun showAddRecipePopupMenu() {
         val anchorView = findViewById<ImageButton>(R.id.addRecipeOverlayBtn)
 

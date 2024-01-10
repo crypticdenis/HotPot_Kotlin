@@ -51,9 +51,11 @@
                     android:textSize="35dp" />
 
                 <ImageView
-                    android:id="@+id/imageView3"
+                    android:id="@+id/recipeImageView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:scaleType="centerCrop"
+                    android:layout_marginTop="16dp"
                     app:srcCompat="@drawable/add_recipe_img_dummy" />
 
             </LinearLayout>

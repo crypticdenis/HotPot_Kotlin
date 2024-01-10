@@ -5,20 +5,28 @@ import android.content.res.ColorStateList
 import android.os.Bundle
 import android.widget.Button
 import android.widget.SearchView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.storage.FirebaseStorage
 
 //TODO: Show picture of user next to them in search results/show recipe picture in search results (not yet implemented in DB)
+// nur recipe Page done - bug fixing user profile
 //TODO: make search results clickable to go to user profile/recipe page
-//TODO: don't show search results until user has typed something
+
+//TODO: don't show search results until user has typed something - done
+
 //TODO: create user profiles
+
 //TODO: fix issue where not putting a filter and then searching causes the app to crash (-> use both filters by default?)
+// done
 class SearchActivity : AppCompatActivity() {
 
     private lateinit var bottomNavigationView: BottomNavigationView
@@ -38,26 +46,17 @@ class SearchActivity : AppCompatActivity() {
         recyclerView = findViewById(R.id.searchItemRecyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        // Initialize SearchAdapter with an empty list
-        searchAdapter = SearchAdapter(emptyList())
+        val storageReference = FirebaseStorage.getInstance().reference
+        val databaseReference = FirebaseDatabase.getInstance().reference
+
+        // Initialize SearchAdapter with an empty list and reference to Firebase Storage
+        searchAdapter = SearchAdapter(emptyList(), storageReference, databaseReference)
         recyclerView.adapter = searchAdapter
 
-        // Initialize SearchView
+
         searchView = findViewById(R.id.searchView)
-
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                // Handle search query submission if needed
-                return true
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                // Handle search query changes
-                // You may want to filter your data based on the newText and update the RecyclerView
-                updateSearchResults(newText?.toLowerCase().orEmpty(), currentFilter)
-                return true
-            }
-        })
+        setupSearchView()
+        searchView.queryHint = "select a button for better search first"
 
 
         bottomNavigationView = findViewById(R.id.bottom_navigation)
@@ -103,31 +102,96 @@ class SearchActivity : AppCompatActivity() {
         filterUserButton.setOnClickListener {
             setButtonStyle(filterUserButton, true)
             setButtonStyle(filterRecipeButton, false)
+
+            // enable searchBar
+            searchView = findViewById(R.id.searchView)
+            setupSearchView()
+            searchView.queryHint = " "
             // Handle user filter logic here
             currentFilter = "Users"
             updateSearchResults(searchView.query.toString(), currentFilter)
+            // Enable searchView when a filter is selected
+            searchView.isFocusable = true
+            searchView.isFocusableInTouchMode = true
         }
 
         filterRecipeButton.setOnClickListener {
             setButtonStyle(filterUserButton, false)
             setButtonStyle(filterRecipeButton, true)
+
+            // enable searchBar
+            searchView = findViewById(R.id.searchView)
+            setupSearchView()
+            searchView.queryHint = " "
             // Handle recipe filter logic here
             currentFilter = "Recipes"
             updateSearchResults(searchView.query.toString(), currentFilter)
+            // Enable searchView when a filter is selected
+            searchView.isFocusable = true
+            searchView.isFocusableInTouchMode = true
         }
 
 
     }
 
+    private fun setupSearchView() {
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                // Überprüfe nur, wenn die SearchView den Fokus hat
+                if (searchView.hasFocus()) {
+                    // Überprüfe, ob keiner der Buttons ausgewählt ist
+                    if (!filterUserButton.isActivated && !filterRecipeButton.isActivated) {
+                        searchView.setOnQueryTextFocusChangeListener { _, hasFocus ->
+                            if (hasFocus && !filterUserButton.isActivated && !filterRecipeButton.isActivated) {
+                                Toast.makeText(this@SearchActivity, "Bitte wähle einen Filter aus", Toast.LENGTH_SHORT).show()
+                                // Leere die Query, wenn der Fokus erhalten bleibt
+                                searchView.setQuery("", false)
+                                searchView.clearFocus()
+                                // Setze den Fokus erneut, um den Text zu löschen
+                                searchView.requestFocus()
+                            }
+                        }
+                    }
+                }
+                // Handle search query submission if needed
+                if (query != null && query.isNotEmpty()) {
+                    updateSearchResults(query.toLowerCase(), currentFilter)
+                }
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                // Handle search query changes
+                // You may want to filter your data based on the newText and update the RecyclerView
+                updateSearchResults(newText?.toLowerCase().orEmpty(), currentFilter)
+                return true
+            }
+        })
+    }
+
     private fun updateSearchResults(query: String, filter: String) {
-        // Perform the search and update the adapter with the filtered results
-        val filteredResults = performSearch(query, filter)
-        searchAdapter.updateData(filteredResults)
+        if (query.isNotEmpty()) {
+            // Perform the search and update the adapter with the filtered results
+            val filteredResults = performSearch(query, filter)
+            searchAdapter.updateData(filteredResults)
+        } else {
+            // Clear the adapter data when the query is empty
+            searchAdapter.clearData()
+        }
     }
 
 
     private fun performSearch(query: String, filter: String): List<Any> {
         val results = mutableListOf<Any>()
+
+        // Prüfe, ob ein Filter ausgewählt wurde
+        if (filter.isEmpty()) {
+            // Zeige einen Toast an, wenn kein Filter ausgewählt wurde
+            Toast.makeText(this, "Bitte wähle einen Filter aus", Toast.LENGTH_SHORT).show()
+            // Fokus von der SearchView entfernen
+            searchView.clearFocus()
+            return results
+        }
 
         val lowercaseQuery = query.toLowerCase()
 
@@ -170,8 +234,6 @@ class SearchActivity : AppCompatActivity() {
     }
 
 
-
-
     @Suppress ("DEPRECATION")
     private fun setButtonStyle(button: Button, isSelected: Boolean) {
         val layoutParams = button.layoutParams
@@ -188,6 +250,5 @@ class SearchActivity : AppCompatActivity() {
         // Set text color to white for the selected button and black for unselected buttons
         button.setTextColor(resources.getColor(if (isSelected) R.color.white else R.color.hotpot_dark_green))
     }
-
 
 }

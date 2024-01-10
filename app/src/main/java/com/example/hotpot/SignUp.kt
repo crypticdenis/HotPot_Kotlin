@@ -18,8 +18,10 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
-
+import com.google.firebase.database.ValueEventListener
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -92,6 +94,7 @@ class SignUp : Fragment() {
                             // Get the newly created user
                             val firebaseUser = FirebaseAuth.getInstance().currentUser
                             val userId = firebaseUser?.uid
+                            val firebaseDatabase = FirebaseDatabase.getInstance().reference.child("Usernames")
 
                             // Create a new user profile instance. Do NOT include the password here.
                             // For profilePictureUrl, you will need to upload the picture to Firebase Storage first and get the URL
@@ -112,6 +115,8 @@ class SignUp : Fragment() {
                             userId?.let {
                                 databaseReference.child(it).setValue(newUserProfile).addOnCompleteListener { profileCreationTask ->
                                     if (profileCreationTask.isSuccessful) {
+                                        // save Username in Usernames for later checkup
+                                        firebaseDatabase.child(name).setValue(it);
                                         // Profile creation successful, proceed with your logic
                                         val intent = Intent(activity, LoadingActivity::class.java)
                                         startActivity(intent)
@@ -144,9 +149,7 @@ class SignUp : Fragment() {
             override fun afterTextChanged(s: Editable?) {
                 // Überprüfe, ob Text vorhanden und editName nicht ausgewählt ist
                 if (!editName.isFocused && !s.isNullOrBlank()) {
-                    editName.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                        0, 0, R.drawable.checkmark, 0
-                    )
+                    checkIfUsernameExists(editName, s.toString())
                 } else {
                     // Falls der Text leer ist oder editName ausgewählt ist, setze das Drawable auf null
                     editName.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
@@ -248,6 +251,28 @@ class SignUp : Fragment() {
             false
         }
         return view
+    }
+
+    private fun checkIfUsernameExists(editName : EditText, username: String) {
+        val usernamesReference = FirebaseDatabase.getInstance().getReference("Usernames")
+
+        usernamesReference.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                if (dataSnapshot.hasChild(username)) {
+                    // Der Benutzername existiert bereits, zeige einen Toast an
+                    Toast.makeText(context, "Der Benutzername ist bereits vergeben", Toast.LENGTH_SHORT).show()
+                    // Setze das Drawable auf null, um zu signalisieren, dass der Benutzername nicht verfügbar ist
+                    editName.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
+                } else {
+                    // Der Benutzername ist verfügbar, zeige das grüne Häkchen an
+                    editName.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.checkmark, 0)
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Handle errors if needed
+            }
+        })
     }
 
     private fun isValidEmail(email: String): Boolean {

@@ -19,8 +19,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 
-//TODO: Show picture of user next to them in search results
-//TODO: make search results clickable to go to user profile/recipe page
+//TODO: make search results clickable to go to user profile
 
 //TODO: create user profiles
 
@@ -33,6 +32,7 @@ class SearchActivity : AppCompatActivity(), AdapterCallback {
     private lateinit var searchView: SearchView
     private lateinit var filterUserButton: Button
     private lateinit var filterRecipeButton: Button
+    private lateinit var filterSearchFilterButton : Button
     private var currentFilter: String = ""
 
     override fun deactivateUIElements() {
@@ -100,14 +100,17 @@ class SearchActivity : AppCompatActivity(), AdapterCallback {
         // Initialize buttons
         filterUserButton = findViewById(R.id.searchFilterUser)
         filterRecipeButton = findViewById(R.id.searchFilterRecipe)
+        filterSearchFilterButton = findViewById(R.id.searchFilter)
 
         // Set initial styles for buttons
         setButtonStyle(filterUserButton, false)
         setButtonStyle(filterRecipeButton, false)
+        setButtonStyle(filterSearchFilterButton, false)
 
         filterUserButton.setOnClickListener {
             setButtonStyle(filterUserButton, true)
             setButtonStyle(filterRecipeButton, false)
+            setButtonStyle(filterSearchFilterButton, false)
 
             // enable searchBar
             searchView = findViewById(R.id.searchView)
@@ -124,6 +127,7 @@ class SearchActivity : AppCompatActivity(), AdapterCallback {
         filterRecipeButton.setOnClickListener {
             setButtonStyle(filterUserButton, false)
             setButtonStyle(filterRecipeButton, true)
+            setButtonStyle(filterSearchFilterButton, false)
 
             // enable searchBar
             searchView = findViewById(R.id.searchView)
@@ -137,7 +141,22 @@ class SearchActivity : AppCompatActivity(), AdapterCallback {
             searchView.isFocusableInTouchMode = true
         }
 
+        filterSearchFilterButton.setOnClickListener {
+            setButtonStyle(filterUserButton, false)
+            setButtonStyle(filterRecipeButton, false)
+            setButtonStyle(filterSearchFilterButton, true)
 
+            // Enable searchBar
+            searchView = findViewById(R.id.searchView)
+            setupSearchView()
+            searchView.queryHint = " "
+            // Handle filter logic here
+            currentFilter = "Filters"
+            updateSearchResults(searchView.query.toString(), currentFilter)
+            // Enable searchView when a filter is selected
+            searchView.isFocusable = true
+            searchView.isFocusableInTouchMode = true
+        }
     }
 
     private fun setupSearchView() {
@@ -146,9 +165,9 @@ class SearchActivity : AppCompatActivity(), AdapterCallback {
                 // Überprüfe nur, wenn die SearchView den Fokus hat
                 if (searchView.hasFocus()) {
                     // Überprüfe, ob keiner der Buttons ausgewählt ist
-                    if (!filterUserButton.isActivated && !filterRecipeButton.isActivated) {
+                    if (!filterUserButton.isActivated && !filterRecipeButton.isActivated && !filterSearchFilterButton.isActivated) {
                         searchView.setOnQueryTextFocusChangeListener { _, hasFocus ->
-                            if (hasFocus && !filterUserButton.isActivated && !filterRecipeButton.isActivated) {
+                            if (hasFocus && !filterUserButton.isActivated && !filterRecipeButton.isActivated && !filterSearchFilterButton.isActivated) {
                                 Toast.makeText(this@SearchActivity, "Bitte wähle einen Filter aus", Toast.LENGTH_SHORT).show()
                                 // Leere die Query, wenn der Fokus erhalten bleibt
                                 searchView.setQuery("", false)
@@ -205,12 +224,15 @@ class SearchActivity : AppCompatActivity(), AdapterCallback {
         val reference = when (filter) {
             "Users" -> database.getReference("Users")
             "Recipes" -> database.getReference("Recipes")
+            "Filters" -> database.getReference("Recipes")
             else -> throw IllegalArgumentException("Invalid filter: $filter")
         }
 
         // Query Firebase based on the search query
         reference.orderByChild("name").addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val results = mutableListOf<Any>()
+
                 for (snapshot in dataSnapshot.children) {
                     // Parse the data
                     val id = snapshot.key ?: ""
@@ -220,24 +242,50 @@ class SearchActivity : AppCompatActivity(), AdapterCallback {
                     val lowercaseName = name.toLowerCase()
 
                     // Check if the lowercase name contains the lowercase query
-                    if (lowercaseName.contains(lowercaseQuery)) {
-                        when (filter) {
-                            "Users" -> results.add(User(id, name))
-                            "Recipes" -> results.add(RecipeInSearch("recipe_image_url", name))
+                    when (filter) {
+                        "Users" -> {
+                            if (lowercaseName.contains(lowercaseQuery)) {
+                                results.add(User(id, name))
+                            }
+                        }
+
+                        "Recipes" -> {
+                            // Check if the name contains the query
+                            if (lowercaseName.contains(lowercaseQuery)) {
+                                results.add(RecipeInSearch("recipe_image_url", name))
+                            }
+                        }
+
+                        "Filters" -> {
+                            val tagsSnapshot = snapshot.child("tags")
+                            var tagFound = false
+
+                            for (tagSnapshot in tagsSnapshot.children) {
+                                val tag = tagSnapshot.value.toString().toLowerCase()
+
+                                // Prüfe, ob der Tag mit den entsprechenden Buchstaben der Query übereinstimmt
+                                val querySubstring = lowercaseQuery.substring(0, kotlin.math.min(lowercaseQuery.length, tag.length))
+                                if (tag.startsWith(querySubstring)) {
+                                    tagFound = true
+                                    break
+                                }
+                            }
+                            if (!tagFound) {
+                                results.add(RecipeInSearch("recipe_image_url", name))
+                            }
                         }
                     }
                 }
                 // Update the adapter with the filtered results
                 searchAdapter.updateData(results)
             }
-
             override fun onCancelled(databaseError: DatabaseError) {
                 // Handle errors if needed
             }
         })
-
         return results
     }
+
 
     @Suppress ("DEPRECATION")
     private fun setButtonStyle(button: Button, isSelected: Boolean) {
@@ -254,11 +302,6 @@ class SearchActivity : AppCompatActivity(), AdapterCallback {
 
         // Set text color to white for the selected button and black for unselected buttons
         button.setTextColor(resources.getColor(if (isSelected) R.color.white else R.color.hotpot_dark_green))
-    }
-
-    fun clearSearchFocus() {
-        // Annahme: searchView ist die Instanz Ihrer SearchView
-        searchView.clearFocus()
     }
 
 }

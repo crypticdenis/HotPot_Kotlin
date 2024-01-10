@@ -99,16 +99,17 @@ class SearchAdapter(
 
         fun bind(user: User, storageReference: StorageReference, databaseReference: DatabaseReference) {
             userNameTextView.text = user.userName
-
             // get all users in a list
             val usersReference = databaseReference.child("Users")
             usersReference.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     // Iterate through the list of users
                     for (userSnapshot in dataSnapshot.children) {
-                        val userNameFromDatabase = userSnapshot.child("Name").getValue(String::class.java)
+                        val userNameFromDatabase = userSnapshot.child("name").getValue(String::class.java)
                         val uidSnapshot = userSnapshot.child("uid")
                         val userUID = uidSnapshot.value.toString()
+
+                        Log.d("Firebase", "UserName: $userNameFromDatabase UserUID: $userUID");
 
                         // Check if the current user's name matches the desired user's name
                         if (userNameFromDatabase == user.userName) {
@@ -124,7 +125,7 @@ class SearchAdapter(
                             break
                         }
                         userIconImageView.setOnClickListener {
-                            Toast.makeText(itemView.context, "You clicked on ${userNameTextView.text} with ID: $userUID", Toast.LENGTH_SHORT).show()
+                            Log.d("FireBase","You clicked on ${userNameTextView.text} with ID: $userUID")
                             // Handle the click event here or navigate to the user profile
                         }
                     }

@@ -39,6 +39,7 @@ class SearchActivity : AppCompatActivity(), AdapterCallback {
         // Deactivate or hide UI elements in your activity
         findViewById<BottomNavigationView>(R.id.bottom_navigation).isEnabled = false
         findViewById<LinearLayout>(R.id.searchFrameLayout).isEnabled = false
+        searchView.clearFocus()
     }
 
     @Suppress("DEPRECATION")
@@ -238,7 +239,6 @@ class SearchActivity : AppCompatActivity(), AdapterCallback {
         return results
     }
 
-
     @Suppress ("DEPRECATION")
     private fun setButtonStyle(button: Button, isSelected: Boolean) {
         val layoutParams = button.layoutParams
@@ -254,6 +254,11 @@ class SearchActivity : AppCompatActivity(), AdapterCallback {
 
         // Set text color to white for the selected button and black for unselected buttons
         button.setTextColor(resources.getColor(if (isSelected) R.color.white else R.color.hotpot_dark_green))
+    }
+
+    fun clearSearchFocus() {
+        // Annahme: searchView ist die Instanz Ihrer SearchView
+        searchView.clearFocus()
     }
 
 }

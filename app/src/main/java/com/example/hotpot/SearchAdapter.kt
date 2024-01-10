@@ -2,6 +2,7 @@ package com.example.hotpot
 
 import RecipeDetailsFragment
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +21,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 
 // Add an interface for the callback
@@ -31,7 +33,8 @@ class SearchAdapter(
     private var dataset: List<Any>,
     private val storageReference: StorageReference,
     private val databaseReference: DatabaseReference,
-    private val activity: AppCompatActivity
+    private val activity: AppCompatActivity,
+
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), AdapterCallback {
 
 
@@ -137,13 +140,17 @@ class SearchAdapter(
     inner class RecipeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val recipeNameTextView: TextView = itemView.findViewById(R.id.recipeNameTextView)
         private val recipeIconImageView: ImageView = itemView.findViewById(R.id.recipeIconImageView)
-        private val database: FirebaseDatabase = FirebaseDatabase.getInstance()
+        //private val database: FirebaseDatabase = FirebaseDatabase.getInstance()
 
         fun bind(recipe: RecipeInSearch, storageReference: StorageReference) {
             recipeNameTextView.text = recipe.recipeName
 
-            // Load the image using Glide
-            Glide.with(itemView.context).load(storageReference.child(recipe.recipeImage)).into(recipeIconImageView)
+            val formattedRecipeName = recipe.recipeName.replace(" ", "")
+
+            storageReference.child("recipes/").child(formattedRecipeName).downloadUrl.addOnSuccessListener { uri ->
+                // Load the image using Glide
+                Glide.with(itemView.context).load(uri).into(recipeIconImageView)
+            }
 
             recipeIconImageView.setOnClickListener {
                 // Deactivate UI elements before handling the click action
@@ -154,7 +161,6 @@ class SearchAdapter(
                 var recipeObject = Recipe()
 
                 val database = databaseReference.child("Recipes")
-
                 val recipeName = recipeNameTextView.text.toString()
 
                 val recipeQuery = database.orderByChild("name").equalTo(recipeName)
@@ -184,18 +190,18 @@ class SearchAdapter(
                             // Access the activity through the context and deactivate UI elements
                             val activity = itemView.context as AppCompatActivity
                             deactivateUIElements()
-                            activity.supportFragmentManager.beginTransaction().replace(R.id.fragment_container, recipeDetailsFragment).commit()
+                            //activity.supportFragmentManager.beginTransaction().replace(R.id.fragment_container, recipeDetailsFragment).commit()
+                            recipeDetailsFragment.show(activity.supportFragmentManager, recipeDetailsFragment.tag)
+                            activity.supportFragmentManager.executePendingTransactions()
+                            recipeDetailsFragment.view?.requestFocus()
                         }
                     }
-
                     override fun onCancelled(databaseError: DatabaseError) {
                         // Handle errors if needed
                     }
                 })
             }
         }
-
-
     }
 
     override fun deactivateUIElements() {

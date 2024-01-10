@@ -10,6 +10,7 @@ import android.widget.Toast
 import com.example.hotpot.R
 import com.example.hotpot.Recipe
 import androidx.appcompat.app.AlertDialog
+import com.example.hotpot.SearchActivity
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.firebase.auth.FirebaseAuth
@@ -28,6 +29,9 @@ class RecipeDetailsFragment : BottomSheetDialogFragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_recipe_details, container, false)
+
+        view.isFocusable = true
+        view.isClickable = true
 
         val recipeTitleTextView: TextView = view.findViewById(R.id.recipe_title)
         val recipeStepsTextView: TextView = view.findViewById(R.id.recipe_steps)
@@ -138,6 +142,11 @@ class RecipeDetailsFragment : BottomSheetDialogFragment() {
         }
         // Optional: You may want to show a confirmation message or handle the success in some way.
         Toast.makeText(requireContext(), "Ingredients added to ShoppingList", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        view?.findViewById<View>(R.id.recipe_title)?.requestFocus()
     }
 }
 

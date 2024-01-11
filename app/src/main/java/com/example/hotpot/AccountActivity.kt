@@ -3,12 +3,15 @@ package com.example.hotpot
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.InputType
 import android.util.Log
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
@@ -66,8 +69,9 @@ class AccountActivity : AppCompatActivity() {
         }
 
         allergyButton.setOnClickListener {
-            val intent = Intent(this, DietFilters::class.java)
-            startActivity(intent)
+            val dietFiltersFragment = DietFilters()
+            dietFiltersFragment.show(supportFragmentManager, "DietFilters")
+            Toast.makeText(this, "Diet Filters Fragment wird angezeigt", Toast.LENGTH_SHORT).show()
         }
 
 
@@ -115,16 +119,40 @@ class AccountActivity : AppCompatActivity() {
         val ref = database.getReference("Users/$uid")
         ref.get().addOnSuccessListener {
             val profilePictureURL = "profilePictures/$uid"
+            val userBio = it.child("bio").value.toString()
             val username = it.child("name").value.toString()
 
             // set username
             val usernameTextView = findViewById<TextView>(R.id.profileNameTextView)
+            val userBioEditText = findViewById<TextView>(R.id.profileBioTextView)
             usernameTextView.text = username
+            userBioEditText.text = userBio
 
             val storageRef = FirebaseStorage.getInstance().reference
             val fileRef = storageRef.child(profilePictureURL)
             Log.d("AccountActivity", fileRef.toString())
             Log.d("AccountActivity", fileRef.path)
+
+            userBioEditText.setOnClickListener {
+                val builder = AlertDialog.Builder(this)
+                builder.setTitle("Enter Bio")
+
+                // Set up the input
+                val input = EditText(this)
+                input.inputType = InputType.TYPE_CLASS_TEXT
+                builder.setView(input)
+
+                // Set up the buttons
+                builder.setPositiveButton("OK") { _, _ ->
+                    val userInput = input.text.toString()
+                    userBioEditText.text = userInput
+                    ref.child("bio").setValue(userInput)
+                }
+                builder.setNegativeButton("Cancel") { dialog, _ ->
+                    dialog.cancel()
+                }
+                builder.show()
+            }
 
             fileRef.downloadUrl.addOnSuccessListener { uri ->
                 val downloadUrl = uri.toString()

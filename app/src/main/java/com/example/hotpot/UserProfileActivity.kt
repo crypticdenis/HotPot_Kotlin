@@ -23,8 +23,6 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 
-//TODO: fix diet tags in edit profile (is currently handled like an activity, but is a fragment)
-
 class UserProfileActivity : AppCompatActivity() {
 
     private lateinit var profilePicture: ImageView

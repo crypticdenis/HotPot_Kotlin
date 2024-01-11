@@ -8,7 +8,9 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.Toast
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
@@ -17,7 +19,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.getValue
 
-class DietFilters : Fragment() {
+class DietFilters : DialogFragment() {
     private lateinit var checkBoxVegan: CheckBox
     private lateinit var checkBoxGluten: CheckBox
     private lateinit var checkBoxHalal: CheckBox

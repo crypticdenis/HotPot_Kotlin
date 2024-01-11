@@ -172,8 +172,8 @@ class EditProfileActivity : AppCompatActivity() {
     }
 
     private fun openDietFiltersFragment() {
-        val intent = Intent(this, DietFilters::class.java)
-        startActivity(intent)
+        val dietFiltersFragment = DietFilters()
+        dietFiltersFragment.show(supportFragmentManager, "DietFilters")
     }
 
 

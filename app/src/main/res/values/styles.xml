@@ -63,4 +63,7 @@
     <item name="android:textStyle">bold</item>
     <item name="android:padding">16dp</item>
     </style>
+
+
+
 </resources>

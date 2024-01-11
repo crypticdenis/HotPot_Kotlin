@@ -129,4 +129,6 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="favouriteRecipesButton">Favourite Recipes</string>
+    <string name="friends_button_text">Friends</string>
+    <string name="add_friend_button_text">Add Friend</string>
 </resources>

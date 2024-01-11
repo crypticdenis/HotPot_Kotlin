@@ -19,9 +19,9 @@ class FriendAdapter(private val friendList: List<Friend>) :
 
     inner class FriendViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val ivFriendImage: ImageView = itemView.findViewById(R.id.friendImageButton)
+        val nameTextView: TextView = itemView.findViewById(R.id.friendNameStories)
         // Add other views as needed
     }
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FriendViewHolder {
         val itemView = LayoutInflater.from(parent.context)
@@ -32,9 +32,8 @@ class FriendAdapter(private val friendList: List<Friend>) :
 
     override fun onBindViewHolder(holder: FriendViewHolder, position: Int) {
         val currentFriend = friendList[position]
-        var nameTestView = holder.itemView.findViewById<TextView>(R.id.friendNameStories)
 
-        nameTestView.text = currentFriend.name
+        holder.nameTextView.text = currentFriend.name
 
         val storageReference: StorageReference =
             FirebaseStorage.getInstance().getReference("profilePictures")
@@ -48,7 +47,6 @@ class FriendAdapter(private val friendList: List<Friend>) :
             // Handle failure to get download URL
         }
     }
-
 
     override fun getItemCount(): Int {
         return friendList.size

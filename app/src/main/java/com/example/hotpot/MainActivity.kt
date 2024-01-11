@@ -31,7 +31,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.io.IOException
 import com.bumptech.glide.Glide
-import com.squareup.picasso.Picasso
+import kotlin.math.log
 
 // TODO: Change colours to proper green hotpot colours
 @Suppress("DEPRECATION")
@@ -150,55 +150,44 @@ class MainActivity : AppCompatActivity() {
 
     private fun showRandomMeal() {
         val databaseReference = FirebaseDatabase.getInstance().reference.child("Recipes")
-        val storageReference = FirebaseStorage.getInstance().reference;
+
+        // Liste zum Sammeln der Rezepte
+        val recipes: MutableList<Recipe> = mutableListOf()
 
         databaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val recipes: MutableList<Recipe> = mutableListOf()
-
                 for (recipeSnapshot in dataSnapshot.children) {
                     val name = recipeSnapshot.child("name").getValue(String::class.java)
                     val description = recipeSnapshot.child("description").getValue(String::class.java)
+                    val instructions = recipeSnapshot.child("instructions").getValue(String::class.java)
+                    val details = recipeSnapshot.child("details").getValue(String::class.java)
+                    val tags = recipeSnapshot.child("tags").getValue<List<String>>()
+                    val creditUserID = recipeSnapshot.child("credit").getValue(String::class.java).toString()
+
+                    Log.d("firebase", "creditsUserID: $creditUserID")
+
                     val ingredientsSnapshot = recipeSnapshot.child("ingredients")
-
-                    val recipePictureURL = "recipes/$name"
-
-                    val foodPictureImageView: ImageView = findViewById(R.id.food_picture)
-
-
-                    //loadImageFromFirebaseStorage(recipePictureURL, foodPictureImageView)
-                        // Behandle den Fall, wenn keine Bild-URL vorhanden ist
-                        // Du kannst hier ein Standardbild oder eine leere Zeichenfolge verwenden
-                        // oder die gewünschte Logik implementieren
-                        //Log.e("Firebase", "Keine Bild-URL gefunden für Rezept: $name")
-
                     val ingredientsMap = mutableMapOf<String, Any>()
+
                     for (ingredientSnapshot in ingredientsSnapshot.children) {
                         val ingredientName = ingredientSnapshot.key
                         val ingredientDetails = ingredientSnapshot.getValue<Map<String, Any>>()
                         ingredientsMap[ingredientName!!] = ingredientDetails!!
                     }
 
-                    val instructions = recipeSnapshot.child("instructions").getValue(String::class.java)
-                    val details = recipeSnapshot.child("details").getValue(String::class.java)
-                    val tags = recipeSnapshot.child("tags").getValue<List<String>>()
-
                     // Füge nur nicht-null Daten zur Liste hinzu
                     if (name != null && description != null && instructions != null && details != null && tags != null) {
-                        val recipe = Recipe(name, recipePictureURL, description, ingredientsMap, instructions, details, tags)
+                        val recipe = Recipe(name, "", description, ingredientsMap, instructions, details, tags, creditUserID)
                         recipes.add(recipe)
                     }
                 }
-
+                // Wenn Rezepte vorhanden sind
                 if (recipes.isNotEmpty()) {
+                    // Wähle ein zufälliges Rezept aus
                     selectedRecipe = recipes.random()
 
-                    findViewById<TextView>(R.id.recipe_name).text = selectedRecipe?.name ?: "No Name"
-                    findViewById<TextView>(R.id.recipe_info).text = selectedRecipe?.details ?: "No Details"
-
-                    // Setze das Bild im ImageView
-                    val foodPictureImageView: ImageView = findViewById(R.id.food_picture)
-                    loadImageFromFirebaseStorage(selectedRecipe?.name.toString(), foodPictureImageView)
+                    // Suche nach dem Credit für das ausgewählte Rezept
+                    searchCreditForSelectedRecipe(selectedRecipe)
                 }
             }
 
@@ -208,14 +197,46 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+    private fun searchCreditForSelectedRecipe(selectedRecipe: Recipe?) {
+        selectedRecipe?.let {
+            val creditUserID = it.credits
+
+            Log.d("searchCredit", "CreditUsERID: $creditUserID")
+
+            Log.d("Firebase", "Credits: $creditUserID")
+
+            val usersReference = FirebaseDatabase.getInstance().reference.child("Users").child(
+                it.credits.toString()
+            ).child("name")
+
+            usersReference.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(userNameSnapshot: DataSnapshot) {
+                    val userName = userNameSnapshot.getValue(String::class.java) ?: "Unknown User"
+
+                    Log.d("Firebase", "Username: $userName")
+
+                    // Setze die Daten für das ausgewählte Rezept
+                    findViewById<TextView>(R.id.recipe_name).text = it.name
+                    findViewById<TextView>(R.id.recipe_info).text = it.details
+                    findViewById<TextView>(R.id.recipe_credit).text = ("by $userName")
+
+                    // Lade das Bild nur für das ausgewählte Rezept
+                    val foodPictureImageView: ImageView = findViewById(R.id.food_picture)
+                    loadImageFromFirebaseStorage(it.name.toString(), foodPictureImageView)
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e("Firebase", "Fehler beim Lesen der Benutzerdaten: ${error.message}")
+                }
+            })
+        }
+    }
+
+
+
     // Funktion zum Laden des Bildes von der Storage und Anzeigen im ImageView
     private fun loadImageFromFirebaseStorage(imageFileName: String?, imageView: ImageView) {
         if (imageFileName == null || imageFileName.isBlank()) {
-            // Wenn der Bildname null oder leer ist, setze ein Leerzeichen oder anderes Standardbild
-            // Hier kannst du die Logik implementieren, die du bevorzugst
-            Log.e("FirebaseStorage", "Leerer Bildname. Standardbild wird verwendet.")
-            // Setze hier ein Standardbild oder ein Leerzeichen
-            // Zum Beispiel: imageView.setImageResource(R.drawable.default_image)
             return
         }
         val storageReference = FirebaseStorage.getInstance().reference
@@ -237,9 +258,6 @@ class MainActivity : AppCompatActivity() {
         }.addOnFailureListener { exception ->
             // Handle den Fehler beim Abrufen der Download-URL
             Log.e("FirebaseStorage", "Fehler beim Laden des Bildes: ${exception.message}")
-
-            // Hier kannst du zusätzliche Aktionen hinzufügen, wenn das Bild nicht gefunden wird
-            // Zum Beispiel ein Standardbild anzeigen oder dem Benutzer eine Meldung geben
         }
     }
 
@@ -322,6 +340,5 @@ class MainActivity : AppCompatActivity() {
             // Falls userId null ist
             Log.e("Firebase", "Fehler beim Abrufen der Benutzer-ID.")
         }
-
     }
 

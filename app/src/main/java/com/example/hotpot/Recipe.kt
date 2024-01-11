@@ -11,11 +11,12 @@ data class Recipe(
     var ingredients: MutableMap<String, Any>,
     var instructions: String,
     var details: String,
-    var tags: List<String>
+    var tags: List<String>,
+    var credits: String?
 ): Serializable
 {
     // Leerer Konstruktor für Firebase
-    constructor() : this("", "", "", mutableMapOf(), "", "", listOf())
+    constructor() : this("", "", "", mutableMapOf(), "", "", listOf(), "")
 }
 
 fun uploadRecipes(recipes: List<Recipe>) {
@@ -30,5 +31,6 @@ fun uploadRecipes(recipes: List<Recipe>) {
         newRecipeReference.child("instructions").setValue(recipe.instructions)
         newRecipeReference.child("details").setValue(recipe.details)
         newRecipeReference.child("tags").setValue(recipe.tags)
+        newRecipeReference.child("credit").setValue(recipe.credits)
     }
 }

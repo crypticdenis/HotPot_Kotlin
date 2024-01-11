@@ -27,6 +27,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.text.isDigitsOnly
 import androidx.core.widget.NestedScrollView
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -477,6 +478,8 @@ class AddRecipe : AppCompatActivity() {
      */
     private fun uploadNewRecipe() {
         // get recipeName
+        val userUID = FirebaseAuth.getInstance().uid.toString()
+
         val recipeNameEditText: EditText = findViewById(R.id.AddRecipe_recipeName)
         val recipeName = recipeNameEditText.text.toString()
 
@@ -498,6 +501,12 @@ class AddRecipe : AppCompatActivity() {
         // cooking time
         val cookingTimeTextView: TextView = findViewById(R.id.cookingTimeTextView)
         val time = cookingTimeTextView.text.toString()
+
+        if (!::imageUri.isInitialized) {
+            // Wenn das Bild nicht ausgewählt wurde, zeige einen Toast und beende die Funktion
+            Toast.makeText(this@AddRecipe, "Bitte wähle ein Bild aus", Toast.LENGTH_SHORT).show()
+            return
+        }
 
         // Firebase-Reference
         val databaseReference = FirebaseDatabase.getInstance().reference.child("Recipes")
@@ -549,6 +558,8 @@ class AddRecipe : AppCompatActivity() {
 
                 // difficulty, rating, cooking time
                 newRecipeReference.child("details").setValue("difficulty: $difficulty | rating: $rating | time: $time")
+
+                newRecipeReference.child("credit").setValue(userUID)
 
                 Log.d("Firebase", "Neues Rezept hochgeladen mit ID: $newRecipeId");
                 Toast.makeText(this@AddRecipe, "Rezept erfolgreich hochgeladen!", Toast.LENGTH_SHORT).show()

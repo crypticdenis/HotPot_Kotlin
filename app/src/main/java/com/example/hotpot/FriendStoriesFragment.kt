@@ -128,7 +128,7 @@ class FriendStoriesFragment : Fragment(), OnItemClickListener {
                     Toast.makeText(requireContext(), "Keine UserStory vorhanden", Toast.LENGTH_SHORT).show()
                 } else {
                     // UserStory exists, open the UserStoryDetailsFragment with recipe parameter
-                    openUserStoryDetailsFragment(userStory)
+                    openUserStoryFragment(userStory)
                 }
             }
             override fun onCancelled(error: DatabaseError) {
@@ -136,15 +136,52 @@ class FriendStoriesFragment : Fragment(), OnItemClickListener {
             }
         })
     }
-    private fun openUserStoryDetailsFragment(recipe: Recipe) {
+    private fun openUserStoryFragment(recipe: Recipe) {
         // Check if recipe is not null before proceeding
         recipe?.let {
-            val userStoryDetailsFragment = RecipeDetailsFragment()
-            val bundle = Bundle()
-            bundle.putSerializable("RECIPE_DATA", recipe)
-            userStoryDetailsFragment.arguments = bundle
-            userStoryDetailsFragment.show(requireActivity().supportFragmentManager, userStoryDetailsFragment.tag)
+            // Load the full recipe details before displaying the UserStoryDetailsFragment
+            loadFullRecipeDetails(recipe)
         }
+    }
+
+    private fun loadFullRecipeDetails(recipe: Recipe) {
+        val databaseReference = FirebaseDatabase.getInstance().reference
+        val recipesReference = databaseReference.child("Recipes")
+
+        // Directly query the child with the recipe name
+        val recipeName = recipe.name ?: return
+
+        recipesReference.orderByChild("name").equalTo(recipeName).addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    // Get the first child, assuming there's only one match
+                    val recipeNode = dataSnapshot.children.first()
+
+                    val fullRecipe = recipeNode.getValue(Recipe::class.java)
+
+                    if (fullRecipe != null) {
+                        // Full recipe details retrieved, open the UserStoryDetailsFragment
+                        openUserStoryDetailsFragment(fullRecipe)
+                    } else {
+                        Log.e("FriendStoriesFragment", "Recipe not found.")
+                    }
+                } else {
+                    Log.e("FriendStoriesFragment", "Recipe not found.")
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("FriendStoriesFragment", "Firebase database error: ${error.message}")
+            }
+        })
+    }
+
+    private fun openUserStoryDetailsFragment(fullRecipe: Recipe) {
+        val userStoryDetailsFragment = RecipeDetailsFragment()
+        val bundle = Bundle()
+        bundle.putSerializable("RECIPE_DATA", fullRecipe)
+        userStoryDetailsFragment.arguments = bundle
+        userStoryDetailsFragment.show(requireActivity().supportFragmentManager, userStoryDetailsFragment.tag)
     }
 }
 

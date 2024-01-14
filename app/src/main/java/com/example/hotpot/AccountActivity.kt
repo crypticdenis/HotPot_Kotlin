@@ -71,7 +71,6 @@ class AccountActivity : AppCompatActivity() {
         allergyButton.setOnClickListener {
             val dietFiltersFragment = DietFilters()
             dietFiltersFragment.show(supportFragmentManager, "DietFilters")
-            Toast.makeText(this, "Diet Filters Fragment wird angezeigt", Toast.LENGTH_SHORT).show()
         }
 
 
@@ -107,8 +106,6 @@ class AccountActivity : AppCompatActivity() {
                 else -> false
             }
         }
-
-
     }
 
     private fun loadUserData(database: FirebaseDatabase, auth: FirebaseAuth, profilePicture: ImageView) {

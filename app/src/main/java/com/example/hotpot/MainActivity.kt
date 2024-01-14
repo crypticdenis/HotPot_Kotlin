@@ -39,6 +39,8 @@ import kotlin.math.log
 class MainActivity : AppCompatActivity() {
     private lateinit var recipes: List<Recipe>
     private var selectedRecipe: Recipe? = null
+    private var currentUserTags = mutableListOf<String>()
+
 
     private lateinit var bottomNavigationView: BottomNavigationView
 
@@ -46,6 +48,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_activity)
         FirebaseApp.initializeApp(this)
+
+        // Fetch current user's tags
+        fetchCurrentUserTags()
 
         // First recipe is null, that's why no recipe details open up
         showRandomMeal();
@@ -105,6 +110,40 @@ class MainActivity : AppCompatActivity() {
 
                 else -> false
             }
+        }
+    }
+
+    private fun fetchCurrentUserTags() {
+        // Fetch current user's tags
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        userId?.let {
+            val currentUserTagsReference = FirebaseDatabase.getInstance().reference.child("Users").child(it).child("Tags")
+
+            currentUserTagsReference.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    // Clear the existing tags
+                    currentUserTags.clear()
+
+                    // Iterate through the children and add each tag to the list
+                    for (tagSnapshot in dataSnapshot.children) {
+                        val tagValue = tagSnapshot.getValue(String::class.java)
+                        tagValue?.let {
+                            currentUserTags.add(it)
+                        }
+                    }
+
+                    // Now, currentUserTags list contains all the tag values for the current user
+                    // You can use this list as needed in your application
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    // Handle error
+                    Log.e("Firebase", "Error fetching user tags: ${error.message}")
+                }
+            })
+        } ?: run {
+            // Handle case where userId is null
+            Log.e("Firebase", "Error retrieving user ID.")
         }
     }
 
@@ -230,7 +269,11 @@ class MainActivity : AppCompatActivity() {
                     // Füge nur nicht-null Daten zur Liste hinzu
                     if (name != null && description != null && instructions != null && details != null && tags != null) {
                         val recipe = Recipe(name, "", description, ingredientsMap, instructions, details, tags, creditUserID)
-                        recipes.add(recipe)
+
+                        // check if the recipe has a tag that the currentUser is allergic to etc.
+                        if (recipe.tags.intersect(currentUserTags).isEmpty()) {
+                            recipes.add(recipe)
+                        }
                     }
                 }
                 // Wenn Rezepte vorhanden sind
@@ -238,8 +281,15 @@ class MainActivity : AppCompatActivity() {
                     // Wähle ein zufälliges Rezept aus
                     selectedRecipe = recipes.random()
 
-                    // Suche nach dem Credit für das ausgewählte Rezept
-                    searchCreditForSelectedRecipe(selectedRecipe)
+                    // continue randomizing till a recipe with no common tags come up and not the same recipe
+                    if (selectedRecipe?.tags?.intersect(currentUserTags)?.isEmpty() == false ||
+                        selectedRecipe?.name == findViewById<TextView>(R.id.recipe_name).text.toString()
+                    ) {
+                        showRandomMeal()
+                    } else {
+                        // Suche nach dem Credit für das ausgewählte Rezept
+                        searchCreditForSelectedRecipe(selectedRecipe)
+                    }
                 }
             }
 

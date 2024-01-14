@@ -14,13 +14,22 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 
-class FriendAdapter(private val friendList: List<Friend>) :
+class FriendAdapter(private val friendList: List<Friend>, private val clickListener: OnItemClickListener) :
     RecyclerView.Adapter<FriendAdapter.FriendViewHolder>() {
 
     inner class FriendViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val ivFriendImage: ImageView = itemView.findViewById(R.id.friendImageButton)
         val nameTextView: TextView = itemView.findViewById(R.id.friendNameStories)
-        // Add other views as needed
+
+        init {
+            itemView.setOnClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    val clickedFriend = friendList[position]
+                    clickListener.onItemClick(clickedFriend)
+                }
+            }
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FriendViewHolder {
@@ -52,3 +61,4 @@ class FriendAdapter(private val friendList: List<Friend>) :
         return friendList.size
     }
 }
+

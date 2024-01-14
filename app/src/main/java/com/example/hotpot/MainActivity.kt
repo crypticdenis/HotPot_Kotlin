@@ -14,6 +14,7 @@ import android.widget.ImageView
 import android.widget.PopupWindow
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -72,8 +73,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         findViewById<ImageButton>(R.id.addToFavoritesBtn).setOnClickListener {
-            selectedRecipe?.let { it1 -> addToFavorites(it1) };
-            Toast.makeText(this@MainActivity, "Rezept zu Favoriten hinzugefügt!", Toast.LENGTH_SHORT).show();
+            selectedRecipe?.let { recipe ->
+                showAddToFavoritesDialog(recipe)
+            }
         }
 
         bottomNavigationView = findViewById(R.id.bottom_navigation)
@@ -126,6 +128,56 @@ class MainActivity : AppCompatActivity() {
         bundle.putSerializable("RECIPE_DATA", recipe)
         recipeDetailsFragment.arguments = bundle
         recipeDetailsFragment.show(supportFragmentManager, recipeDetailsFragment.tag)
+    }
+
+    private fun showAddToFavoritesDialog(recipe: Recipe) {
+        val options = arrayOf("Als aktuelle UserStory einstellen", "Füge zu Favoriten hinzu")
+
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Optionen auswählen")
+            .setItems(options) { dialog, which ->
+                when (which) {
+                    0 -> {
+                        // Als aktuelle UserStory einstellen ausgewählt
+                        setAsCurrentUserStory(recipe)
+                    }
+                    1 -> {
+                        // Füge zu Favoriten hinzu ausgewählt
+                        addToFavorites(recipe)
+                        Toast.makeText(this@MainActivity, "Rezept zu Favoriten hinzugefügt!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        val dialog = builder.create()
+        dialog.show()
+    }
+
+    private fun setAsCurrentUserStory(recipe: Recipe) {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+
+        userId?.let {
+            val userStoryReference = FirebaseDatabase.getInstance().reference
+                .child("Users")
+                .child(it)
+                .child("UserStory")
+                .child("0") // Change here to save the recipe under a node with ID 0
+
+            // Delete existing data under "UserStory/0"
+            userStoryReference.removeValue().addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    // Save the recipe under "UserStory/0"
+                    userStoryReference.setValue(recipe).addOnSuccessListener {
+                        Toast.makeText(this@MainActivity, "Recipe set as current UserStory!", Toast.LENGTH_SHORT).show()
+                    }.addOnFailureListener {
+                        Toast.makeText(this@MainActivity, "Error saving UserStory: ${it.message}", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    Toast.makeText(this@MainActivity, "Error deleting existing data: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+        } ?: run {
+            Toast.makeText(this@MainActivity, "Error retrieving user ID.", Toast.LENGTH_SHORT).show()
+        }
     }
 
 

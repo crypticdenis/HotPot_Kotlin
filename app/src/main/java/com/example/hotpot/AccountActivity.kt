@@ -17,7 +17,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.bumptech.glide.Glide
-//TODO: Set allergies doesn't work yet
 
 @Suppress("DEPRECATION")
 class AccountActivity : AppCompatActivity() {
@@ -28,7 +27,7 @@ class AccountActivity : AppCompatActivity() {
 
         val profilePicture = findViewById<ImageView>(R.id.profilePictureImageView)
         val backButton = findViewById<ImageButton>(R.id.Account_BackButton)
-        val settingsBUtton = findViewById<ImageButton>(R.id.Account_SettingsButton)
+        val settingsButton = findViewById<ImageButton>(R.id.Account_SettingsButton)
         val fridgeButton = findViewById<Button>(R.id.fridgeButton)
         val favouritesButton = findViewById<Button>(R.id.favouritesButton)
         val allergyButton = findViewById<Button>(R.id.allergyButton)
@@ -53,7 +52,7 @@ class AccountActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        settingsBUtton.setOnClickListener {
+        settingsButton.setOnClickListener {
             val intent = Intent(this, SettingsActivity::class.java)
             startActivity(intent)
         }

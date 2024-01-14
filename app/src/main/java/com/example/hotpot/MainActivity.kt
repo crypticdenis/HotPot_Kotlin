@@ -182,8 +182,7 @@ class MainActivity : AppCompatActivity() {
                     }
                     1 -> {
                         // Füge zu Favoriten hinzu ausgewählt
-                        addToFavorites(recipe)
-                        Toast.makeText(this@MainActivity, "Rezept zu Favoriten hinzugefügt!", Toast.LENGTH_SHORT).show();
+                        addToFavorites(recipe, this@MainActivity)
                     }
                 }
             }
@@ -338,7 +337,7 @@ class MainActivity : AppCompatActivity() {
 
     // Funktion zum Laden des Bildes von der Storage und Anzeigen im ImageView
     private fun loadImageFromFirebaseStorage(imageFileName: String?, imageView: ImageView) {
-        if (imageFileName == null || imageFileName.isBlank()) {
+        if (imageFileName.isNullOrBlank()) {
             return
         }
         val storageReference = FirebaseStorage.getInstance().reference
@@ -367,10 +366,6 @@ class MainActivity : AppCompatActivity() {
     private fun sanitizeRecipeNameForStorage(recipeName: String): String {
         return recipeName.replace(" ", "")
     }
-
-
-
-
     override fun onResume() {
     super.onResume()
     bottomNavigationView.selectedItemId = R.id.navigation_home // Replace 'navigation_home' with the actual ID of the home item
@@ -414,33 +409,57 @@ class MainActivity : AppCompatActivity() {
         popupWindow.showAsDropDown(anchorView)
     }
 }
+private fun addToFavorites(selectedRecipe: Recipe, context: Context) {
+    val userId = FirebaseAuth.getInstance().currentUser?.uid
+    userId?.let {
+        val favoritesReference =
+            FirebaseDatabase.getInstance().reference.child("Users").child(it).child("Favorites")
 
-    private fun addToFavorites(selectedRecipe: Recipe) {
-        // Überprüfe, ob ein ausgewähltes Rezept vorhanden ist
-        val userId = FirebaseAuth.getInstance().currentUser?.uid
-        userId?.let {
-            val favoritesReference = FirebaseDatabase.getInstance().reference.child("Users").child(it).child("Favorites")
+        // check if recipe is already in Favorites
+        favoritesReference.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val recipeExists = dataSnapshot.children.any { favoriteSnapshot ->
+                    val name = favoriteSnapshot.child("name").getValue(String::class.java)
+                    name != null && name == selectedRecipe.name
+                }
 
-            // Erstelle eine eindeutige ID für das favorisierte Rezept
-            val favoriteRecipeId = favoritesReference.push().key
+                if (recipeExists) {
+                    // Das Rezept existiert bereits in den Favoriten
+                    Log.d("Firebase", "Rezept existiert bereits in den Favoriten.")
+                    showToast("Rezept ist schon favorisiert", context)
+                } else {
+                    // Das Rezept existiert noch nicht in den Favoriten, füge es hinzu
+                    val randomKey = favoritesReference.push().key
 
-            if (favoriteRecipeId != null) {
-                favoritesReference.child(favoriteRecipeId).setValue(selectedRecipe)
-                    .addOnSuccessListener {
-                        // Erfolgreich hinzugefügt
+                    if (randomKey != null) {
+                        favoritesReference.child(randomKey).setValue(selectedRecipe)
+                        // Hier kannst du weitere Eigenschaften des Rezepts hinzufügen
                         Log.d("Firebase", "Rezept erfolgreich zu Favoriten hinzugefügt.")
+                        showToast("Rezept zu Favoriten hinzugefügt!", context)
+                    } else {
+                        // Falls randomKey null ist
+                        Log.e(
+                            "Firebase",
+                            "Fehler beim Erstellen eines random Keys für das Rezept."
+                        )
+                        showToast("Fehler beim Hinzufügen zu Favoriten", context)
                     }
-                    .addOnFailureListener {
-                        // Fehler beim Hinzufügen
-                        Log.e("Firebase", "Fehler beim Hinzufügen des Rezepts zu Favoriten: ${it.message}")
-                    }
-            } else {
-                // Falls favoriteRecipeId null ist
-                Log.e("Firebase", "Fehler beim Erstellen einer eindeutigen ID für das Rezept.")
+                }
             }
-        } ?: run {
-            // Falls userId null ist
-            Log.e("Firebase", "Fehler beim Abrufen der Benutzer-ID.")
-        }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("Firebase", "Fehler beim Lesen der Datenbank: ${error.message}")
+                showToast("Fehler beim Hinzufügen zu Favoriten", context)
+            }
+        })
+    } ?: run {
+        // Falls userId null ist
+        Log.e("Firebase", "Fehler beim Abrufen der Benutzer-ID.")
+        showToast("Fehler beim Hinzufügen zu Favoriten", context)
     }
+}
+    private fun showToast(message: String, context: Context) {
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        }
+
 

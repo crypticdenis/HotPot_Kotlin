@@ -3,57 +3,28 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <FrameLayout
-        android:id="@+id/fragmentContainer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/bottom_navigation"
-        android:layout_marginTop="?attr/actionBarSize">
-    </FrameLayout>
-
     <!-- Background Image or Color -->
     <ImageView
         android:id="@+id/backgroundImageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/background_im"
+        android:src="@drawable/accountbackground"
         android:scaleType="centerCrop"
         android:contentDescription="@string/backgroundImageExplanaton"/>
 
     <!-- LinearLayout for Your Content -->
 
-    <LinearLayout
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingStart="13dp"
-        android:paddingTop="20dp"
-        android:paddingEnd="13dp">
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-        <ImageButton
-            android:id="@+id/Account_BackButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_weight="0"
-            android:background="@drawable/arrow_back"
-            android:backgroundTint="@color/hotpot_dark_green"
-            android:contentDescription="@string/backbuttonExplanation"/>
-
-        <Space
+        <include layout="@layout/toolbar_account"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_height="wrap_content" />
 
-        <ImageButton
-            android:id="@+id/Account_SettingsButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_weight="0"
-            android:background="@drawable/settings_cog"
-            android:backgroundTint="@color/navBar_green_color"
-            android:contentDescription="@string/explainSettingsIcon"/>
-    </LinearLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
     <LinearLayout
         android:id="@+id/accountContentLayout"
@@ -102,21 +73,27 @@
                 android:fontFamily="@font/abel"
                 android:gravity="center"
                 android:hint="Username"
+                android:paddingTop="50dp"
                 android:singleLine="true"
                 android:text="Test"
                 android:textSize="30dp"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/profileBioTextView"
+                android:id="@+id/profileTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
                 android:autoSizeTextType="uniform"
                 android:fontFamily="@font/abeezee"
                 android:gravity="center"
                 android:hint="Bio"
                 android:textSize="20dp" />
+
+            <FrameLayout
+                android:id="@+id/fragmentContainer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"></FrameLayout>
 
 
         </LinearLayout>
@@ -177,4 +154,5 @@
         app:itemTextColor="@color/hotpot_dark_green"
         app:layout_anchorGravity="bottom"
         app:menu="@menu/bottom_navigation_menu" />
+
 </RelativeLayout>

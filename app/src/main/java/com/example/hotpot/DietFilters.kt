@@ -9,14 +9,12 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.getValue
 
 class DietFilters : DialogFragment() {
@@ -40,6 +38,7 @@ class DietFilters : DialogFragment() {
     private var listener: OnFragmentInteractionListener? = null
 
     override fun onCreateView(
+
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
@@ -63,6 +62,7 @@ class DietFilters : DialogFragment() {
 
         // mark the checkBoxes that already are tagged
         loadDietaryFilters()
+
 
         val saveButton = view.findViewById<Button>(R.id.saveButton)
         saveButton.setOnClickListener {

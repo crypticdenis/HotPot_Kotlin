@@ -4,7 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.FrameLayout
-import android.widget.Toast
+import android.widget.ImageButton
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -30,14 +30,13 @@ class SettingsActivity : AppCompatActivity(), OnSettingsItemClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
+        val backButton = findViewById<ImageButton>(R.id.custom_return_button)
         val customToolbar = findViewById<Toolbar>(R.id.toolbar_custom)
         setSupportActionBar(customToolbar)
 
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowHomeEnabled(true)
-
-        customToolbar.setNavigationOnClickListener {
-            onBackPressed()
+        backButton.setOnClickListener {
+            val intent = Intent(this, AccountActivity::class.java)
+            startActivity(intent)
         }
 
         recyclerView = findViewById(R.id.settings_recycler_view)
@@ -106,19 +105,6 @@ class SettingsActivity : AppCompatActivity(), OnSettingsItemClickListener {
             }
             .show() // Display the dialog
     }
-    override fun onBackPressed() {
-        if (fragmentContainer.visibility == View.VISIBLE) {
-            super.onBackPressed()
-            recyclerView.visibility = View.VISIBLE
-            fragmentContainer.visibility = View.GONE
-        } else {
-            val intent = Intent(this, AccountActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-            startActivity(intent)
-            finish()  // Ensure this activity is removed from the back stack
-        }
-    }
-
 
 }
 

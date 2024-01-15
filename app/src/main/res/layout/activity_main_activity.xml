@@ -16,10 +16,22 @@
         android:paddingTop="20dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+        <TextView
+            android:id="@+id/friendsLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Friends Favorites"
+            android:textAppearance="?attr/textAppearanceSubtitle1"
+            android:padding="1dp"
+            android:textSize="20dp"
+            android:fontFamily="@font/abeezee"
+            android:textColor="?attr/colorOnBackground" />
+
         <FrameLayout
             android:id="@+id/friendsFrameLayout"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="80dp"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="20dp"

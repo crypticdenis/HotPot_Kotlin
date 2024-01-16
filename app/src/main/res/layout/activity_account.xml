@@ -73,7 +73,7 @@
                 android:fontFamily="@font/abel"
                 android:gravity="center"
                 android:hint="Username"
-                android:paddingTop="50dp"
+                android:paddingTop="52dp"
                 android:singleLine="true"
                 android:text="Test"
                 android:textSize="30dp"
@@ -89,12 +89,6 @@
                 android:gravity="center"
                 android:hint="Bio"
                 android:textSize="20dp" />
-
-            <FrameLayout
-                android:id="@+id/fragmentContainer"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"></FrameLayout>
-
 
         </LinearLayout>
 
@@ -141,6 +135,13 @@
             android:textColor="@color/white"
             android:textSize="18sp" />
     </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/fragmentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottom_navigation">
+    </FrameLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"

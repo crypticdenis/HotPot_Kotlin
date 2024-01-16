@@ -2,9 +2,16 @@ package com.example.hotpot
 
 import FriendStoriesFragment
 import RecipeDetailsFragment
+import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
+import android.provider.Settings
 import android.util.Log
 import android.view.ViewGroup
 import android.widget.Button
@@ -16,28 +23,34 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import com.bumptech.glide.Glide
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ServerValue
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.getValue
 import com.google.firebase.storage.FirebaseStorage
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import java.io.IOException
-import com.bumptech.glide.Glide
-import kotlin.math.log
+import java.io.ByteArrayOutputStream
+import java.util.UUID
 
 // TODO: Change colours to proper green hotpot colours
 @Suppress("DEPRECATION")
 class MainActivity : AppCompatActivity() {
-    private lateinit var recipes: List<Recipe>
+    companion object {
+        private const val PERMISSION_REQUEST_CODE = 100
+        private const val GALLERY_REQUEST_CODE = 1
+        private const val CAMERA_REQUEST_CODE = 2
+    }
+
     private var selectedRecipe: Recipe? = null
     private var currentUserTags = mutableListOf<String>()
 
@@ -53,7 +66,7 @@ class MainActivity : AppCompatActivity() {
         fetchCurrentUserTags()
 
         // First recipe is null, that's why no recipe details open up
-        showRandomMeal();
+        showRandomMeal()
 
         if (savedInstanceState == null) {
             // Load your fragment_friend_stories into the FriendsFrameLayout
@@ -66,6 +79,7 @@ class MainActivity : AppCompatActivity() {
         findViewById<Button>(R.id.random_meal_btn).setOnClickListener {
             showRandomMeal()
         }
+
 
         findViewById<Button>(R.id.show_recipe_btn).setOnClickListener {
             selectedRecipe?.let { recipe ->
@@ -108,8 +122,222 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
 
+                R.id.navigation_add_story -> {
+                    checkAndRequestPermissions()
+                    true
+                }
+                // handle other menu item clicks here
                 else -> false
             }
+        }
+    }
+    private fun checkAndRequestPermissions() {
+        val neededPermissions = listOf(
+            Manifest.permission.CAMERA
+        ).filterNot { permission ->
+            ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED
+        }
+        if (neededPermissions.isNotEmpty()) {
+            ActivityCompat.requestPermissions(this, neededPermissions.toTypedArray(), PERMISSION_REQUEST_CODE)
+        } else {
+            showPictureDialog()
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            val allPermissionsGranted = grantResults.all { it == PackageManager.PERMISSION_GRANTED }
+            if (allPermissionsGranted) {
+                showPictureDialog()
+            } else {
+                // Check if 'Don't Ask Again' is selected for any permission
+                val shouldShowRationale = permissions.any { shouldShowRequestPermissionRationale(it) }
+                if (!shouldShowRationale) {
+                    // User selected 'Don't Ask Again'. Guide them to app settings.
+                    showSettingsDialog()
+                } else {
+                    showPermissionDeniedExplanation()
+                }
+            }
+        }
+    }
+
+
+    private fun showPermissionDeniedExplanation() {
+        AlertDialog.Builder(this)
+            .setTitle("Permission Required")
+            .setMessage("This permission is needed to add photos. Please allow it to proceed.")
+            .setPositiveButton("Try Again") { dialog, which ->
+                // Try again to request the permission.
+                checkAndRequestPermissions()
+            }
+            .setNegativeButton("Cancel") { dialog, which ->
+                // Dismiss the dialog and don't request permission again.
+                dialog.dismiss()
+            }
+            .create()
+            .show()
+    }
+
+
+    private fun showSettingsDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("Permission Required")
+            .setMessage("This permission is needed to add photos. Please allow it in App Settings.")
+            .setPositiveButton("App Settings") { dialog, which ->
+                // Open App Settings
+                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                val uri = Uri.fromParts("package", packageName, null)
+                intent.data = uri
+                startActivity(intent)
+            }
+            .setNegativeButton("Cancel") { dialog, which ->
+                dialog.dismiss()
+            }
+            .create()
+            .show()
+    }
+
+
+    private fun showPictureDialog() {
+        val items = arrayOf("Select photo from gallery", "Capture photo from camera")
+        AlertDialog.Builder(this)
+            .setTitle("Add Photo")
+            .setItems(items) { _, which ->
+                when (which) {
+                    0 -> choosePhotoFromGallery()
+                    1 -> takePhotoFromCamera()
+                }
+            }
+            .show()
+    }
+
+
+    private fun choosePhotoFromGallery() {
+        val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        startActivityForResult(galleryIntent, GALLERY_REQUEST_CODE)
+    }
+
+
+    private fun takePhotoFromCamera() {
+        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        startActivityForResult(cameraIntent, CAMERA_REQUEST_CODE)
+    }
+
+
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == RESULT_OK) {
+            when (requestCode) {
+                GALLERY_REQUEST_CODE -> {
+                    val selectedImageUri = data?.data
+                    selectedImageUri?.let { uri ->
+                        uploadImageToFirebase(uri)
+                    }
+                }
+                CAMERA_REQUEST_CODE -> {
+                    val photo = data?.extras?.get("data") as? Bitmap
+                    photo?.let {
+                        uploadImageToFirebase(it)
+                    }
+                }
+            }
+        }
+    }
+
+
+    private fun saveImageUrlToFirebaseDatabase(imageUrl: String) {
+        val databaseRef = FirebaseDatabase.getInstance().getReference("/images").push()
+        val imageInfo = hashMapOf(
+            "url" to imageUrl,
+            "timestamp" to System.currentTimeMillis()
+        )
+        databaseRef.setValue(imageInfo)
+            .addOnSuccessListener {
+                Toast.makeText(this, "Story upload successful saveurltofire", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Failed to save image in database saveurltofire", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+
+    private fun uploadImageToFirebase(imageUri: Uri) {
+        val fileName = UUID.randomUUID().toString()
+        val storageRef = FirebaseStorage.getInstance().reference.child("images/$fileName")
+
+        storageRef.putFile(imageUri)
+            .addOnSuccessListener { taskSnapshot ->
+                taskSnapshot.metadata?.reference?.downloadUrl?.addOnSuccessListener { uri ->
+                    val imageUrl = uri.toString()
+                    // Here you can handle the uploaded image URL (e.g., save it in the Firebase database)
+                    saveImageUrlToFirebaseDatabase(imageUrl)
+                    // Save the image as a story
+                    saveImageAsStory(imageUrl)
+                }
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Upload failed uploadimagetofireuri", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+
+    private fun uploadImageToFirebase(bitmap: Bitmap) {
+        val fileName = UUID.randomUUID().toString() + ".jpg"
+        val storageRef = FirebaseStorage.getInstance().getReference("images/$fileName")
+        val baos = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+        val data = baos.toByteArray()
+
+        storageRef.putBytes(data)
+            .addOnSuccessListener { taskSnapshot ->
+                taskSnapshot.metadata?.reference?.downloadUrl?.addOnSuccessListener { uri ->
+                    val imageUrl = uri.toString()
+                    saveImageUrlToFirebaseDatabase(imageUrl)
+                    saveImageAsStory(imageUrl)
+                }
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Upload failed uploadimagetofirebit", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    private fun saveImageAsStory(imageUrl: String) {
+        // Assume that the imageUrl is the URL of the image in Firebase Storage that you have already uploaded.
+        // Now you want to save this as a story to your user profile so your friends can see it.
+
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        userId?.let {
+            // Create a unique key for the story (or use a specific one if you want to overwrite an existing story)
+            val storyKey = FirebaseDatabase.getInstance().reference.child("Users").child(it).child("UserStories").push().key
+            storyKey?.let { key ->
+                // Create a map with the story details you want to save
+                val storyDetails = hashMapOf(
+                    "imageUrl" to imageUrl,
+                    "timestamp" to ServerValue.TIMESTAMP, // Use Firebase ServerValue.TIMESTAMP for the server to fill in the timestamp
+                    // Add other details like title or description if you have them
+                    "storyTitle" to "A title for the story", // Replace with actual title
+                    "storyDescription" to "A description for the story" // Replace with actual description
+                )
+
+                // Save the story details to the "UserStories" node under the current user's profile
+                FirebaseDatabase.getInstance().reference
+                    .child("Users")
+                    .child(it)
+                    .child("UserStories")
+                    .child(key)
+                    .setValue(storyDetails)
+                    .addOnSuccessListener {
+                        Toast.makeText(this, "Story saved successfully!", Toast.LENGTH_SHORT).show()
+                    }
+                    .addOnFailureListener { e ->
+                        Toast.makeText(this, "Failed to save story: ${e.message}", Toast.LENGTH_SHORT).show()
+                    }
+            }
+        } ?: run {
+            Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -219,25 +447,6 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun loadRecipesFromJson() {
-        val jsonFileString = getJsonDataFromAsset(applicationContext, "recipes.json")
-        val gson = Gson()
-        val listRecipeType = object : TypeToken<List<Recipe>>() {}.type
-        recipes = gson.fromJson(jsonFileString, listRecipeType);
-        selectedRecipe = recipes[0];
-        uploadRecipes(recipes);
-
-    }
-
-    private fun getJsonDataFromAsset(context: Context, fileName: String): String? {
-        return try {
-            context.assets.open(fileName).bufferedReader().use { it.readText() }
-        } catch (ioException: IOException) {
-            ioException.printStackTrace()
-            null
-        }
-    }
-
     private fun showRandomMeal() {
         val databaseReference = FirebaseDatabase.getInstance().reference.child("Recipes")
 
@@ -311,6 +520,7 @@ class MainActivity : AppCompatActivity() {
             ).child("name")
 
             usersReference.addListenerForSingleValueEvent(object : ValueEventListener {
+                @SuppressLint("SetTextI18n")
                 override fun onDataChange(userNameSnapshot: DataSnapshot) {
                     val userName = userNameSnapshot.getValue(String::class.java) ?: "Unknown User"
 
@@ -323,7 +533,7 @@ class MainActivity : AppCompatActivity() {
 
                     // Lade das Bild nur für das ausgewählte Rezept
                     val foodPictureImageView: ImageView = findViewById(R.id.food_picture)
-                    loadImageFromFirebaseStorage(it.name.toString(), foodPictureImageView)
+                    loadImageFromFirebaseStorage(it.name, foodPictureImageView)
                 }
 
                 override fun onCancelled(error: DatabaseError) {
@@ -374,6 +584,7 @@ class MainActivity : AppCompatActivity() {
     /**
      * prevents returning to login/signUp screen
      */
+    @SuppressLint("InflateParams")
     private fun showAddRecipePopupMenu() {
         val anchorView = findViewById<ImageButton>(R.id.addRecipeOverlayBtn)
 

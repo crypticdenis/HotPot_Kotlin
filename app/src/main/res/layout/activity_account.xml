@@ -72,11 +72,11 @@
                 android:autoSizeTextType="uniform"
                 android:fontFamily="@font/abel"
                 android:gravity="center"
+                android:textColor="@color/black"
                 android:hint="Username"
-                android:paddingTop="52dp"
                 android:singleLine="true"
                 android:text="Test"
-                android:textSize="30dp"
+                android:textSize="45dp"
                 android:textStyle="bold" />
 
             <TextView

@@ -23,6 +23,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -59,6 +60,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         setContentView(R.layout.activity_main_activity)
         FirebaseApp.initializeApp(this)
 
@@ -67,6 +69,20 @@ class MainActivity : AppCompatActivity() {
 
         // First recipe is null, that's why no recipe details open up
         showRandomMeal()
+
+        // show full recipe name in a alertDialog when TextView is clicked on
+        val recipeNameAlertDialog = findViewById<TextView>(R.id.recipe_name)
+
+        recipeNameAlertDialog.setOnClickListener {
+            val fullText = recipeNameAlertDialog.text.toString()
+
+            val alertDialog = AlertDialog.Builder(this)
+                .setMessage(fullText)
+                .setCancelable(true)
+                .create()
+
+            alertDialog.show()
+        }
 
         if (savedInstanceState == null) {
             // Load your fragment_friend_stories into the FriendsFrameLayout

@@ -37,6 +37,7 @@
                 android:backgroundTint="@color/transparent"
                 android:fontFamily="@font/kodchasan_bold"
                 android:text="@string/signupString"
+                android:textSize="15sp"
                 android:textAllCaps="false"
                 android:textColor="@color/hotpot_dark_green"
                 android:textStyle="bold" />
@@ -49,6 +50,7 @@
                 android:backgroundTint="@color/hotpot_green"
                 android:fontFamily="@font/kodchasan_bold"
                 android:text="@string/loginString"
+                android:textSize="15sp"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textStyle="bold" />

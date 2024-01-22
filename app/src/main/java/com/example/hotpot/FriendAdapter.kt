@@ -44,6 +44,7 @@ class FriendAdapter(private val friendList: List<Friend>, private val clickListe
 
         holder.nameTextView.text = currentFriend.name
 
+
         val storageReference: StorageReference =
             FirebaseStorage.getInstance().getReference("profilePictures")
                 .child(currentFriend.friendUID)

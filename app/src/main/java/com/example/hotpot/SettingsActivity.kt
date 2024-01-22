@@ -64,7 +64,7 @@ class SettingsActivity : AppCompatActivity(), OnSettingsItemClickListener {
 
     private fun startProfileActivity() {
         //toast test
-        val intent = Intent(this, AccountActivity::class.java)
+        val intent = Intent(this, EditProfileActivity::class.java)
         startActivity(intent)
 
     }

@@ -2,6 +2,7 @@ package com.example.hotpot
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatDelegate
 import com.google.android.material.snackbar.Snackbar
 
 class LoginActivity : AppCompatActivity() {
@@ -13,6 +14,7 @@ class LoginActivity : AppCompatActivity() {
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         setContentView(R.layout.activity_login)
 
         val fragmentType = intent.getStringExtra(LOGIN_TYPE)
@@ -40,6 +42,12 @@ class LoginActivity : AppCompatActivity() {
             .commit()
     }
 
+    internal fun showDietFiltersFragment() {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragmentContainer, DietFilters())
+            //.addToBackStack(null)
+            .commit()
+    }
     internal fun isInputOkay(message: String) {
         val snackbar = Snackbar.make(
             findViewById(android.R.id.content), message, Snackbar.LENGTH_SHORT

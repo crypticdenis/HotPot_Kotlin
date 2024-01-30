@@ -5,12 +5,14 @@ import android.widget.Button
 import android.view.View
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 
 class StartActivity : AppCompatActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         setContentView(R.layout.start_screen);
 
         val signInBtn: View = findViewById<Button>(R.id.signInBtn);
@@ -29,5 +31,6 @@ class StartActivity : AppCompatActivity() {
         val intent = Intent(this, LoginActivity::class.java);
         intent.putExtra(LoginActivity.LOGIN_TYPE, fragmentType)
         startActivity(intent);
+        finish();
     }
 }

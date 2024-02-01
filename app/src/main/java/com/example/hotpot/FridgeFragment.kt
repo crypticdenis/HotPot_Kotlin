@@ -80,24 +80,18 @@ class FridgeFragment : Fragment() {
             val categoryContentLayout = view?.findViewById<LinearLayout>(R.id.fridgeContentLayout)
             view?.findViewById<SearchView>(R.id.searchView)?.visibility = View.VISIBLE
 
-            for (categorySnapshot in fridgeSnapshot.children) {
-                // Log Kategorie
-                Log.d("Fridge", "Kategorie: ${categorySnapshot.key}")
+            for (itemSnapshot in fridgeSnapshot.children) {
+                // Log Item
+                Log.d("Fridge", "Item: ${itemSnapshot.key}")
 
-                // Iterate through categories (Meat, Vegetables)
-                for (itemSnapshot in categorySnapshot.children) {
-                    // Log Item
-                    Log.d("Fridge", "Item: ${itemSnapshot.key}")
+                // Iterate through items (Chicken, Beef, etc.)
+                val itemName = itemSnapshot.key.toString()
 
-                    // Iterate through items (Chicken, Beef, etc.)
-                    val itemName = itemSnapshot.key.toString()
+                for (unitSnapshot in itemSnapshot.children) {
+                    val unitName = unitSnapshot.key.toString()
+                    val amountValue = unitSnapshot.value.toString()
 
-                    for (unitSnapshot in itemSnapshot.children) {
-                        val unitName = unitSnapshot.key.toString()
-                        val amountValue = unitSnapshot.value.toString()
-
-                        createUIElement(itemName, unitName, amountValue)
-                    }
+                    createUIElement(itemName, unitName, amountValue)
                 }
             }
         }

@@ -40,7 +40,8 @@ class ShoppingListActivity : AppCompatActivity() {
             linearLayout = findViewById(R.id.shoppingListLayout)
 
             // Reference to the ShoppingList node for the current user
-            val shoppingListReference = databaseReference.child("Users").child(userId).child("ShoppingList")
+            val shoppingListReference =
+                databaseReference.child("Users").child(userId).child("ShoppingList")
 
             // Retrieve selected ingredients from Firebase
             shoppingListReference.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -89,6 +90,7 @@ class ShoppingListActivity : AppCompatActivity() {
                     startActivity(intent)
                     true
                 }
+
                 else -> false
             }
         }
@@ -143,7 +145,8 @@ class ShoppingListActivity : AppCompatActivity() {
             "Quart" -> amountView.text = "${amountView.text}qt"
             "Gallon" -> amountView.text = "${amountView.text}gal"
             // Add more units as needed
-            else -> { /* Handle other cases if needed */ }
+            else -> { /* Handle other cases if needed */
+            }
         }
 
         amountView.setTextSize(25F)
@@ -152,13 +155,20 @@ class ShoppingListActivity : AppCompatActivity() {
         linearLayoutHorizontal.addView(amountView)
 
         // Create edit- and trash-button (right-aligned)
+        val checkButton = ImageView(this)
         val editButton = ImageView(this)
         val trashButton = ImageView(this)
 
         val buttonParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.WRAP_CONTENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
+            LinearLayout.LayoutParams.WRAP_CONTENT,
         )
+
+        checkButton.layoutParams = buttonParams
+        checkButton.setImageResource(R.drawable.checkbox_checked_green)
+        checkButton.setPadding(12, 12, 12, 12)
+        linearLayoutHorizontal.addView(checkButton)
+
         editButton.layoutParams = buttonParams
         editButton.setImageResource(R.drawable.pen_button)
         editButton.setPadding(12, 12, 12, 12)
@@ -168,6 +178,26 @@ class ShoppingListActivity : AppCompatActivity() {
         trashButton.setImageResource(R.drawable.trash_button)
         trashButton.setPadding(12, 12, 12, 12)
         linearLayoutHorizontal.addView(trashButton)
+
+        checkButton.setOnClickListener {
+            // create Alert Dialog with two buttons
+            val alertDialogBuilder = AlertDialog.Builder(this)
+            alertDialogBuilder.setTitle("$name aus der Einkaufsliste löschen")
+            alertDialogBuilder.setMessage("Soll $name dem Kühlschrank hinzugefügt werden?")
+
+            alertDialogBuilder.setPositiveButton("Hinzufügen") { _, _ ->
+                Log.d("Buttons", "$name - dem Kühlschrank hizugefügt")
+                addContentToFridge(name);
+            }
+
+            alertDialogBuilder.setNegativeButton("Abbrechen") { dialog, _ ->
+                Log.d("Buttons", "$name - Vorgang abgebrochen")
+                dialog.dismiss()
+            }
+
+            val alertDialog = alertDialogBuilder.create()
+            alertDialog.show()
+        }
 
         editButton.setOnClickListener {
             Log.d("Buttons", "$name editButton clicked")
@@ -275,6 +305,108 @@ class ShoppingListActivity : AppCompatActivity() {
                     return
                 }
             }
+        }
+    }
+
+    private fun addContentToFridge(itemName: String) {
+        val currentUser = FirebaseAuth.getInstance().currentUser
+
+        if (currentUser != null) {
+            val userUID = currentUser.uid
+            val shoppingListReference = databaseReference.child("Users").child(userUID).child("ShoppingList")
+            val fridgeReference = databaseReference.child("Users").child(userUID).child("Fridge")
+
+            // Überprüfe, ob das Element in der Einkaufsliste vorhanden ist
+            shoppingListReference.child(itemName).addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        // Hole alle Einheitsmengen des Elements aus der Einkaufsliste
+                        val newUnitQuantities = dataSnapshot.children.associateBy({ it.key.toString() }, { it.value.toString().toInt() })
+
+                        // Überprüfe, ob das Element bereits im Kühlschrank vorhanden ist
+                        fridgeReference.child(itemName).addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onDataChange(existingDataSnapshot: DataSnapshot) {
+                                if (existingDataSnapshot.exists()) {
+                                    // Das Element ist bereits im Kühlschrank vorhanden, aktualisiere die Einheitsmengen
+                                    val existingUnitQuantities = existingDataSnapshot.children.associateBy({ it.key.toString() }, { it.value.toString().toInt() })
+                                        .toMutableMap()
+
+                                    for ((unit, quantity) in newUnitQuantities) {
+                                        // Überprüfe, ob die Einheit bereits im Kühlschrank vorhanden ist
+                                        if (existingUnitQuantities.containsKey(unit)) {
+                                            // Die Einheit ist bereits im Kühlschrank vorhanden, addiere die Werte
+                                            val existingQuantity = existingUnitQuantities[unit] ?: 0
+                                            val updatedQuantity = existingQuantity + quantity
+                                            existingUnitQuantities[unit] = updatedQuantity
+                                        } else {
+                                            // Die Einheit ist noch nicht im Kühlschrank vorhanden, füge sie hinzu
+                                            existingUnitQuantities[unit] = quantity
+                                        }
+                                    }
+
+                                    // Aktualisierte Einheitsmengen in den Kühlschrank setzen
+                                    fridgeReference.child(itemName).setValue(existingUnitQuantities)
+                                        .addOnCompleteListener { task ->
+                                            if (task.isSuccessful) {
+                                                // Erfolgreich verschoben, entferne es aus der Einkaufsliste
+                                                shoppingListReference.child(itemName).removeValue()
+                                                    .addOnCompleteListener { removeTask ->
+                                                        if (removeTask.isSuccessful) {
+                                                            Log.d("Firebase", "$itemName erfolgreich zum Kühlschrank hinzugefügt.")
+                                                            Toast.makeText(this@ShoppingListActivity, "$itemName erfolgreich zum Kühlschrank hinzugefügt.", Toast.LENGTH_SHORT).show()
+                                                            removeUIElement(itemName)
+                                                        } else {
+                                                            Log.e("Firebase", "Fehler beim Entfernen des Elements aus der Einkaufsliste: ${removeTask.exception?.message}")
+                                                            Toast.makeText(this@ShoppingListActivity, "Fehler beim Verschieben des Elements in den Kühlschrank.", Toast.LENGTH_SHORT).show()
+                                                        }
+                                                    }
+                                            } else {
+                                                Log.e("Firebase", "Fehler beim Hinzufügen des Elements zum Kühlschrank: ${task.exception?.message}")
+                                                Toast.makeText(this@ShoppingListActivity, "Fehler beim Verschieben des Elements in den Kühlschrank.", Toast.LENGTH_SHORT).show()
+                                            }
+                                        }
+                                } else {
+                                    // Das Element ist noch nicht im Kühlschrank vorhanden, füge es einfach hinzu
+                                    fridgeReference.child(itemName).setValue(newUnitQuantities)
+                                        .addOnCompleteListener { task ->
+                                            if (task.isSuccessful) {
+                                                // Erfolgreich verschoben, entferne es aus der Einkaufsliste
+                                                shoppingListReference.child(itemName).removeValue()
+                                                    .addOnCompleteListener { removeTask ->
+                                                        if (removeTask.isSuccessful) {
+                                                            Log.d("Firebase", "$itemName erfolgreich zum Kühlschrank hinzugefügt.")
+                                                            Toast.makeText(this@ShoppingListActivity, "$itemName erfolgreich zum Kühlschrank hinzugefügt.", Toast.LENGTH_SHORT).show()
+                                                            removeUIElement(itemName)
+                                                        } else {
+                                                            Log.e("Firebase", "Fehler beim Entfernen des Elements aus der Einkaufsliste: ${removeTask.exception?.message}")
+                                                            Toast.makeText(this@ShoppingListActivity, "Fehler beim Verschieben des Elements in den Kühlschrank.", Toast.LENGTH_SHORT).show()
+                                                        }
+                                                    }
+                                            } else {
+                                                Log.e("Firebase", "Fehler beim Hinzufügen des Elements zum Kühlschrank: ${task.exception?.message}")
+                                                Toast.makeText(this@ShoppingListActivity, "Fehler beim Verschieben des Elements in den Kühlschrank.", Toast.LENGTH_SHORT).show()
+                                            }
+                                        }
+                                }
+                            }
+                            override fun onCancelled(error: DatabaseError) {
+                                // Handle onCancelled if needed
+                                Log.e("Firebase", "Fehler beim Überprüfen des Elements im Kühlschrank: ${error.message}")
+                                Toast.makeText(this@ShoppingListActivity, "Fehler beim Verschieben des Elements in den Kühlschrank.", Toast.LENGTH_SHORT).show()
+                            }
+                        })
+                    } else {
+                        Log.d("Firebase", "Element $itemName nicht in der Einkaufsliste gefunden.")
+                        Toast.makeText(this@ShoppingListActivity, "Element nicht in der Einkaufsliste gefunden.", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    // Handle onCancelled if needed
+                    Log.e("Firebase", "Fehler beim Überprüfen des Elements in der Einkaufsliste: ${error.message}")
+                    Toast.makeText(this@ShoppingListActivity, "Fehler beim Verschieben des Elements in den Kühlschrank.", Toast.LENGTH_SHORT).show()
+                }
+            })
         }
     }
 

@@ -144,7 +144,6 @@ class RecipeDetailsFragment : BottomSheetDialogFragment() {
                 })
             }
         }
-        // Optional: You may want to show a confirmation message or handle the success in some way.
         Toast.makeText(requireContext(), "Ingredients added to ShoppingList", Toast.LENGTH_SHORT).show()
     }
 

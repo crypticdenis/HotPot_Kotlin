@@ -3,6 +3,7 @@ package com.example.hotpot
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
+import android.text.InputType
 import android.util.Log
 import android.view.Gravity
 import android.widget.ArrayAdapter
@@ -214,6 +215,7 @@ class ShoppingListActivity : AppCompatActivity() {
             val editText = EditText(this)
             editText.gravity = Gravity.CENTER
             editText.hint = "Enter new quantity"
+            editText.inputType = InputType.TYPE_CLASS_NUMBER
             linearLayout.addView(editText)
 
             // Create Spinner

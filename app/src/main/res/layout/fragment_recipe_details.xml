@@ -12,6 +12,17 @@
         android:orientation="vertical"
         android:padding="16dp">
 
+        <TextView
+            android:id="@+id/recipeCooked"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Recipe cooked?"
+            android:textSize="20dp"
+            android:textColor="@color/hotpot_light_green"
+            android:fontFamily="@font/abeezee"
+            android:textStyle="bold"
+            android:singleLine="true"
+            android:autoSizeTextType="uniform" />
 
         <ImageButton
             android:id="@+id/closeRecipeDetailsBtn"

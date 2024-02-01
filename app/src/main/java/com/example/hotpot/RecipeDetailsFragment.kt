@@ -105,6 +105,7 @@ class RecipeDetailsFragment : BottomSheetDialogFragment() {
 
     private fun saveIngredientsToShoppingList(userId: String, selectedIngredients: BooleanArray, ingredientEntries: Array<Map.Entry<String, Any>>) {
         val shoppingListRef = FirebaseDatabase.getInstance().getReference("Users/$userId/ShoppingList")
+        val fridgeRef = FirebaseDatabase.getInstance().getReference("Users/$userId/Fridge")
 
         for (i in selectedIngredients.indices) {
             if (selectedIngredients[i]) {
@@ -112,22 +113,25 @@ class RecipeDetailsFragment : BottomSheetDialogFragment() {
                 val ingredientName = ingredientEntry.key
                 val ingredientValue = ingredientEntry.value as? Map<*, *> ?: continue
 
-                // Überprüfung, ob das Ingredient bereits existiert
-                shoppingListRef.child(ingredientName).addListenerForSingleValueEvent(object : ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        if (snapshot.exists()) {
-                            // Ingredient existiert bereits, Mengen addieren oder aktualisieren
+                // Überprüfung, ob das Ingredient bereits im Kühlschrank existiert
+                fridgeRef.child(ingredientName).addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(fridgeSnapshot: DataSnapshot) {
+                        if (fridgeSnapshot.exists()) {
+                            // Ingredient existiert bereits im Kühlschrank
                             for ((unit, amount) in ingredientValue) {
-                                val existingData = snapshot.child(unit.toString()).value as? Number ?: continue
-                                val existingAmount = existingData.toDouble()
+                                val fridgeAmountData = fridgeSnapshot.child(unit.toString()).value as? Number ?: continue
+                                val fridgeAmount = fridgeAmountData.toDouble()
                                 val newAmount = amount as? Number ?: continue
-                                val totalAmount = existingAmount + newAmount.toDouble()
 
-                                // Menge addieren oder aktualisieren
-                                shoppingListRef.child(ingredientName).child(unit.toString()).setValue(totalAmount)
+                                // Überprüfe, ob die Menge im Kühlschrank kleiner ist als die Menge in der ShoppingList
+                                if (fridgeAmount < newAmount.toDouble()) {
+                                    // Die Differenz berechnen und zur ShoppingList hinzufügen
+                                    val difference = newAmount.toDouble() - fridgeAmount
+                                    shoppingListRef.child(ingredientName).child(unit.toString()).setValue(difference)
+                                }
                             }
                         } else {
-                            // Ingredient existiert nicht, einfach speichern
+                            // Ingredient existiert nicht im Kühlschrank, einfach zur ShoppingList hinzufügen
                             for ((unit, amount) in ingredientValue) {
                                 shoppingListRef.child(ingredientName).child(unit.toString()).setValue(amount)
                             }
@@ -143,6 +147,7 @@ class RecipeDetailsFragment : BottomSheetDialogFragment() {
         // Optional: You may want to show a confirmation message or handle the success in some way.
         Toast.makeText(requireContext(), "Ingredients added to ShoppingList", Toast.LENGTH_SHORT).show()
     }
+
 
     override fun onResume() {
         super.onResume()

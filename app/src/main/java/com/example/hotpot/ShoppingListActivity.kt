@@ -327,19 +327,18 @@ class ShoppingListActivity : AppCompatActivity() {
                         fridgeReference.child(itemName).addListenerForSingleValueEvent(object : ValueEventListener {
                             override fun onDataChange(existingDataSnapshot: DataSnapshot) {
                                 if (existingDataSnapshot.exists()) {
-                                    // Das Element ist bereits im Kühlschrank vorhanden, aktualisiere die Einheitsmengen
+                                    // already in fridge, update amount
                                     val existingUnitQuantities = existingDataSnapshot.children.associateBy({ it.key.toString() }, { it.value.toString().toInt() })
                                         .toMutableMap()
 
                                     for ((unit, quantity) in newUnitQuantities) {
-                                        // Überprüfe, ob die Einheit bereits im Kühlschrank vorhanden ist
+                                        // check for already existing
                                         if (existingUnitQuantities.containsKey(unit)) {
-                                            // Die Einheit ist bereits im Kühlschrank vorhanden, addiere die Werte
+                                            // if already existing -> add sum of both items
                                             val existingQuantity = existingUnitQuantities[unit] ?: 0
                                             val updatedQuantity = existingQuantity + quantity
                                             existingUnitQuantities[unit] = updatedQuantity
                                         } else {
-                                            // Die Einheit ist noch nicht im Kühlschrank vorhanden, füge sie hinzu
                                             existingUnitQuantities[unit] = quantity
                                         }
                                     }

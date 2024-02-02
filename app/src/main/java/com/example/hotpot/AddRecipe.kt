@@ -3,10 +3,8 @@ package com.example.hotpot
 import android.annotation.SuppressLint
 import android.app.TimePickerDialog
 import android.content.Intent
-import android.media.Image
 import android.net.Uri
 import android.os.Bundle
-import android.provider.ContactsContract.Data
 import android.text.InputType
 import android.util.Log
 import android.view.LayoutInflater
@@ -30,13 +28,11 @@ import androidx.core.widget.NestedScrollView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.skydoves.expandablelayout.ExpandableLayout
-import java.net.URL
 
 class AddRecipe : AppCompatActivity() {
     private lateinit var addRecipeStepsBtn: Button
@@ -64,6 +60,7 @@ class AddRecipe : AppCompatActivity() {
     val dietaryFilterOptions = arrayOf("vegan", "gluten", "halal", "keto",
         "kosher", "lactose", "paleo", "peanut", "pescatarian", "shellfish", "soy", "vegetarian")
     private var selectedFilters = mutableListOf<String>()
+
     @SuppressLint("ClickableViewAccessibility", "MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -102,7 +99,6 @@ class AddRecipe : AppCompatActivity() {
 
         recipeNameEditText.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
-                // Den vorhandenen Text in der EditText löschen
                 recipeNameEditText.setText("")
             }
         }
@@ -119,8 +115,34 @@ class AddRecipe : AppCompatActivity() {
 
         val saveRecipeBtn = findViewById<Button>(R.id.AddRecipe_SaveBtn)
         saveRecipeBtn.setOnClickListener {
-            uploadNewRecipe();
-            finish()
+            val recipeName = recipeNameEditText.text.toString().trim()
+            val description = descriptionTextView.text.toString().trim()
+            val difficulty = difficultyCountTextView.text.toString().trim()
+            val cookingTime = cookingTimeTextView.text.toString().trim()
+            val rating = ratingCountTextView.text.toString().trim()
+
+
+            // Check if any of the required fields is null or empty
+            if (recipeName.isEmpty() || description.isEmpty() || difficulty.isEmpty() ||
+                cookingTime.isEmpty() || rating.isEmpty() || ingredientList.isEmpty() ||
+                recipeImageView == null) {
+
+                Toast.makeText(this, "Bitte fülle alle Felder aus", Toast.LENGTH_SHORT).show()
+            } else {
+                try {
+                    // Dein Code zum Speichern des Rezepts
+                    uploadNewRecipe()
+                    finish()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    Toast.makeText(
+                        this,
+                        "Ein Fehler ist aufgetreten. Bitte versuche es erneut.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+            }
         }
 
         // add image of recipe
@@ -170,8 +192,7 @@ class AddRecipe : AppCompatActivity() {
                     recipeNameEditText.getGlobalVisibleRect(outRectName)
                     recipeStepEditText.getGlobalVisibleRect(outRectStep)
 
-                    // Reduziere die Größe des Rechtecks
-                    val padding = 16 // Hier kannst du die Padding-Größe anpassen
+                    val padding = 16
 
                     outRectName.set(outRectName.left + padding, outRectName.top + padding, outRectName.right - padding, outRectName.bottom - padding)
                     outRectStep.set(outRectStep.left + padding, outRectStep.top + padding, outRectStep.right - padding, outRectStep.bottom - padding)

@@ -10,7 +10,6 @@ import android.widget.Toast
 import com.example.hotpot.R
 import com.example.hotpot.Recipe
 import androidx.appcompat.app.AlertDialog
-import com.example.hotpot.SearchActivity
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.firebase.auth.FirebaseAuth
@@ -33,10 +32,14 @@ class RecipeDetailsFragment : BottomSheetDialogFragment() {
         view.isFocusable = true
         view.isClickable = true
 
+        val userReference = FirebaseAuth.getInstance().uid;
+
         val recipeTitleTextView: TextView = view.findViewById(R.id.recipe_title)
         val recipeStepsTextView: TextView = view.findViewById(R.id.recipe_steps)
         val dietaryInfoTextView: TextView = view.findViewById(R.id.dietary_info)
         val descriptionTextView: TextView = view.findViewById(R.id.descriptionInfo)
+
+        val recipeCookedBtn : TextView = view.findViewById(R.id.recipeCooked)
 
         val recipe = arguments?.getSerializable("RECIPE_DATA") as? Recipe
 
@@ -47,6 +50,13 @@ class RecipeDetailsFragment : BottomSheetDialogFragment() {
             dietaryInfoTextView.text = it.tags.joinToString(", ")
             selectedIngredients = BooleanArray(it.ingredients.size)
         }
+
+        recipeCookedBtn.setOnClickListener {
+            recipe?.let {
+                userReference?.let { it1 -> deleteIngredientsFromFridge(it1, it.ingredients.keys) }
+            }
+        }
+
 
         val ingredientsButton: Button = view.findViewById(R.id.ingredients_button)
         ingredientsButton.setOnClickListener {
@@ -62,6 +72,34 @@ class RecipeDetailsFragment : BottomSheetDialogFragment() {
         }
 
         return view
+    }
+
+    private fun deleteIngredientsFromFridge(userId: String, ingredients: Set<String>) {
+        val fridgeRef = FirebaseDatabase.getInstance().getReference("Users/$userId/Fridge")
+
+        for (ingredientName in ingredients) {
+            fridgeRef.child(ingredientName).addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        // Ingredient entry exists in the fridge
+                        val fridgeAmount = (snapshot.value as? Number)?.toInt() ?: 0
+
+                        // Remove the entry from the fridge if the updated amount is zero or negative
+                        if (fridgeAmount <= 0) {
+                            snapshot.ref.removeValue()
+                            Toast.makeText(requireContext(), "Delete $ingredientName from Fridge", Toast.LENGTH_SHORT).show()
+                        } else {
+                            // You may want to handle the case where the updated amount is positive
+                            Toast.makeText(requireContext(), "$ingredientName still has quantity in Fridge", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    // Handle onCancelled if needed
+                }
+            })
+        }
     }
 
     private fun showIngredientsDialog(ingredients: Map<String, Any>) {
@@ -105,6 +143,7 @@ class RecipeDetailsFragment : BottomSheetDialogFragment() {
 
     private fun saveIngredientsToShoppingList(userId: String, selectedIngredients: BooleanArray, ingredientEntries: Array<Map.Entry<String, Any>>) {
         val shoppingListRef = FirebaseDatabase.getInstance().getReference("Users/$userId/ShoppingList")
+        val fridgeRef = FirebaseDatabase.getInstance().getReference("Users/$userId/Fridge")
 
         for (i in selectedIngredients.indices) {
             if (selectedIngredients[i]) {
@@ -112,22 +151,25 @@ class RecipeDetailsFragment : BottomSheetDialogFragment() {
                 val ingredientName = ingredientEntry.key
                 val ingredientValue = ingredientEntry.value as? Map<*, *> ?: continue
 
-                // Überprüfung, ob das Ingredient bereits existiert
-                shoppingListRef.child(ingredientName).addListenerForSingleValueEvent(object : ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        if (snapshot.exists()) {
-                            // Ingredient existiert bereits, Mengen addieren oder aktualisieren
+                // Überprüfung, ob das Ingredient bereits im Kühlschrank existiert
+                fridgeRef.child(ingredientName).addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(fridgeSnapshot: DataSnapshot) {
+                        if (fridgeSnapshot.exists()) {
+                            // Ingredient existiert bereits im Kühlschrank
                             for ((unit, amount) in ingredientValue) {
-                                val existingData = snapshot.child(unit.toString()).value as? Number ?: continue
-                                val existingAmount = existingData.toDouble()
+                                val fridgeAmountData = fridgeSnapshot.child(unit.toString()).value as? Number ?: continue
+                                val fridgeAmount = fridgeAmountData.toDouble()
                                 val newAmount = amount as? Number ?: continue
-                                val totalAmount = existingAmount + newAmount.toDouble()
 
-                                // Menge addieren oder aktualisieren
-                                shoppingListRef.child(ingredientName).child(unit.toString()).setValue(totalAmount)
+                                // Überprüfe, ob die Menge im Kühlschrank kleiner ist als die Menge in der ShoppingList
+                                if (fridgeAmount < newAmount.toDouble()) {
+                                    // Die Differenz berechnen und zur ShoppingList hinzufügen
+                                    val difference = newAmount.toDouble() - fridgeAmount
+                                    shoppingListRef.child(ingredientName).child(unit.toString()).setValue(difference)
+                                }
                             }
                         } else {
-                            // Ingredient existiert nicht, einfach speichern
+                            // Ingredient existiert nicht im Kühlschrank, einfach zur ShoppingList hinzufügen
                             for ((unit, amount) in ingredientValue) {
                                 shoppingListRef.child(ingredientName).child(unit.toString()).setValue(amount)
                             }
@@ -140,9 +182,9 @@ class RecipeDetailsFragment : BottomSheetDialogFragment() {
                 })
             }
         }
-        // Optional: You may want to show a confirmation message or handle the success in some way.
         Toast.makeText(requireContext(), "Ingredients added to ShoppingList", Toast.LENGTH_SHORT).show()
     }
+
 
     override fun onResume() {
         super.onResume()

@@ -15,6 +15,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Spinner
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
@@ -164,6 +165,7 @@ class FridgeContentFragment : Fragment() {
             val selectedUnit = unitSpinner.selectedItem.toString()
             saveQuantityToFirebase(ingredientName, quantity, selectedUnit)
             Log.d("Quantity", "Ingredient: $ingredientName, Quantity: $quantity $selectedUnit")
+            Toast.makeText(requireContext(), "Erfolgreich zum Kühlschrank hinzugefügt!", Toast.LENGTH_SHORT).show()
         }
 
         builder.setNegativeButton("Cancel") { dialog, _ ->
@@ -178,11 +180,11 @@ class FridgeContentFragment : Fragment() {
         val currentUserUid = FirebaseAuth.getInstance().currentUser?.uid.toString()
         val databaseReference = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserUid)
 
-        // Ersetze "Meat" durch die tatsächliche Kategorie
-        val categoryReference = databaseReference.child("Fridge").child(selectedCategory.toString())
+
+        val fridgeReference = databaseReference.child("Fridge")
 
         // Initialisiere ingredientReference mit einem Standardwert
-        val ingredientReference : DatabaseReference = categoryReference.child(ingredientName).child(unit.toString())
+        val ingredientReference : DatabaseReference = fridgeReference.child(ingredientName).child(unit.toString())
             ingredientReference.setValue(quantity)
                 .addOnSuccessListener {
                     Log.d("Firebase", "Menge erfolgreich gespeichert")

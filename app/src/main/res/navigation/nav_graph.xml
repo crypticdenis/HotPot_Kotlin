@@ -21,4 +21,23 @@
             android:id="@+id/action_signUp_to_signIn"
             app:destination="@id/signIn" />
     </fragment>
+    <activity
+        android:id="@+id/mainActivity"
+        android:name="com.example.hotpot.MainActivity"
+        android:label="activity_main_activity"
+        tools:layout="@layout/activity_main_activity" />
+    <activity
+        android:id="@+id/accountActivity"
+        android:name="com.example.hotpot.AccountActivity"
+        android:label="AccountActivity" />
+    <activity
+        android:id="@+id/shoppingListActivity"
+        android:name="com.example.hotpot.ShoppingListActivity"
+        android:label="activity_shopping_list"
+        tools:layout="@layout/activity_shopping_list" />
+    <activity
+        android:id="@+id/searchActivity"
+        android:name="com.example.hotpot.SearchActivity"
+        android:label="activity_search"
+        tools:layout="@layout/activity_search" />
 </navigation>

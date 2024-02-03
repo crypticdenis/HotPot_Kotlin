@@ -51,7 +51,7 @@ class RecipeDetailsFragment : BottomSheetDialogFragment() {
 
         recipe?.let {
             recipeTitleTextView.text = it.name
-            loadImageFromFirebaseStorage(it.imageUrl, recipeImageImageView)
+            loadImageFromFirebaseStorage(it.name, recipeImageImageView)
             recipeStepsTextView.text = it.instructions
             descriptionTextView.text = it.description
             dietaryInfoTextView.text = it.tags.joinToString(", ")
@@ -81,19 +81,36 @@ class RecipeDetailsFragment : BottomSheetDialogFragment() {
         return view
     }
 
-    private fun loadImageFromFirebaseStorage(imageUrl: String?, imageView: ImageView) {
-        if (imageUrl.isNullOrBlank()) {
+    private fun sanitizeRecipeNameForStorage(recipeName: String): String {
+        return recipeName.replace(" ", "")
+    }
+
+    private fun loadImageFromFirebaseStorage(imageFileName: String?, imageView: ImageView) {
+        if (imageFileName.isNullOrBlank()) {
             return
         }
+
         val storageReference = FirebaseStorage.getInstance().reference
-        val recipePictureReference = storageReference.child(imageUrl.trim())
+        val sanitizedImageFileName = sanitizeRecipeNameForStorage(imageFileName)
+        val recipePictureReference = storageReference.child("recipes").child(sanitizedImageFileName)
 
-        Log.d("RecipeDetails", imageUrl)
+        Log.d("FirebaseStorage", "Attempting to load image: $sanitizedImageFileName")
 
-        // Load the image using Glide
-        Glide.with(this)
-            .load(recipePictureReference)
-            .into(imageView)
+        // Get the download URL for the image
+        recipePictureReference.downloadUrl.addOnSuccessListener { uri ->
+            val imageUrl = uri.toString()
+
+            // Use Glide to load the image from the URL into the ImageView
+            Glide.with(requireContext())
+                .load(imageUrl)
+                .override(375, 250) // Adjust size as needed
+                .into(imageView)
+
+            Log.d("FirebaseStorage", "Image loaded successfully: $imageUrl")
+        }.addOnFailureListener { exception ->
+            // Handle the error when retrieving the download URL
+            Log.e("FirebaseStorage", "Error loading the image: ${exception.message}")
+        }
     }
 
     private fun deleteIngredientsFromFridge(userId: String, ingredients: Set<String>) {

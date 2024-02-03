@@ -4,6 +4,7 @@ import FriendStoriesFragment
 import RecipeDetailsFragment
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -56,6 +57,7 @@ class MainActivity : AppCompatActivity() {
     private var currentUserTags = mutableListOf<String>()
 
     private lateinit var bottomNavigationView: BottomNavigationView
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
@@ -134,8 +136,8 @@ class MainActivity : AppCompatActivity() {
 
                 R.id.navigation_search -> {
                     val intent = Intent(this, SearchActivity::class.java)
-                    startActivity(intent)
-                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+                    val options = ActivityOptions.makeCustomAnimation(this, R.anim.slide_in_right, R.anim.slide_out_left)
+                    startActivity(intent, options.toBundle())
                     true
                 }
 
@@ -415,17 +417,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showAddToFavoritesDialog(recipe: Recipe) {
-        val options = arrayOf("Als aktuelle UserStory einstellen", "Füge zu Favoriten hinzu")
+        val options = arrayOf("Füge zu Favoriten hinzu")
 
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Optionen auswählen")
             .setItems(options) { dialog, which ->
                 when (which) {
                     0 -> {
-                        // Als aktuelle UserStory einstellen ausgewählt
-                        setAsCurrentUserStory(recipe)
-                    }
-                    1 -> {
                         // Füge zu Favoriten hinzu ausgewählt
                         addToFavorites(recipe, this@MainActivity)
                     }
@@ -435,7 +433,7 @@ class MainActivity : AppCompatActivity() {
         dialog.show()
     }
 
-    private fun setAsCurrentUserStory(recipe: Recipe) {
+    public fun setCurrentRecipeAsCurrentUserStory() {
         val userId = FirebaseAuth.getInstance().currentUser?.uid
 
         userId?.let {
@@ -449,8 +447,8 @@ class MainActivity : AppCompatActivity() {
             userStoryReference.removeValue().addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     // Save the recipe under "UserStory/0"
-                    userStoryReference.setValue(recipe).addOnSuccessListener {
-                        Toast.makeText(this@MainActivity, "Recipe set as current UserStory!", Toast.LENGTH_SHORT).show()
+                    userStoryReference.setValue(selectedRecipe).addOnSuccessListener {
+                        Toast.makeText(this@MainActivity, "${selectedRecipe?.name} als derzeitige UserStory eingestellt", Toast.LENGTH_SHORT).show()
                     }.addOnFailureListener {
                         Toast.makeText(this@MainActivity, "Error saving UserStory: ${it.message}", Toast.LENGTH_SHORT).show()
                     }

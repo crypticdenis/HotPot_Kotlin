@@ -31,6 +31,7 @@ class StartActivity : AppCompatActivity() {
         val intent = Intent(this, LoginActivity::class.java);
         intent.putExtra(LoginActivity.LOGIN_TYPE, fragmentType)
         startActivity(intent);
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         finish();
     }
 }

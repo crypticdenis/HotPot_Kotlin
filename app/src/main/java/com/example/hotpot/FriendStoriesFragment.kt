@@ -14,7 +14,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 
 
-
 interface OnItemClickListener {
     fun onItemClick(friend: Friend)
 }
@@ -24,6 +23,7 @@ class FriendStoriesFragment : Fragment(), OnItemClickListener {
 
     private lateinit var recyclerView: RecyclerView
     private val friendList = mutableListOf<Friend>()
+    private val currentUser = FirebaseAuth.getInstance().currentUser  // Hier deklarieren und initialisieren
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -56,9 +56,13 @@ class FriendStoriesFragment : Fragment(), OnItemClickListener {
 
                         friendReference.addListenerForSingleValueEvent(object : ValueEventListener {
                             override fun onDataChange(friendSnapshot: DataSnapshot) {
-                                val friendName = friendSnapshot.child("name").getValue(String::class.java)
+                                var friendName = friendSnapshot.child("name").getValue(String::class.java)
 
                                 if (friendName != null) {
+                                    if (friendUIDString == FirebaseAuth.getInstance().uid) {
+                                        friendName = "CurrentUser"
+                                    }
+
                                     Log.d("FriendStoriesFragment", "Friend name: $friendName")
                                     Log.d("FriendStoriesFragment", "Friend UID: $friendUIDString")
 
@@ -68,7 +72,7 @@ class FriendStoriesFragment : Fragment(), OnItemClickListener {
                                     // Check if the adapter is not attached and friendList is not empty
                                     if (recyclerView.adapter == null && friendList.isNotEmpty()) {
                                         // Set up the RecyclerView adapter after adding the first friend
-                                        val adapter = FriendAdapter(friendList, this@FriendStoriesFragment)
+                                        val adapter = FriendAdapter(friendList,this@FriendStoriesFragment, this@FriendStoriesFragment)
                                         recyclerView.layoutManager =
                                             LinearLayoutManager(
                                                 requireContext(),
@@ -109,6 +113,8 @@ class FriendStoriesFragment : Fragment(), OnItemClickListener {
                 // Handle the error
             }
         })
+        val currentUserUid = user?.uid ?: ""
+        friendList.add(Friend(currentUserUid, "CurrentUser")) // placeholder name
 
         // set background to transparent
         recyclerView.setBackgroundColor(resources.getColor(android.R.color.transparent))
@@ -117,26 +123,58 @@ class FriendStoriesFragment : Fragment(), OnItemClickListener {
     }
 
     override fun onItemClick(friend: Friend) {
-        val usersReference = FirebaseDatabase.getInstance().reference.child("Users").child(friend.friendUID.toString())
+        val currentUserId = currentUser?.uid ?: ""
 
-        usersReference.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(userSnapshot: DataSnapshot) {
-                val userStory = userSnapshot.child("UserStory").child("0").getValue(Recipe::class.java)
+        if (friend.friendUID == currentUserId) {
+            // Der aktuelle Benutzer wurde angeklickt, lade seine UserStory
+            val currentUserReference =
+                FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId)
 
-                if (userStory == null) {
-                    // UserStory is empty or not present
-                    Toast.makeText(requireContext(), "Keine UserStory vorhanden", Toast.LENGTH_SHORT).show()
-                } else {
-                    // UserStory exists, open the UserStoryDetailsFragment with recipe parameter
-                    openUserStoryFragment(userStory)
+            currentUserReference.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(userSnapshot: DataSnapshot) {
+                    val userStory =
+                        userSnapshot.child("UserStory").child("0").getValue(Recipe::class.java)
+
+                    if (userStory == null) {
+                        // UserStory ist leer oder nicht vorhanden
+                        Toast.makeText(requireContext(), "Keine UserStory vorhanden", Toast.LENGTH_SHORT).show()
+                    } else {
+                        // UserStory existiert, öffne das UserStoryDetailsFragment mit den Rezeptdetails
+                        openUserStoryFragment(userStory)
+                    }
                 }
-            }
-            override fun onCancelled(error: DatabaseError) {
-                Log.e("FriendStoriesFragment", "Firebase database error: ${error.message}")
-            }
-        })
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e("FriendStoriesFragment", "Firebase database error: ${error.message}")
+                }
+            })
+        } else {
+            // Ein anderer Freund wurde angeklickt, lade seine UserStory
+            val usersReference =
+                FirebaseDatabase.getInstance().reference.child("Users").child(friend.friendUID.toString())
+
+            usersReference.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(userSnapshot: DataSnapshot) {
+                    val userStory =
+                        userSnapshot.child("UserStory").child("0").getValue(Recipe::class.java)
+
+                    if (userStory == null) {
+                        // UserStory ist leer oder nicht vorhanden
+                        Toast.makeText(requireContext(), "Keine UserStory vorhanden", Toast.LENGTH_SHORT).show()
+                    } else {
+                        // UserStory existiert, öffne das UserStoryDetailsFragment mit den Rezeptdetails
+                        openUserStoryFragment(userStory)
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e("FriendStoriesFragment", "Firebase database error: ${error.message}")
+                }
+            })
+        }
     }
-    private fun openUserStoryFragment(recipe: Recipe) {
+
+    public fun openUserStoryFragment(recipe: Recipe) {
         // Check if recipe is not null before proceeding
         recipe?.let {
             // Load the full recipe details before displaying the UserStoryDetailsFragment
@@ -184,5 +222,3 @@ class FriendStoriesFragment : Fragment(), OnItemClickListener {
         userStoryDetailsFragment.show(requireActivity().supportFragmentManager, userStoryDetailsFragment.tag)
     }
 }
-
-

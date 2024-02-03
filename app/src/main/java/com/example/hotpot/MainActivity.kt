@@ -55,9 +55,7 @@ class MainActivity : AppCompatActivity() {
     private var selectedRecipe: Recipe? = null
     private var currentUserTags = mutableListOf<String>()
 
-
     private lateinit var bottomNavigationView: BottomNavigationView
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
@@ -119,6 +117,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.navigation_settings -> {
                     val intent = Intent(this, AccountActivity::class.java)
                     startActivity(intent)
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
                     true
                 }
 
@@ -129,12 +128,14 @@ class MainActivity : AppCompatActivity() {
                 R.id.navigation_list -> {
                     val intent = Intent(this, ShoppingListActivity::class.java)
                     startActivity(intent)
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
                     true
                 }
 
                 R.id.navigation_search -> {
                     val intent = Intent(this, SearchActivity::class.java)
                     startActivity(intent)
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
                     true
                 }
 

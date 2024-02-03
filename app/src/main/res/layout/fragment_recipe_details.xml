@@ -51,6 +51,22 @@
             android:layout_marginBottom="8dp"
             android:background="@color/hotpot_light_green" />
 
+        <ImageView
+            android:id="@+id/recipeDetailsImageView"
+            android:layout_width="350dp"
+            android:layout_height="300dp"
+            android:layout_gravity="center"
+            android:src="@drawable/shoyu"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="8dp"
+            android:background="@color/hotpot_light_green" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

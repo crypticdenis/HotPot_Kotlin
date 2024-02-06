@@ -54,6 +54,7 @@ class SignIn : Fragment() {
                         if (task.isSuccessful) {
                             val intent = Intent(requireContext(), MainActivity::class.java)
                             startActivity(intent)
+                            (activity as? LoginActivity)?.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                         } else {
                             val errorMessage = getFriendlyErrorMessage(task.exception)
                             Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show()

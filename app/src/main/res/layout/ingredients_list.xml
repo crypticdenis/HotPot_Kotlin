@@ -7,16 +7,12 @@
     android:layout_height="match_parent"
     android:padding="16dp">
 
-    <!-- Der neue FrameLayout Container für Fragments -->
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/ingredientsList_ScrollView"
         tools:ignore="NotSibling">
-        <!-- Hier ist eine Platzhalter-ID, bitte durch deine eigene ID ersetzen -->
-
-        <!-- Hier könnten auch andere Views oder Fragments definiert sein -->
 
         <LinearLayout
             android:id="@+id/ingredientListLayout"
@@ -27,6 +23,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:orientation="horizontal">
 
                 <ImageButton
@@ -44,23 +41,27 @@
 
                 <TextView
                     android:id="@+id/ingredients_list_heading"
-                    android:layout_width="280dp"
+                    android:layout_width="240dp"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:layout_marginTop="15dp"
                     android:fontFamily="@font/abeezee"
                     android:gravity="center_horizontal"
+                    android:singleLine="true"
                     android:text="My Fridge"
                     android:textColor="@color/hotpot_dark_green"
-                    android:textSize="45dp" />
+                    android:textSize="40dp" />
 
                 <ImageButton
                     android:id="@+id/fridgeButton"
-                    android:layout_width="108dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:backgroundTint="@color/white"
-                    android:src="@drawable/fridge_button_icon" />
+                    android:src="@drawable/fridge_button_icon"
+                    android:background="@color/white"
+                    android:scaleY=".7"
+                    android:scaleX=".7"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="5dp" />
             </LinearLayout>
 
             <androidx.appcompat.widget.SearchView
@@ -233,7 +234,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_below="@id/herbs_image"
                                 android:layout_centerHorizontal="true"
-                                android:layout_marginTop="23dp"
+                                android:layout_marginTop="10dp"
                                 android:fontFamily="@font/abeezee"
                                 android:gravity="center_horizontal"
                                 android:text="Herbs and spices"

@@ -1,5 +1,6 @@
 package com.example.hotpot
 
+import FridgeFragment
 import FriendStoriesFragment
 import RecipeDetailsFragment
 import android.Manifest
@@ -141,8 +142,11 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
 
-                R.id.navigation_add_story -> {
-                    checkAndRequestPermissions()
+                R.id.navigation_fridge -> {
+                    //checkAndRequestPermissions()
+                    val intent = Intent(this, IngredientsList::class.java)
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
                     true
                 }
                 // handle other menu item clicks here

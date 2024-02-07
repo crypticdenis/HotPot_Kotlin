@@ -1,5 +1,6 @@
 package com.example.hotpot
 
+import FridgeFragment
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
@@ -95,6 +96,14 @@ class SearchActivity : AppCompatActivity(), AdapterCallback {
                 R.id.navigation_search -> {
                     val intent = Intent(this, SearchActivity::class.java)
                     startActivity(intent)
+                    true
+                }
+
+                R.id.navigation_fridge -> {
+                    //checkAndRequestPermissions()
+                    val intent = Intent(this, IngredientsList::class.java)
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
                     true
                 }
 

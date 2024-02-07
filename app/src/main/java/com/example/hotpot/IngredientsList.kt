@@ -184,18 +184,20 @@ class IngredientsList : AppCompatActivity() {
         customizeSearchView(searchView)
 
         bottomNavigationView = findViewById(R.id.bottom_navigation)
-        bottomNavigationView.selectedItemId = R.id.navigation_list
+        bottomNavigationView.selectedItemId = R.id.navigation_fridge
         bottomNavigationView.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.navigation_settings -> {
                     val intent = Intent(this, AccountActivity::class.java)
                     startActivity(intent)
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
                     true
                 }
 
                 R.id.navigation_home -> {
                     val intent = Intent(this, MainActivity::class.java)
                     startActivity(intent)
+                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
                     finish()
                     true
                 }
@@ -203,15 +205,20 @@ class IngredientsList : AppCompatActivity() {
                 R.id.navigation_list -> {
                     val intent = Intent(this, ShoppingListActivity::class.java)
                     startActivity(intent)
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
                     true
                 }
 
                 R.id.navigation_search -> {
                     val intent = Intent(this, SearchActivity::class.java)
                     startActivity(intent)
+                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
                     true
                 }
 
+                R.id.navigation_fridge -> {
+                    true;
+                }
                 else -> false
             }
         }

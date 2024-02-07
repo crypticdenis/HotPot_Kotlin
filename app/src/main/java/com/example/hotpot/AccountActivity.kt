@@ -1,5 +1,6 @@
 package com.example.hotpot
 
+import FridgeFragment
 import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
@@ -90,18 +91,29 @@ class AccountActivity : AppCompatActivity() {
                 R.id.navigation_home -> {
                     val intent = Intent(this, MainActivity::class.java)
                     startActivity(intent)
+                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
                     true
                 }
 
                 R.id.navigation_list -> {
                     val intent = Intent(this, ShoppingListActivity::class.java)
                     startActivity(intent)
+                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
                     true
                 }
 
                 R.id.navigation_search -> {
                     val intent = Intent(this, SearchActivity::class.java)
                     startActivity(intent)
+                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+                    true
+                }
+
+                R.id.navigation_fridge -> {
+                    //checkAndRequestPermissions()
+                    val intent = Intent(this, IngredientsList::class.java)
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
                     true
                 }
 

@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/hotpot_dark_green"
-    android:fillViewport="true">
+    android:background="@color/hotpot_dark_green">
+
 
     <LinearLayout
         android:paddingBottom="2dp"
@@ -44,6 +45,23 @@
                 android:textColor="@color/hotpot_light_green"
                 android:padding="8dp"
                 />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="8dp"
+            android:background="@color/hotpot_light_green" />
+
+        <ImageView
+            android:id="@+id/recipeDetailsImageView"
+            android:layout_width="350dp"
+            android:layout_height="300dp"
+            android:scaleType="centerCrop"
+            android:layout_gravity="center"
+            android:contentDescription="@string/recipeImageDescription"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"/>
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
@@ -164,7 +182,5 @@
                 android:layout_marginBottom="8dp"
                 android:background="@color/hotpot_light_green" />
 
-            <!-- ... more views ... -->
-
         </LinearLayout>
-</ScrollView>
+</androidx.core.widget.NestedScrollView>

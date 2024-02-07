@@ -1,5 +1,6 @@
 package com.example.hotpot
 
+import FridgeFragment
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
@@ -20,6 +21,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 
+@Suppress("DEPRECATION")
 class ShoppingListActivity : AppCompatActivity() {
     private lateinit var databaseReference: DatabaseReference
     private lateinit var linearLayout: LinearLayout
@@ -72,6 +74,7 @@ class ShoppingListActivity : AppCompatActivity() {
                 R.id.navigation_settings -> {
                     val intent = Intent(this, AccountActivity::class.java)
                     startActivity(intent)
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
                     true
                 }
 
@@ -79,6 +82,7 @@ class ShoppingListActivity : AppCompatActivity() {
                     // switch to MainActivity
                     val intent = Intent(this, MainActivity::class.java)
                     startActivity(intent)
+                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
                     true
                 }
 
@@ -89,6 +93,15 @@ class ShoppingListActivity : AppCompatActivity() {
                 R.id.navigation_search -> {
                     val intent = Intent(this, SearchActivity::class.java)
                     startActivity(intent)
+                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+                    true
+                }
+
+                R.id.navigation_fridge -> {
+                    //checkAndRequestPermissions()
+                    val intent = Intent(this, IngredientsList::class.java)
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
                     true
                 }
 

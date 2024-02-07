@@ -1,3 +1,4 @@
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -5,11 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import com.example.hotpot.R
 import com.example.hotpot.Recipe
 import androidx.appcompat.app.AlertDialog
+import com.bumptech.glide.Glide
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.firebase.auth.FirebaseAuth
@@ -17,12 +20,14 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.storage.FirebaseStorage
 
 @Suppress("DEPRECATION")
 class RecipeDetailsFragment : BottomSheetDialogFragment() {
 
     private lateinit var selectedIngredients: BooleanArray
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -35,6 +40,7 @@ class RecipeDetailsFragment : BottomSheetDialogFragment() {
         val userReference = FirebaseAuth.getInstance().uid;
 
         val recipeTitleTextView: TextView = view.findViewById(R.id.recipe_title)
+        val recipeImageImageView : ImageView = view.findViewById(R.id.recipeDetailsImageView)
         val recipeStepsTextView: TextView = view.findViewById(R.id.recipe_steps)
         val dietaryInfoTextView: TextView = view.findViewById(R.id.dietary_info)
         val descriptionTextView: TextView = view.findViewById(R.id.descriptionInfo)
@@ -45,6 +51,7 @@ class RecipeDetailsFragment : BottomSheetDialogFragment() {
 
         recipe?.let {
             recipeTitleTextView.text = it.name
+            loadImageFromFirebaseStorage(it.name, recipeImageImageView)
             recipeStepsTextView.text = it.instructions
             descriptionTextView.text = it.description
             dietaryInfoTextView.text = it.tags.joinToString(", ")
@@ -72,6 +79,38 @@ class RecipeDetailsFragment : BottomSheetDialogFragment() {
         }
 
         return view
+    }
+
+    private fun sanitizeRecipeNameForStorage(recipeName: String): String {
+        return recipeName.replace(" ", "")
+    }
+
+    private fun loadImageFromFirebaseStorage(imageFileName: String?, imageView: ImageView) {
+        if (imageFileName.isNullOrBlank()) {
+            return
+        }
+
+        val storageReference = FirebaseStorage.getInstance().reference
+        val sanitizedImageFileName = sanitizeRecipeNameForStorage(imageFileName)
+        val recipePictureReference = storageReference.child("recipes").child(sanitizedImageFileName)
+
+        Log.d("FirebaseStorage", "Attempting to load image: $sanitizedImageFileName")
+
+        // Get the download URL for the image
+        recipePictureReference.downloadUrl.addOnSuccessListener { uri ->
+            val imageUrl = uri.toString()
+
+            // Use Glide to load the image from the URL into the ImageView
+            Glide.with(requireContext())
+                .load(imageUrl)
+                .override(375, 250) // Adjust size as needed
+                .into(imageView)
+
+            Log.d("FirebaseStorage", "Image loaded successfully: $imageUrl")
+        }.addOnFailureListener { exception ->
+            // Handle the error when retrieving the download URL
+            Log.e("FirebaseStorage", "Error loading the image: ${exception.message}")
+        }
     }
 
     private fun deleteIngredientsFromFridge(userId: String, ingredients: Set<String>) {

@@ -43,8 +43,8 @@
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_gravity="bottom|center_horizontal"
-                    android:layout_marginBottom="2dp"
-                    android:background="@color/white"
+                    android:layout_marginBottom="0dp"
+                    android:background="@color/transparent"
                     android:src="@drawable/add_user_story_button"
                     android:visibility="visible" /> <!-- Set visibility programmatically based on your condition -->
             </FrameLayout>

@@ -10,7 +10,7 @@
         android:visible="true" />
     <item
         android:id="@+id/navigation_fridge"
-        android:icon="@drawable/fridge_icon"
+        android:icon="@drawable/fridgenewicon"
         android:title="Fridge"
         android:visible="true" />
     <item
